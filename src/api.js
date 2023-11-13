@@ -15,19 +15,16 @@ export const getAllAds = async (userId) => {
 };
 
 export async function loginUser({ email, password }) {
-  const response = await fetch(
-    `${host}/auth/login`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-      headers: {
-        "content-type": "application/json",
-      },
-    }
-  );
+  const response = await fetch(`${host}/auth/login`, {
+    method: "POST",
+    body: JSON.stringify({
+      email: email,
+      password: password,
+    }),
+    headers: {
+      "content-type": "application/json",
+    },
+  });
   if (response.status === 401) {
     throw new Error("Пользователь с таким email или паролем не найден");
   } else if (response.status === 500) {
@@ -38,20 +35,17 @@ export async function loginUser({ email, password }) {
 }
 
 export async function registerUser({ email, password }) {
-  const response = await fetch(
-    `${host}/auth/register`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        email: email,
-        password: password,
-        username: email,
-      }),
-      headers: {
-        "content-type": "application/json",
-      },
-    }
-  );
+  const response = await fetch(`${host}/auth/register`, {
+    method: "POST",
+    body: JSON.stringify({
+      email: email,
+      password: password,
+      username: email,
+    }),
+    headers: {
+      "content-type": "application/json",
+    },
+  });
   if (response.status === 400) {
     throw new Error("Такой пользователь уже существует");
   } else if (response.status === 500) {
@@ -61,25 +55,24 @@ export async function registerUser({ email, password }) {
   return data;
 }
 
-
 export async function getToken({ token }) {
   return fetch(`${host}/auth/login`, {
-    method: 'PUT',
+    method: "PUT",
     headers: {
-        'content-type': 'application/json',
+      "content-type": "application/json",
     },
     body: JSON.stringify({
-        access_token: token.access_token,
-        refresh_token: token.refresh_token,
+      access_token: token.access_token,
+      refresh_token: token.refresh_token,
     }),
-}).then((response) => {
+  }).then((response) => {
     if (response.status === 201) {
-        return response.json();
+      return response.json();
     }
     if (response.status === 401) {
-        throw new Error('Токен устарел');
+      throw new Error("Токен устарел");
     }
 
-    throw new Error('Неизвестная ошибка, попробуйте позже');
-});
+    throw new Error("Неизвестная ошибка, попробуйте позже");
+  });
 }

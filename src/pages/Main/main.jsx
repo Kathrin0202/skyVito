@@ -65,7 +65,6 @@ export const MainPage = ({ ads, isLoading }) => {
                       <Link to={`/ads/${ad.id}`}>
                         <S.Img
                           src={`http://localhost:8090/${ad.images[0]?.url}`}
-                          onerror="this.src = '../../img/no-photo.avif'"
                           alt="picture"
                         />
                       </Link>
