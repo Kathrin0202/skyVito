@@ -4,7 +4,10 @@ import { HeaderAuth } from "../../components/Header/header";
 import { MainMenu } from "../../components/Menu/menu";
 import * as S from "../../style/App.style";
 import * as T from "./profile.style";
+import { useAuthSelector } from "../../store/slices/auth";
+
 export const Profile = () => {
+  const { email, name } = useAuthSelector();
   return (
     <>
       <HeaderAuth />
@@ -12,7 +15,7 @@ export const Profile = () => {
         <T.MainContainer>
           <T.MainCenterBlock>
             <MainMenu />
-            <T.MainH2>Здравствуйте, Антон!</T.MainH2>
+            <T.MainH2>Здравствуйте,&nbsp;{name ? name : email}!</T.MainH2>
             <T.MainProfile>
               <T.ProfileContent>
                 <T.ProfileTitle>Настройки профиля</T.ProfileTitle>
@@ -20,7 +23,7 @@ export const Profile = () => {
                   <T.SettingsLeft>
                     <T.SettingsImg>
                       <a href="" target="_self">
-                        <T.Img src="#" alt="" />
+                        <T.Img src="/" alt="avatar" />
                       </a>
                     </T.SettingsImg>
                     <T.SettingsChangePhoto href="" target="_self">
@@ -30,53 +33,49 @@ export const Profile = () => {
                   <T.SettingsRight>
                     <T.SettingsForm action="#">
                       <T.SettingsDiv>
-                        <T.SettingsFormLabel for="fname">
+                        <T.SettingsFormLabel htmlFor="name">
                           Имя
                         </T.SettingsFormLabel>
                         <T.SettingsFormInput
-                          id="settings-fname"
-                          name="fname"
+                          id="settings-name"
+                          name="name"
                           type="text"
-                          value="Ан"
-                          placeholder=""
+                          placeholder="Имя"
                         />
                       </T.SettingsDiv>
 
                       <T.SettingsDiv>
-                        <T.SettingsFormLabel for="lname">
+                        <T.SettingsFormLabel htmlFor="name">
                           Фамилия
                         </T.SettingsFormLabel>
                         <T.SettingsFormInput
-                          id="settings-lname"
-                          name="lname"
+                          id="settings-name"
+                          name="name"
                           type="text"
-                          value="Городецкий"
-                          placeholder=""
+                          placeholder="Фамилия"
                         />
                       </T.SettingsDiv>
 
                       <T.SettingsDiv>
-                        <T.SettingsFormLabel for="city">
+                        <T.SettingsFormLabel htmlFor="city">
                           Город
                         </T.SettingsFormLabel>
                         <T.SettingsFormInput
                           id="settings-city"
                           name="city"
                           type="text"
-                          value="Санкт-Петербург"
-                          placeholder=""
+                          placeholder="Город"
                         />
                       </T.SettingsDiv>
 
                       <T.SettingsDiv>
-                        <T.SettingsFormLabel for="phone">
+                        <T.SettingsFormLabel htmlFor="phone">
                           Телефон
                         </T.SettingsFormLabel>
                         <T.SettingsFormInput
                           id="settings-phone"
                           name="phone"
                           type="tel"
-                          value="89161234567"
                           placeholder="+79161234567"
                           width={614}
                         />

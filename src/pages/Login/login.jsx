@@ -1,19 +1,20 @@
 import * as S from "./login.style";
 import img from "../../img/logo_modal.png";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { UserContext } from "../../App";
-import { loginUser, getToken, registerUser } from "../../api";
+import { loginUser, registerUser } from "../../api";
 import { setAuth } from "../../store/slices/auth";
+import { useNavigate } from "react-router-dom";
 
 export const Login = ({ isLoginMode = true }) => {
-  const { setUser } = useContext(UserContext);
   const [login, setLogin] = useState(false);
   const dispatch = useDispatch();
+  let navigate = useNavigate();
   const [error, setError] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const handleLogin = async ({ email, password }) => {
+
+  const handleLogin = async (email, password) => {
     if (!email) {
       setError("Не заполнена почта");
       return;
@@ -23,27 +24,22 @@ export const Login = ({ isLoginMode = true }) => {
     }
     setLogin(true);
     try {
-      await loginUser({ email, password }).then((dat) => {
-        localStorage.setItem("user", JSON.stringify(dat));
-        setUser(dat);
+      await loginUser(email, password).then((dat) => {
+        sessionStorage.setItem("user", JSON.stringify(dat));
+        console.log(dat);
+        dispatch(
+          setAuth({
+            token: JSON.parse(sessionStorage.getItem("user")),
+            email: email,
+            password: password,
+          })
+        );
+        navigate("/");
       });
     } catch (erro) {
       setError(erro.message);
     } finally {
       setLogin(false);
-    }
-    try {
-      await getToken({ email, password }).then((token) => {
-        dispatch(
-          setAuth({
-            access: token.access,
-            refresh: token.refresh,
-            user: JSON.parse(sessionStorage.getItem("user")),
-          })
-        );
-      });
-    } catch (error) {
-      console.log(error);
     }
   };
   useEffect(() => {
@@ -79,11 +75,7 @@ export const Login = ({ isLoginMode = true }) => {
           />
           {error && <S.Error>{error}</S.Error>}
           <S.ModalBtnEnter id="btnEnter">
-            <S.ModalBtnEnterLink
-              to={"/"}
-              onClick={() => handleLogin({ email, password })}
-              disabled={login}
-            >
+            <S.ModalBtnEnterLink onClick={() => handleLogin(email, password)}>
               Войти
             </S.ModalBtnEnterLink>
           </S.ModalBtnEnter>
@@ -99,6 +91,8 @@ export const Login = ({ isLoginMode = true }) => {
 };
 
 export const Registration = ({ isLoginMode = false }) => {
+  let navigate = useNavigate();
+  const dispatch = useDispatch();
   const [error, setError] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -107,7 +101,7 @@ export const Registration = ({ isLoginMode = false }) => {
   const [city, setCity] = useState("");
   const [register, setRegister] = useState(false);
   const [repeatPassword, setRepeatPassword] = useState("");
-  const handleRegister = async ({ email, password }) => {
+  const handleRegister = async (email, password, name, city) => {
     if (!email) {
       setError("Не заполнена почта");
       return;
@@ -123,7 +117,22 @@ export const Registration = ({ isLoginMode = false }) => {
     }
     setRegister(true);
     try {
-      await registerUser({ email, password });
+      await registerUser(email, password, name, city).then((dat) => {
+        sessionStorage.setItem("user", JSON.stringify(dat));
+        sessionStorage.setItem("token", JSON.stringify(dat?.access_token));
+        console.log(dat);
+        dispatch(
+          setAuth({
+            email: dat.email,
+            id: dat.id,
+            name: dat.name,
+            login: dat.login,
+            password: dat.password,
+            city: dat.city,
+          })
+        );
+        navigate("/");
+      });
     } catch (error) {
       setError(error.message);
     } finally {
@@ -133,7 +142,7 @@ export const Registration = ({ isLoginMode = false }) => {
 
   useEffect(() => {
     setError(null);
-  }, [isLoginMode, email, password, repeatPassword]);
+  }, [isLoginMode, email, password, repeatPassword, name, lastName, city]);
   return (
     <S.ContainerEnter>
       <S.ModalBlockRegister>
@@ -163,7 +172,7 @@ export const Registration = ({ isLoginMode = false }) => {
           />
           <S.ModalInputRegister
             type="password"
-            name="password"
+            name="new-password"
             id="passwordSecond"
             placeholder="Повторите пароль"
             value={repeatPassword}
@@ -204,9 +213,16 @@ export const Registration = ({ isLoginMode = false }) => {
           {error && <S.Error>{error}</S.Error>}
           <S.ModalBtnReg id="SignUpEnter">
             <S.ModalBtnRegLink
-              to={"/"}
-              onClick={() => handleRegister({ email, password })}
-              disabled={register}
+              onClick={() =>
+                handleRegister(
+                  email,
+                  password,
+                  repeatPassword,
+                  name,
+                  city,
+                  lastName
+                )
+              }
             >
               Зарегистрироваться
             </S.ModalBtnRegLink>

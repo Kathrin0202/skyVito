@@ -20,7 +20,7 @@ export const AppRoutes = ({ ads, isLoading }) => {
       />
       <Route
         element={
-          <ProtectedRoute isAllowed={Boolean(localStorage.getItem("user"))} />
+          <ProtectedRoute redirectPath="/login" />
         }
       >
         <Route path="/ads/me" element={<MyArticle />} />

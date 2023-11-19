@@ -1,4 +1,4 @@
-const host = "http://127.0.0.1:8090";
+export const host = "http://127.0.0.1:8090";
 export const getAllAds = async (userId) => {
   const userParam = userId ? `user_id=${userId}&` : "";
   return fetch(`${host}/ads?${userParam}sorting=new`, {
@@ -14,7 +14,24 @@ export const getAllAds = async (userId) => {
   });
 };
 
-export async function loginUser({ email, password }) {
+export async function getUser(token) {
+  const response = await fetch(`${host}/user`, {
+    method: "GET",
+    headers: {
+      "content-type": "application/json",
+      Authorization: `${token.token_type} ${token.access_token}`,
+    },
+  });
+  if (response.status === 401) {
+    throw new Error("Нет авторизации");
+  } else if (response.status === 500) {
+    throw new Error("Сервер сломался");
+  }
+  const data = await response.json();
+  return data;
+}
+
+export async function loginUser(email, password) {
   const response = await fetch(`${host}/auth/login`, {
     method: "POST",
     body: JSON.stringify({
@@ -25,22 +42,34 @@ export async function loginUser({ email, password }) {
       "content-type": "application/json",
     },
   });
-  if (response.status === 401) {
-    throw new Error("Пользователь с таким email или паролем не найден");
-  } else if (response.status === 500) {
-    throw new Error("Сервер сломался");
+  if (response.status === 401 || response.status === 422) {
+    throw new Error("Пользователь не авторизован");
   }
   const data = await response.json();
   return data;
 }
 
-export async function registerUser({ email, password }) {
+export async function registerUser(
+  email,
+  password,
+  name,
+  role,
+  surname,
+  phone,
+  city,
+  id
+) {
   const response = await fetch(`${host}/auth/register`, {
     method: "POST",
     body: JSON.stringify({
       email: email,
       password: password,
-      username: email,
+      name: name,
+      role: role,
+      surname: surname,
+      phone: phone,
+      city: city,
+      id: id,
     }),
     headers: {
       "content-type": "application/json",
@@ -53,26 +82,4 @@ export async function registerUser({ email, password }) {
   }
   const data = await response.json();
   return data;
-}
-
-export async function getToken({ token }) {
-  return fetch(`${host}/auth/login`, {
-    method: "PUT",
-    headers: {
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      access_token: token.access_token,
-      refresh_token: token.refresh_token,
-    }),
-  }).then((response) => {
-    if (response.status === 201) {
-      return response.json();
-    }
-    if (response.status === 401) {
-      throw new Error("Токен устарел");
-    }
-
-    throw new Error("Неизвестная ошибка, попробуйте позже");
-  });
 }
