@@ -27,7 +27,7 @@ export const HeaderAuth = () => {
           </S.LogoMobLink>
         </S.HeaderLogo>
         <S.HeaderBtnPutAd>Разместить объявление</S.HeaderBtnPutAd>
-        <S.HeaderBtnLk onClick={() => navigate("/profile")}>
+        <S.HeaderBtnLk onClick={() => navigate("/profile/me")}>
           Личный кабинет
         </S.HeaderBtnLk>
       </S.HeaderNav>

@@ -2,9 +2,10 @@ import * as S from "./login.style";
 import img from "../../img/logo_modal.png";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { loginUser, registerUser } from "../../api";
+import { getUser, loginUser, registerUser, saveTokenToLocalStorage } from "../../api";
 import { setAuth } from "../../store/slices/auth";
 import { useNavigate } from "react-router-dom";
+import { saveUserIdToState } from "../../App";
 
 export const Login = ({ isLoginMode = true }) => {
   const [login, setLogin] = useState(false);
@@ -25,8 +26,9 @@ export const Login = ({ isLoginMode = true }) => {
     setLogin(true);
     try {
       await loginUser(email, password).then((dat) => {
-        sessionStorage.setItem("user", JSON.stringify(dat));
-        console.log(dat);
+        //sessionStorage.setItem("user", JSON.stringify(dat));
+        saveTokenToLocalStorage(dat);
+        saveUserIdToState(false)
         dispatch(
           setAuth({
             token: JSON.parse(sessionStorage.getItem("user")),
@@ -40,6 +42,7 @@ export const Login = ({ isLoginMode = true }) => {
       setError(erro.message);
     } finally {
       setLogin(false);
+      console.log(email);
     }
   };
   useEffect(() => {
@@ -75,7 +78,7 @@ export const Login = ({ isLoginMode = true }) => {
           />
           {error && <S.Error>{error}</S.Error>}
           <S.ModalBtnEnter id="btnEnter">
-            <S.ModalBtnEnterLink onClick={() => handleLogin(email, password)}>
+            <S.ModalBtnEnterLink onClick={() => handleLogin(password, email)}>
               Войти
             </S.ModalBtnEnterLink>
           </S.ModalBtnEnter>

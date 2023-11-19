@@ -26,14 +26,20 @@ export const Article = ({ ads, isLoading }) => {
                           src={`http://localhost:8090/${articl.images[0]?.url}`}
                         />
                       </T.ArticleImg>
-                      <T.ArticleImgBar>
-                        <T.ArticleImgBarDiv>
-                          <T.ArticleImgBarDivImg
-                            src={`http://localhost:8090/${articl.images[1]?.url}`}
-                            alt=""
-                          />
-                        </T.ArticleImgBarDiv>
-                      </T.ArticleImgBar>
+                      {articl.images?.length <= 1 ? (
+                        <T.ArticleImgBar>
+                          {articl.images?.map((img, index) => {
+                            <T.ArticleImgBarDiv key={index}>
+                              <T.ArticleImgBarDivImg
+                                src={`http://localhost:8090/${img.url}`}
+                                alt=""
+                              />
+                            </T.ArticleImgBarDiv>;
+                          })}
+                        </T.ArticleImgBar>
+                      ) : (
+                        <T.ArticleImgBarDivImg />
+                      )}
                       <T.ArticleImgBarMob>
                         <T.ImgBarMobCircleActive></T.ImgBarMobCircleActive>
                         <T.ImgBarMobCircle></T.ImgBarMobCircle>
@@ -69,7 +75,7 @@ export const Article = ({ ads, isLoading }) => {
                           <T.AuthorImgImg src="" alt="" />
                         </T.AuthorImg>
                         <T.AuthorCont key={articl?.user.id}>
-                          <Link to={`/sellerprofile/${articl?.user.id}`}>
+                          <Link to={`/profile/${articl?.user.id}`}>
                             <T.AuthorName>{articl?.user.name}</T.AuthorName>
                             <T.AuthorAbout>
                               Продает товары с&nbsp;

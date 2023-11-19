@@ -1,4 +1,28 @@
 export const host = "http://127.0.0.1:8090";
+
+export const saveTokenToLocalStorage = (token) => {
+  sessionStorage.setItem('token', JSON.stringify(token));
+};
+
+export const getTokenFromLocalStorage = () => {
+  const token = sessionStorage.getItem('token');
+  return token ? JSON.parse(token) : null;
+};
+
+export const removeTokenFromLocalStorage = () => {
+  localStorage.removeItem('token');
+};
+
+export const updateToken = async () => {
+  try {
+      const token = getTokenFromLocalStorage();
+      const data = await getToken(token);
+      saveTokenToLocalStorage(data);
+  } catch (error) {
+      throw new Error(`Ошибка при обновлении токена:`);
+  }
+};
+
 export const getAllAds = async (userId) => {
   const userParam = userId ? `user_id=${userId}&` : "";
   return fetch(`${host}/ads?${userParam}sorting=new`, {
@@ -22,13 +46,12 @@ export async function getUser(token) {
       Authorization: `${token.token_type} ${token.access_token}`,
     },
   });
-  if (response.status === 401) {
-    throw new Error("Нет авторизации");
-  } else if (response.status === 500) {
-    throw new Error("Сервер сломался");
+  if (response.status === 200) {
+    return response.json();
+  } else if (response.status === 401) {
+    updateToken();
   }
-  const data = await response.json();
-  return data;
+  throw new Error("Нет авторизации");
 }
 
 export async function loginUser(email, password) {
@@ -83,3 +106,39 @@ export async function registerUser(
   const data = await response.json();
   return data;
 }
+export const getAllUsers = async () => {
+  return fetch(`${host}/user/all`, {
+    method: "GET",
+    headers: {
+      "content-type": "application/json",
+    },
+  }).then((response) => {
+    if (response.status === 200) {
+      return response.json();
+    }
+
+    throw new Error("Ошибка, попробуйте позже");
+  });
+};
+
+export const getToken = async (token) => {
+  return fetch(`${host}/auth/login`, {
+    method: "PUT",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      access_token: token.access_token,
+      refresh_token: token.refresh_token,
+    }),
+  }).then((response) => {
+    if (response.status === 201) {
+      return response.json();
+    }
+    if (response.status === 401) {
+      throw new Error("Токен устарел");
+    }
+
+    throw new Error("Неизвестная ошибка, попробуйте позже");
+  });
+};

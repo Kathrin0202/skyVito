@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
+import { ContentCard } from "../../components/Cards/cards";
 import { Footer } from "../../components/Footer/footer";
 import { HeaderAuth } from "../../components/Header/header";
 import { MainMenu } from "../../components/Menu/menu";
 import * as S from "../../style/App.style";
 import * as T from "./sellerProfile.style";
-export const SellerProfile = () => {
+export const SellerProfile = ({ userProfile }) => {
   return (
     <>
       <HeaderAuth />
@@ -24,9 +24,15 @@ export const SellerProfile = () => {
                     </T.SellerImg>
                   </T.SellerLeft>
                   <T.SellerRight>
-                    <T.SellerTitle>Кирилл Матвеев</T.SellerTitle>
-                    <T.SellerCity>Санкт-Петербург</T.SellerCity>
-                    <T.SellerInf>Продает товары с августа 2021</T.SellerInf>
+                    <T.SellerTitle>{userProfile.name}</T.SellerTitle>
+                    <T.SellerCity>{userProfile.city}</T.SellerCity>
+                    <T.SellerInf>
+                      Продает товары с{" "}
+                      {new Date(userProfile.sells_from).toLocaleString("ru", {
+                        year: "numeric",
+                        month: "long",
+                      })}
+                    </T.SellerInf>
 
                     <T.SellerImgMobBlock>
                       <T.SellerImgMob>
@@ -38,7 +44,7 @@ export const SellerProfile = () => {
 
                     <T.ArticleBtn>
                       Показать&nbsp;телефон
-                      <T.ArticleBtnSpan>999999</T.ArticleBtnSpan>
+                      <T.ArticleBtnSpan>{userProfile.phone}</T.ArticleBtnSpan>
                     </T.ArticleBtn>
                   </T.SellerRight>
                 </T.ProfileSellSeller>
@@ -48,27 +54,7 @@ export const SellerProfile = () => {
             <T.MainTitle>Товары продавца</T.MainTitle>
           </T.MainCenterBlock>
           <T.MainContent>
-            <T.ContentCards>
-              <T.CardsItem>
-                <T.CardsCard>
-                  <T.CardImage>
-                    <a href="" target="_blank">
-                      <T.CardImageImg src="#" alt="picture" />
-                    </a>
-                  </T.CardImage>
-                  <T.CardContent>
-                    <a href="" target="_blank">
-                      <T.CardTitle>
-                        Ракетка для большого тенниса Triumph Pro ST
-                      </T.CardTitle>
-                    </a>
-                    <T.CardPrice>2&nbsp;200&nbsp;₽</T.CardPrice>
-                    <T.CardPlace>Санкт Петербург</T.CardPlace>
-                    <T.CardDate>Сегодня в&nbsp;10:45</T.CardDate>
-                  </T.CardContent>
-                </T.CardsCard>
-              </T.CardsItem>
-            </T.ContentCards>
+            <ContentCard userId={userProfile.id} />
           </T.MainContent>
         </T.MainContainer>
       </S.Main>

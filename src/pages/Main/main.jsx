@@ -5,6 +5,7 @@ import { Header } from "../../components/Header/header";
 import img from "../../img/logo.png";
 import imgMob from "../../img/logo-mob.png";
 import * as S from "./main.style";
+import noPhoto from "../../img/no-photo.avif";
 export const MainPage = ({ ads, isLoading }) => {
   const [searchType, setSearchType] = useState("");
 
@@ -63,10 +64,14 @@ export const MainPage = ({ ads, isLoading }) => {
                   <S.CardsCard>
                     <S.CardImage key={ad.images}>
                       <Link to={`/ads/${ad.id}`}>
-                        <S.Img
-                          src={`http://localhost:8090/${ad.images[0]?.url}`}
-                          alt="picture"
-                        />
+                        {ad.images.length !== 0 ? (
+                          <S.Img
+                            src={`http://localhost:8090/${ad.images[0]?.url}`}
+                            alt="picture"
+                          />
+                        ) : (
+                          <S.Img src={noPhoto} alt="noPhoto" />
+                        )}
                       </Link>
                     </S.CardImage>
                     <S.CardContent>
