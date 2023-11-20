@@ -4,9 +4,17 @@ import { HeaderAuth } from "../../components/Header/header";
 import { MainMenu } from "../../components/Menu/menu";
 import * as S from "../../style/App.style";
 import * as T from "./article.styled";
+import { useState } from "react";
+import noPhoto from "../../img/no-photo.avif";
 export const Article = ({ ads, isLoading }) => {
   const params = useParams();
   let [articl] = ads.filter((artic) => artic.id == params.id);
+
+  const [showPhone, setShowPhone] = useState(false);
+  const clickShowPhone = () => {
+    setShowPhone(true);
+  };
+
   return (
     <>
       <HeaderAuth />
@@ -22,24 +30,24 @@ export const Article = ({ ads, isLoading }) => {
                   <T.ArticleLeft>
                     <T.ArticleFillImg>
                       <T.ArticleImg>
-                        <T.ArticleImgImg
-                          src={`http://localhost:8090/${articl.images[0]?.url}`}
-                        />
+                        {articl.images.length !== 0 ? (
+                          <T.ArticleImgImg
+                            src={`http://localhost:8090/${articl.images[0].url}`}
+                          />
+                        ) : (
+                          <T.ArticleImgImg src={noPhoto} alt="noPhoto" />
+                        )}
                       </T.ArticleImg>
-                      {articl.images?.length <= 1 ? (
-                        <T.ArticleImgBar>
-                          {articl.images?.map((img, index) => {
-                            <T.ArticleImgBarDiv key={index}>
-                              <T.ArticleImgBarDivImg
-                                src={`http://localhost:8090/${img.url}`}
-                                alt=""
-                              />
-                            </T.ArticleImgBarDiv>;
-                          })}
-                        </T.ArticleImgBar>
-                      ) : (
-                        <T.ArticleImgBarDivImg />
-                      )}
+                      <T.ArticleImgBar>
+                        {articl?.images.map((imag, index) => {
+                          <T.ArticleImgBarDiv key={index}>
+                            <T.ArticleImgBarDivImg
+                              src={`http://localhost:8090/${imag.url}`}
+                              alt=""
+                            />
+                          </T.ArticleImgBarDiv>;
+                        })}
+                      </T.ArticleImgBar>
                       <T.ArticleImgBarMob>
                         <T.ImgBarMobCircleActive></T.ImgBarMobCircleActive>
                         <T.ImgBarMobCircle></T.ImgBarMobCircle>
@@ -64,15 +72,15 @@ export const Article = ({ ads, isLoading }) => {
                         </T.ArticleLink>
                       </T.ArticleInfo>
                       <T.ArticlePrice>{articl?.price}.p</T.ArticlePrice>
-                      <T.ArticleBtn>
+                      <T.ArticleBtn onClick={clickShowPhone}>
                         Показать&nbsp;телефон
                         <T.ArticleBtnSpan>
-                          {articl?.user.phone}
+                          {!showPhone ? `+7 XXX XXX XX XX` : articl?.user.phone}
                         </T.ArticleBtnSpan>
                       </T.ArticleBtn>
                       <T.ArticleAuthor>
                         <T.AuthorImg>
-                          <T.AuthorImgImg src="" alt="" />
+                          <T.AuthorImgImg src={`http://localhost:8090/${articl.user.avatar}`} alt="" />
                         </T.AuthorImg>
                         <T.AuthorCont key={articl?.user.id}>
                           <Link to={`/profile/${articl?.user.id}`}>

@@ -6,7 +6,7 @@ import * as T from "./profile.style";
 import { ContentCard } from "../../components/Cards/cards";
 import { useAuthSelector } from "../../store/slices/auth";
 export const MyProfile = ({ userProfile, setUserProfile }) => {
-  console.log(userProfile);
+  console.log(userProfile.avatar);
   return (
     <>
       <HeaderAuth />
@@ -14,14 +14,19 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
         <T.MainContainer>
           <T.MainCenterBlock>
             <MainMenu />
-            <T.MainH2>Здравствуйте,&nbsp;{userProfile.email}!</T.MainH2>
+            <T.MainH2>
+              Здравствуйте,&nbsp;
+              {userProfile.name ? userProfile.name : userProfile.email}!
+            </T.MainH2>
             <T.MainProfile>
               <T.ProfileContent>
                 <T.ProfileTitle>Настройки профиля</T.ProfileTitle>
                 <T.ProfileSettings>
                   <T.SettingsLeft>
                     <T.SettingsImg id="file-upload" type="file">
-                      <T.Img src="/" />
+                      <T.Img
+                        src={`http://localhost:8090/${userProfile.avatar}`}
+                      />
                     </T.SettingsImg>
                     <T.SettingsChangePhoto>Заменить</T.SettingsChangePhoto>
                   </T.SettingsLeft>

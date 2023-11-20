@@ -4,9 +4,7 @@ import { MyArticle } from "./pages/Article/myarticle";
 import { Login, Registration } from "./pages/Login/login";
 import { MainPage } from "./pages/Main/main";
 import { NotFound } from "./pages/NotFound/notFound";
-import { MyProfile } from "./pages/Profile/myprofile";
 import { Profiled } from "./pages/Profile/profile";
-import { SellerProfile } from "./pages/Profile/sellerProfile";
 import { ProtectedRoute } from "./protector-router";
 
 export const AppRoutes = ({ ads, isLoading }) => {

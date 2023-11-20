@@ -8,6 +8,7 @@ export const Profiled = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [pageMode, setPageMode] = useState("guest");
   const userID = useParams().id;
+  console.log(userID);
 
   useEffect(() => {
     const fetchData = () => {

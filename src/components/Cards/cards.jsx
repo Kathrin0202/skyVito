@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getAllAds } from "../../api";
 import * as T from "./card.styled";
+import noPhoto from "../../img/no-photo.avif";
 export const ContentCard = ({ userId }) => {
   const [data, setDataAds] = useState(null);
 
@@ -29,10 +30,14 @@ export const ContentCard = ({ userId }) => {
                 <T.CardsCard>
                   <T.CardImage>
                     <Link to={`/ads/${item.id}`}>
-                      <T.CardImageImg
-                        src={`http://localhost:8090/${item.images[0].url}`}
-                        alt="picture"
-                      />
+                      {item.images.length !== 0 ? (
+                        <T.CardImageImg
+                          src={`http://localhost:8090/${item.images[0].url}`}
+                          alt="picture"
+                        />
+                      ) : (
+                        <T.CardImageImg src={noPhoto} alt="noPhoto" />
+                      )}
                     </Link>
                   </T.CardImage>
                   <T.CardContent>
@@ -43,7 +48,10 @@ export const ContentCard = ({ userId }) => {
                     <T.CardPlace>{item.city}</T.CardPlace>
                     <T.CardDate>
                       {new Date(item.created_on).toLocaleString("ru", {
-                        addSuffix: true,
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
                       })}
                     </T.CardDate>
                   </T.CardContent>

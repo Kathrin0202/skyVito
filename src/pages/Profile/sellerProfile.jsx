@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ContentCard } from "../../components/Cards/cards";
 import { Footer } from "../../components/Footer/footer";
 import { HeaderAuth } from "../../components/Header/header";
@@ -5,6 +6,12 @@ import { MainMenu } from "../../components/Menu/menu";
 import * as S from "../../style/App.style";
 import * as T from "./sellerProfile.style";
 export const SellerProfile = ({ userProfile }) => {
+  const [showPhone, setShowPhone] = useState(false);
+  const clickShowPhone = () => {
+    setShowPhone(true);
+  };
+
+  console.log(userProfile);
   return (
     <>
       <HeaderAuth />
@@ -18,9 +25,10 @@ export const SellerProfile = ({ userProfile }) => {
                 <T.ProfileSellSeller>
                   <T.SellerLeft>
                     <T.SellerImg>
-                      <a href="" target="_self">
-                        <T.SellerImgImg src="#" alt="" />
-                      </a>
+                      <T.SellerImgImg
+                        src={`http://localhost:8090/${userProfile.avatar}`}
+                        alt="avatar"
+                      />
                     </T.SellerImg>
                   </T.SellerLeft>
                   <T.SellerRight>
@@ -42,9 +50,11 @@ export const SellerProfile = ({ userProfile }) => {
                       </T.SellerImgMob>
                     </T.SellerImgMobBlock>
 
-                    <T.ArticleBtn>
+                    <T.ArticleBtn onClick={clickShowPhone}>
                       Показать&nbsp;телефон
-                      <T.ArticleBtnSpan>{userProfile.phone}</T.ArticleBtnSpan>
+                      <T.ArticleBtnSpan>
+                        {!showPhone ? `+7 XXX XXX XX XX` : userProfile.phone}
+                      </T.ArticleBtnSpan>
                     </T.ArticleBtn>
                   </T.SellerRight>
                 </T.ProfileSellSeller>
