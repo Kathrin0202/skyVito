@@ -4,6 +4,7 @@ import { MyArticle } from "./pages/Article/myarticle";
 import { Login, Registration } from "./pages/Login/login";
 import { MainPage } from "./pages/Main/main";
 import { NotFound } from "./pages/NotFound/notFound";
+import { MyProfile } from "./pages/Profile/myprofile";
 import { Profiled } from "./pages/Profile/profile";
 import { ProtectedRoute } from "./protector-router";
 
@@ -18,7 +19,11 @@ export const AppRoutes = ({ ads, isLoading }) => {
         element={<Article ads={ads} isLoading={isLoading} />}
       />
       <Route path="/profile/:id" element={<Profiled ads={ads} />} />
-      <Route element={<ProtectedRoute redirectPath="/login" />}>
+      <Route
+        element={
+          <ProtectedRoute isAllowed={Boolean(localStorage.getItem("user"))} />
+        }
+      >
         <Route path="/ads/me" element={<MyArticle />} />
       </Route>
       <Route path="*" element={<NotFound />} />

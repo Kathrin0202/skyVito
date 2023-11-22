@@ -94,6 +94,7 @@ export const SettingsImg = styled.div`
   height: 170px;
   border-radius: 50%;
   background-color: #f0f0f0;
+  cursor: pointer;
   @media screen and (max-width: 620px) {
     width: 132px;
     height: 132px;
@@ -108,13 +109,16 @@ export const Img = styled.img`
   object-fit: cover;
 `;
 
-export const SettingsChangePhoto = styled.div`
+export const SettingsChangePhoto = styled.button`
   margin-top: 10px;
   margin-bottom: 30px;
   text-decoration: none;
   font-size: 16px;
   line-height: 24px;
   color: #009ee4;
+  border: 0;
+  background: none;
+  cursor: pointer;
 `;
 export const MainCenterBlock = styled.div`
   @media screen and (max-width: 890px) {
@@ -278,4 +282,9 @@ export const MainContent = styled.div`
     width: 100%;
     margin: 0 auto;
   }
+`;
+
+export const SettingsImgInput = styled.input`
+  display: none;
+  cursor: pointer;
 `;

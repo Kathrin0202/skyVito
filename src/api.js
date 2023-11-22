@@ -1,25 +1,25 @@
 export const host = "http://127.0.0.1:8090";
 
 export const saveTokenToLocalStorage = (token) => {
-  sessionStorage.setItem('token', JSON.stringify(token));
+  sessionStorage.setItem("token", JSON.stringify(token));
 };
 
 export const getTokenFromLocalStorage = () => {
-  const token = sessionStorage.getItem('token');
+  const token = sessionStorage.getItem("token");
   return token ? JSON.parse(token) : null;
 };
 
 export const removeTokenFromLocalStorage = () => {
-  localStorage.removeItem('token');
+  localStorage.removeItem("token");
 };
 
 export const updateToken = async () => {
   try {
-      const token = getTokenFromLocalStorage();
-      const data = await getToken(token);
-      saveTokenToLocalStorage(data);
+    const token = getTokenFromLocalStorage();
+    const data = await getToken(token);
+    saveTokenToLocalStorage(data);
   } catch (error) {
-      throw new Error(`Ошибка при обновлении токена:`);
+    throw new Error(`Ошибка при обновлении токена:`);
   }
 };
 
@@ -139,6 +139,33 @@ export const getToken = async (token) => {
       throw new Error("Токен устарел");
     }
 
+    throw new Error("Неизвестная ошибка, попробуйте позже");
+  });
+};
+
+export const updateUser = async (user, token) => {
+  return fetch(`${host}/user`, {
+    method: "PATCH",
+    headers: {
+      "content-type": "application/json",
+      Authorization: `${token.token_type} ${token.access_token}`,
+    },
+    body: JSON.stringify({
+      role: "user",
+      email: user.email,
+      name: user.name,
+      surname: user.surname,
+      phone: user.phone,
+      city: user.city,
+    }),
+  }).then((response) => {
+    if (response.status === 200) {
+      return response.json();
+    }
+    if (response.status === 401) {
+      updateToken();
+      return updateUser(user, getTokenFromLocalStorage());
+    }
     throw new Error("Неизвестная ошибка, попробуйте позже");
   });
 };

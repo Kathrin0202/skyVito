@@ -11,7 +11,7 @@ export const setUserId = (userId) => {
 const baseQuery = fetchBaseQuery({
   baseUrl: host,
   prepareHeaders: (headers) => {
-    const token = sessionStorage.getItem("access_token");
+    const token = localStorage.getItem("access_token");
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
@@ -22,30 +22,9 @@ export const userApi = createApi({
   reducerPath: "authApi",
   baseQuery: baseQuery,
   endpoints: (builder) => ({
-    changeAvatar: builder.mutation({
-      query: (value) => ({
-        url: "/user/avatar",
-        method: "POST",
-        body: value,
-      }),
-      invalidatesTags: "USER_TAG",
-    }),
-    changeUserData: builder.mutation({
-      query: (value) => ({
-        url: "/user",
-        method: "PATCH",
-        body: {
-          phone: value.phone,
-          name: value.name,
-          surname: value.surname,
-          city: value.city,
-        },
-      }),
-      invalidatesTags: "USER_TAG",
-    }),
     uploadUserAvatar: builder.mutation({
       query: (value) => ({
-        url: "user/avatar",
+        url: `user/avatar`,
         method: "POST",
         body: value,
       }),
@@ -55,19 +34,11 @@ export const userApi = createApi({
       },
       invalidatesTags: "USER_TAG",
     }),
-    getAllUsers: builder.query({
-      query: () => "/user/all",
-    }),
     getCurrentUserAds: builder.query({
-      query: () => "ads/me",
+      query: () => `ads/me`,
     }),
   }),
 });
 
-export const {
-  useChangeAvatarMutation,
-  useChangeUserDataMutation,
-  useGetAllUsersQuery,
-  useGetCurrentUserAdsQuery,
-  useUploadUserAvatarMutation,
-} = userApi;
+export const { useGetCurrentUserAdsQuery, useUploadUserAvatarMutation } =
+  userApi;

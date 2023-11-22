@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getAllUsers, getTokenFromLocalStorage, getUser } from "../../api";
 import { MyProfile } from "./myprofile";
 import { SellerProfile } from "./sellerProfile";
@@ -8,7 +8,7 @@ export const Profiled = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [pageMode, setPageMode] = useState("guest");
   const userID = useParams().id;
-  console.log(userID);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = () => {
@@ -21,8 +21,8 @@ export const Profiled = () => {
               setPageMode("my-profile");
             })
             .catch((error) => {
-              console.error("Error fetching workout data:", error);
-              setPageMode("error");
+              //console.error("Error fetching workout data:", error);
+              navigate("/login");
             });
         } else {
           getAllUsers()
