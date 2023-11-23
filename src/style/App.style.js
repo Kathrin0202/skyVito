@@ -78,3 +78,6 @@ export const Container = styled.div`
     background-color: #ffffff;
   }
 `;
+export const Main = styled.main`
+  margin: 0 auto;
+`;

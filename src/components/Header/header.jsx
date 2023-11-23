@@ -1,9 +1,46 @@
+import { Link, useNavigate } from "react-router-dom";
 import * as S from "./header.styled";
+import img from "../../img/logo.png";
+import { removeTokenFromLocalStorage } from "../../api";
+import { useDispatch } from "react-redux";
+import { setAuth } from "../../store/slices/auth";
 export const Header = () => {
+  const navigate = useNavigate();
   return (
     <S.Header>
       <S.HeaderNav>
-        <S.HeaderBtnMainEnter>Вход в личный кабинет</S.HeaderBtnMainEnter>
+        <S.HeaderBtnMainEnter onClick={() => navigate("/login")}>
+          Вход в личный кабинет
+        </S.HeaderBtnMainEnter>
+      </S.HeaderNav>
+    </S.Header>
+  );
+};
+
+export const HeaderAuth = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const handleClickLogout = () => {
+    removeTokenFromLocalStorage();
+    navigate("/login");
+  };
+  return (
+    <S.Header>
+      <S.HeaderNav>
+        <S.HeaderLogo>
+          <S.LogoMobLink>
+            <Link to="/">
+              <S.LogoMobImg src={img} alt="logo" />
+            </Link>
+          </S.LogoMobLink>
+        </S.HeaderLogo>
+        <S.HeaderBtnPutAd>Разместить объявление</S.HeaderBtnPutAd>
+        <S.HeaderBtnLk onClick={() => navigate("/profile/me")}>
+          Личный кабинет
+        </S.HeaderBtnLk>
+        <S.HeaderBtnPutAd onClick={() => handleClickLogout()}>
+          Выход
+        </S.HeaderBtnPutAd>
       </S.HeaderNav>
     </S.Header>
   );

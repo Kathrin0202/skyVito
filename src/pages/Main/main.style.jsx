@@ -122,6 +122,9 @@ export const SearchText = styled.input`
     font-size: 16px;
     line-height: 24px;
   }
+  @media screen and (max-width: 590px) {
+    display: none;
+  }
 `;
 export const SearchTextMob = styled.input`
   display: none;

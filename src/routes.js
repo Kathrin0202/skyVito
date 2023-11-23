@@ -1,19 +1,31 @@
 import { Route, Routes } from "react-router-dom";
-import { MyArticle } from "./pages/Article/article";
-import { Login } from "./pages/Login/login";
+import { Article } from "./pages/Article/article";
+import { MyArticle } from "./pages/Article/myarticle";
+import { Login, Registration } from "./pages/Login/login";
 import { MainPage } from "./pages/Main/main";
 import { NotFound } from "./pages/NotFound/notFound";
-import { Profile } from "./pages/Profile/profile";
-import { SellerProfile } from "./pages/SellerProfile/sellerProfile";
+import { MyProfile } from "./pages/Profile/myprofile";
+import { Profiled } from "./pages/Profile/profile";
+import { ProtectedRoute } from "./protector-router";
 
-export const AppRoutes = () => {
+export const AppRoutes = ({ ads, isLoading }) => {
   return (
     <Routes>
-      <Route path="/" element={<MainPage />} />
-      <Route path="/myarcticle" element={<MyArticle />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/sellerprofile" element={<SellerProfile />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/registration" element={<Registration />} />
+      <Route path="/" element={<MainPage ads={ads} isLoading={isLoading} />} />
+      <Route
+        path="/ads/:id"
+        element={<Article ads={ads} isLoading={isLoading} />}
+      />
+      <Route path="/profile/:id" element={<Profiled ads={ads} />} />
+      <Route
+        element={
+          <ProtectedRoute isAllowed={Boolean(localStorage.getItem("user"))} />
+        }
+      >
+        <Route path="/ads/me" element={<MyArticle />} />
+      </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
