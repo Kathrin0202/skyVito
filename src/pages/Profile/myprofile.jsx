@@ -5,17 +5,20 @@ import * as S from "../../style/App.style";
 import * as T from "./profile.style";
 import { ContentCard } from "../../components/Cards/cards";
 import { useState } from "react";
-import { getTokenFromLocalStorage, updateUser } from "../../api";
+import {
+  getTokenFromLocalStorage,
+  updateUser,
+  uploadUserAvatar,
+} from "../../api";
 import { useEffect } from "react";
 import { useRef } from "react";
-import { useUploadUserAvatarMutation } from "../../store/services/auth";
+import noPhoto from "../../img/myprofile.png";
 
 export const MyProfile = ({ userProfile, setUserProfile }) => {
   const [currentProfiled, setCurrentProfiled] = useState(userProfile);
   const [active, setActive] = useState(true);
   const [img, setImg] = useState(null);
   const profiledRef = useRef();
-  const [uploadUserAvatar] = useUploadUserAvatarMutation();
 
   const handleName = (event) => {
     setCurrentProfiled({ ...currentProfiled, name: event.target.value });
@@ -38,13 +41,18 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
     const fileUpload = document.getElementById("file-upload");
     fileUpload.click();
     setCurrentProfiled({ ...currentProfiled, avatar: event.target.value });
-    console.log("2");
   };
-  const handleAvatarUpload = async (file) => {
+  const handleAvatarUpload = (file) => {
     const formData = new FormData();
     if (file) {
       formData.append("file", file);
-      await uploadUserAvatar(formData);
+      uploadUserAvatar(formData, getTokenFromLocalStorage())
+        .then((data) => {
+          setUserProfile(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching workout data:", error);
+        });
     } else {
       console.log("Файл не найден");
     }
@@ -54,7 +62,6 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
     updateUser(currentProfiled, getTokenFromLocalStorage())
       .then((data) => {
         setUserProfile(data);
-        console.log(data);
       })
       .catch((error) => {
         console.error("Error fetching workout data:", error);
@@ -81,13 +88,17 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
                 <T.ProfileSettings>
                   <T.SettingsLeft>
                     <T.SettingsImg>
-                      <T.Img
-                        src={
-                          img
-                            ? URL.createObjectURL(img)
-                            : `http://localhost:8090/${userProfile.avatar}`
-                        }
-                      />
+                      {userProfile.avatar ? (
+                        <T.Img
+                          src={
+                            img
+                              ? URL.createObjectURL(img)
+                              : `http://localhost:8090/${userProfile.avatar}`
+                          }
+                        />
+                      ) : (
+                        <T.Img src={noPhoto} />
+                      )}
                     </T.SettingsImg>
                     <T.SettingsImgInput
                       id="file-upload"

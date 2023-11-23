@@ -1,5 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { host } from "../../api";
+import {
+  getToken,
+  getTokenFromLocalStorage,
+  host,
+  saveTokenToLocalStorage,
+} from "../../api";
 
 export const setUserId = (userId) => {
   return {
@@ -11,9 +16,13 @@ export const setUserId = (userId) => {
 const baseQuery = fetchBaseQuery({
   baseUrl: host,
   prepareHeaders: (headers) => {
-    const token = localStorage.getItem("access_token");
+    const token = sessionStorage.getItem("token");
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
+    } else {
+      const token = getTokenFromLocalStorage();
+      const data = getToken(token);
+      saveTokenToLocalStorage(data);
     }
     return headers;
   },
@@ -22,23 +31,10 @@ export const userApi = createApi({
   reducerPath: "authApi",
   baseQuery: baseQuery,
   endpoints: (builder) => ({
-    uploadUserAvatar: builder.mutation({
-      query: (value) => ({
-        url: `user/avatar`,
-        method: "POST",
-        body: value,
-      }),
-      transformResponse: (response) => {
-        localStorage.setItem("avatar", response.access_token);
-        return response;
-      },
-      invalidatesTags: "USER_TAG",
-    }),
     getCurrentUserAds: builder.query({
       query: () => `ads/me`,
     }),
   }),
 });
 
-export const { useGetCurrentUserAdsQuery, useUploadUserAvatarMutation } =
-  userApi;
+export const { useGetCurrentUserAdsQuery } = userApi;

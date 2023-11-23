@@ -10,7 +10,7 @@ export const getTokenFromLocalStorage = () => {
 };
 
 export const removeTokenFromLocalStorage = () => {
-  localStorage.removeItem("token");
+  sessionStorage.removeItem("token");
 };
 
 export const updateToken = async () => {
@@ -165,6 +165,25 @@ export const updateUser = async (user, token) => {
     if (response.status === 401) {
       updateToken();
       return updateUser(user, getTokenFromLocalStorage());
+    }
+    throw new Error("Неизвестная ошибка, попробуйте позже");
+  });
+};
+
+export const uploadUserAvatar = async (avatar, token) => {
+  return fetch(`${host}/user/avatar`, {
+    method: "POST",
+    headers: {
+      Authorization: `${token.token_type} ${token.access_token}`,
+    },
+    body: avatar,
+  }).then((response) => {
+    if (response.status === 201) {
+      return response.json();
+    }
+    if (response.status === 401) {
+      updateToken();
+      return uploadUserAvatar(avatar, getTokenFromLocalStorage());
     }
     throw new Error("Неизвестная ошибка, попробуйте позже");
   });

@@ -1,6 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import * as S from "./header.styled";
 import img from "../../img/logo.png";
+import { removeTokenFromLocalStorage } from "../../api";
+import { useDispatch } from "react-redux";
+import { setAuth } from "../../store/slices/auth";
 export const Header = () => {
   const navigate = useNavigate();
   return (
@@ -16,6 +19,11 @@ export const Header = () => {
 
 export const HeaderAuth = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const handleClickLogout = () => {
+    removeTokenFromLocalStorage();
+    navigate("/login");
+  };
   return (
     <S.Header>
       <S.HeaderNav>
@@ -30,6 +38,9 @@ export const HeaderAuth = () => {
         <S.HeaderBtnLk onClick={() => navigate("/profile/me")}>
           Личный кабинет
         </S.HeaderBtnLk>
+        <S.HeaderBtnPutAd onClick={() => handleClickLogout()}>
+          Выход
+        </S.HeaderBtnPutAd>
       </S.HeaderNav>
     </S.Header>
   );
