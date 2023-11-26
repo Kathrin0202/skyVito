@@ -13,7 +13,7 @@ export const SellerProfile = ({userProfile, setUserProfile}) => {
   
   return (
     <>
-      <HeaderAuth />
+      <HeaderAuth/>
       <S.Main>
         <T.MainContainer>
           <T.MainCenterBlock>

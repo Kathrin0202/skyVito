@@ -68,7 +68,7 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
 
   return (
     <>
-      <HeaderAuth />
+      <HeaderAuth/>
       <S.Main>
         <T.MainContainer>
           <T.MainCenterBlock>

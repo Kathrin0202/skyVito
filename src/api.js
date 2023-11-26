@@ -19,7 +19,6 @@ export const updateToken = async () => {
     const data = await getToken(token);
     saveTokenToLocalStorage(data);
   } catch (error) {
-    navigator("/login");
     throw new Error(`Ошибка при обновлении токена:`);
   }
 };

@@ -1,17 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getTokenFromLocalStorage, updateToken } from "../../api";
-import { useGetAddAdsMutation } from "../../store/services/auth";
+import { useGetEditAdsMutation } from "../../store/services/auth";
 import * as T from "./addAds.styled";
-export const AddAds = ({ setOpenFormAddAds }) => {
-  const ads = {
-    id: 0,
-    title: "",
-    description: "",
-    price: null,
-    images: [],
-  };
-  const [postAdsText, { data, isError, isStatus }] = useGetAddAdsMutation();
+export const EditAds = ({ ads, setOpenFormEditAds }) => {
+
+  const [postEditText, { data, isError, isStatus }] = useGetEditAdsMutation();
   const refName = useRef(null);
   const refDescription = useRef(null);
   const refPrice = useRef(null);
@@ -21,42 +15,25 @@ export const AddAds = ({ setOpenFormAddAds }) => {
     setAdsState({ ...adsState, [field]: value });
   };
   const closeForm = () => {
-    setOpenFormAddAds(false);
+    setOpenFormEditAds(false);
   };
-  const handleClickPublic = (event) => {
-    if (refName.current && refDescription.current && refPrice.current) {
-      postAdsText({
-        token: getTokenFromLocalStorage(),
-        ads: {
-          title: refName.current.value,
-          description: refDescription.current.value,
-          price: refPrice.current.value,
-        },
-      });
-    } else {
-      refName.current.classList.add("--error-input");
-    }
+  const handleClickEdit = (event) => {
+    event.preventDefault();
+    postEditText({ ads: { ...adsState }, token: getTokenFromLocalStorage() });
   };
 
   useEffect(() => {
     if (isStatus === "fulfilled" && data) {
       navigate(`/ads/${data.id}`);
-      setOpenFormAddAds(false);
+      setOpenFormEditAds(false);
     }
-
     if (isError.status === 401) {
       updateToken();
       if (refName.current && refDescription.current && refPrice.current) {
         if (refName.current.value) {
-          postAdsText({
+          postEditText({
             token: getTokenFromLocalStorage(),
-            ads: {
-              title: refName.current.value,
-              description: refDescription.current.value,
-              price: refPrice.current.value
-                ? parseInt(refPrice.current.value)
-                : 0,
-            },
+            ads: { ...adsState },
           });
         }
       }
@@ -67,7 +44,7 @@ export const AddAds = ({ setOpenFormAddAds }) => {
       <T.ContainerBg>
         <T.ModalBlock>
           <T.ModalContent>
-            <T.ModalTitle>Новое объявление</T.ModalTitle>
+            <T.ModalTitle>Редактировать объявление</T.ModalTitle>
             <T.ModalBtnClose>
               <T.ModalBtnCloseLine onClick={closeForm}></T.ModalBtnCloseLine>
             </T.ModalBtnClose>
@@ -143,9 +120,9 @@ export const AddAds = ({ setOpenFormAddAds }) => {
 
               <T.FormNewArtBtnPub
                 id="btnPublish"
-                onClick={(event) => handleClickPublic(event)}
+                onClick={(event) => handleClickEdit(event)}
               >
-                Опубликовать
+                Сохранить
               </T.FormNewArtBtnPub>
             </T.ModalFormNewArt>
           </T.ModalContent>

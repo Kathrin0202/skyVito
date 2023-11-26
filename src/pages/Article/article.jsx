@@ -6,16 +6,24 @@ import * as S from "../../style/App.style";
 import * as T from "./article.styled";
 import { useState } from "react";
 import noPhoto from "../../img/no-photo.avif";
-export const Article = ({ ads, isLoading }) => {
-  const params = useParams();
-  let [articl] = ads.filter((artic) => artic.id == params.id);
+import { useGetAdsByIdQuery } from "../../store/services/auth";
+import { useAuthSelector } from "../../store/slices/auth";
+import { EditAds } from "../../modal/AddAds/editAds";
+export const Article = () => {
+  const adsId = parseInt(useParams().id);
+  const { data, isLoading } = useGetAdsByIdQuery(adsId);
   const [showPhone, setShowPhone] = useState(false);
   const clickShowPhone = () => {
     setShowPhone(true);
   };
+  const auth = useAuthSelector();
+  const [openFormEditAds, setOpenFormEditAds] = useState(false);
   return (
     <>
-      <HeaderAuth />
+      {openFormEditAds && (
+        <EditAds setOpenFormEditAds={setOpenFormEditAds} ads={data} />
+      )}
+      <HeaderAuth adsData={data} />
       <S.Main>
         <T.MainContainer>
           {isLoading ? (
@@ -28,16 +36,16 @@ export const Article = ({ ads, isLoading }) => {
                   <T.ArticleLeft>
                     <T.ArticleFillImg>
                       <T.ArticleImg>
-                        {articl.images.length !== 0 ? (
+                        {data.images.length !== 0 ? (
                           <T.ArticleImgImg
-                            src={`http://localhost:8090/${articl.images[0].url}`}
+                            src={`http://localhost:8090/${data.images[0].url}`}
                           />
                         ) : (
                           <T.ArticleImgImg src={noPhoto} alt="noPhoto" />
                         )}
                       </T.ArticleImg>
                       <T.ArticleImgBar>
-                        {articl?.images.map((imag, index) => {
+                        {data.images.map((imag, index) => {
                           <T.ArticleImgBarDiv key={index}>
                             <T.ArticleImgBarDivImg
                               src={`http://localhost:8090/${imag.url}`}
@@ -54,41 +62,50 @@ export const Article = ({ ads, isLoading }) => {
                   </T.ArticleLeft>
                   <T.ArticleRight>
                     <T.ArticleBlock>
-                      <T.ArticleTitle>{articl?.title}</T.ArticleTitle>
+                      <T.ArticleTitle>{data.title}</T.ArticleTitle>
                       <T.ArticleInfo>
                         <T.ArticleDate>
-                          {new Date(articl?.created_on).toLocaleString("ru", {
+                          {new Date(data.created_on).toLocaleString("ru", {
                             weekday: "long",
                             year: "numeric",
                             month: "long",
                             day: "numeric",
                           })}
                         </T.ArticleDate>
-                        <T.ArticleCity>{articl?.user.city}</T.ArticleCity>
+                        <T.ArticleCity>{data.user.city}</T.ArticleCity>
                         <T.ArticleLink href="" target="_blank" rel="">
                           23 отзыва
                         </T.ArticleLink>
                       </T.ArticleInfo>
-                      <T.ArticlePrice>{articl?.price}.p</T.ArticlePrice>
-                      <T.ArticleBtn onClick={clickShowPhone}>
-                        Показать&nbsp;телефон
-                        <T.ArticleBtnSpan>
-                          {!showPhone ? `+7 XXX XXX XX XX` : articl?.user.phone}
-                        </T.ArticleBtnSpan>
-                      </T.ArticleBtn>
+                      <T.ArticlePrice>{data.price}.p</T.ArticlePrice>
+                      {auth.email === data.user.email ? (
+                        <T.ArticleBtnBlock>
+                          <T.ArticleBtnReduct onClick={() => setOpenFormEditAds(true)}>Редактировать</T.ArticleBtnReduct>
+                          <T.ArticleBtnRemove>
+                            Снять с публикации
+                          </T.ArticleBtnRemove>
+                        </T.ArticleBtnBlock>
+                      ) : (
+                        <T.ArticleBtn onClick={clickShowPhone}>
+                          Показать&nbsp;телефон
+                          <T.ArticleBtnSpan>
+                            {!showPhone ? `+7 XXX XXX XX XX` : data.user.phone}
+                          </T.ArticleBtnSpan>
+                        </T.ArticleBtn>
+                      )}
                       <T.ArticleAuthor>
                         <T.AuthorImg>
                           <T.AuthorImgImg
-                            src={`http://localhost:8090/${articl.user.avatar}`}
+                            src={`http://localhost:8090/${data.user.avatar}`}
                             alt=""
                           />
                         </T.AuthorImg>
-                        <T.AuthorCont key={articl?.user.id}>
-                          <Link to={`/profile/${articl.user.id}`}>
-                            <T.AuthorName>{articl?.user.name}</T.AuthorName>
+                        <T.AuthorCont key={data.user.id}>
+                          <Link to={`/profile/${data.user.id}`}>
+                            <T.AuthorName>{data.user.name}</T.AuthorName>
                             <T.AuthorAbout>
                               Продает товары с&nbsp;
-                              {new Date(articl?.user.sells_from).toLocaleString(
+                              {new Date(data.user.sells_from).toLocaleString(
                                 "ru",
                                 {
                                   month: "long",
@@ -105,7 +122,7 @@ export const Article = ({ ads, isLoading }) => {
               </T.MainArtic>
               <T.MainTitle>Описание товара</T.MainTitle>
               <T.MainContent>
-                <T.MainText>{articl?.description}</T.MainText>
+                <T.MainText>{data.description}</T.MainText>
               </T.MainContent>
             </T.MainCenterBlock>
           )}

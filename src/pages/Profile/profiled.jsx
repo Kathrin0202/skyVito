@@ -58,7 +58,7 @@ export const Profiled = () => {
   return (
     <>
       {pageMode === "my-profile" && userProfile && (
-        <MyProfile userProfile={userProfile} setUserProfile={setUserProfile} />
+        <MyProfile userProfile={userProfile} setUserProfile={setUserProfile}/>
       )}
     {pageMode === "guest" && userProfile && (
         <SellerProfile userProfile={userProfile} setUserProfile={setUserProfile} />

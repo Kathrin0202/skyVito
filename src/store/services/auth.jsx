@@ -25,35 +25,58 @@ export const userApi = createApi({
     getCurrentUserAds: builder.query({
       query: () => `/ads/me`,
     }),
+    getAdsById: builder.query({
+      query: (id) => `/ads/${id}`,
+      providesTags: "USER_TAG",
+    }),
     getAddAds: builder.mutation({
-      query: (value) => ({
+      query: (data) => ({
         url: "/adstext",
         method: "POST",
         headers: {
           "content-type": "application/json",
-          Authorization: `${value.token.token_type} ${value.token.access_token}`,
+          Authorization: `${data.token.token_type} ${data.token.access_token}`,
         },
-        body: value,
+        body: JSON.stringify(data.ads),
+      }),
+      invalidatesTags: "USER_TAG",
+    }),
+    getEditAds: builder.mutation({
+      query: (ads) => ({
+        url: `/ads/${ads.id}`,
+        method: "PATCH",
+        headers: {
+          "content-type": "application/json",
+          Authorization: `${ads.token.token_type} ${ads.token.access_token}`,
+        },
+        body: JSON.stringify({
+          title: ads.title,
+          description: ads.description,
+          price: ads.price,
+        }),
       }),
       invalidatesTags: "USER_TAG",
     }),
     postAdsImage: builder.mutation({
       query: ({ token, image, id }) => ({
-          url: `/ads/${id}/image`,
-          method: 'POST',
-          headers: {
-              Authorization: `${token.token_type} ${token.access_token}`,
-          },
-          body: image,
+        url: `/ads/${id}/image`,
+        method: "POST",
+        headers: {
+          Authorization: `${token.token_type} ${token.access_token}`,
+        },
+        body: image,
       }),
       invalidatesTags: "USER_TAG",
-  }),
+    }),
   }),
 });
 
 export const {
   useGetCurrentUserAdsQuery,
+  useGetAdsByIdQuery,
   useGetAddAdsMutation,
+  usePostAdsImageMutation,
   useGetAllAdsQuery,
-  useGetAllUserAdsQuery
+  useGetAllUserAdsQuery,
+  useGetEditAdsMutation,
 } = userApi;

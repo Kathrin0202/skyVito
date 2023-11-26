@@ -27,7 +27,10 @@ export const HeaderAuth = ({ ads }) => {
   return (
     <>
       {openFormAddAds && (
-        <AddAds setOpenFormAddAds={setOpenFormAddAds} ads={ads} />
+        <AddAds
+          setOpenFormAddAds={setOpenFormAddAds}
+          ads={ads}
+        />
       )}
       <S.Header>
         <S.HeaderNav>

@@ -4,9 +4,7 @@ import { MyArticle } from "./pages/Article/myarticle";
 import { Login, Registration } from "./pages/Login/login";
 import { MainPage } from "./pages/Main/main";
 import { NotFound } from "./pages/NotFound/notFound";
-import { MyProfile } from "./pages/Profile/myprofile";
 import { Profiled } from "./pages/Profile/profiled";
-import { SellerProfile } from "./pages/Profile/sellerProfile";
 import { ProtectedRoute } from "./protector-router";
 
 export const AppRoutes = ({ ads, isLoading, setAds }) => {
@@ -20,13 +18,13 @@ export const AppRoutes = ({ ads, isLoading, setAds }) => {
       />
       <Route
         path="/ads/:id"
-        element={<Article ads={ads} isLoading={isLoading} setAds={setAds} />}
+        element={<Article />}
       />
       <Route
         path="/profile/:id"
         element={<Profiled ads={ads} setAds={setAds} />}
       />
-      <Route path="/ads/me" element={<MyArticle ads={ads} setAds={setAds} />} />
+      <Route path="/ads/me" element={<Article ads={ads} setAds={setAds} />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

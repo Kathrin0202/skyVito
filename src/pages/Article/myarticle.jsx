@@ -1,9 +1,10 @@
+import { useParams } from "react-router-dom";
 import { Footer } from "../../components/Footer/footer";
 import { HeaderAuth } from "../../components/Header/header";
 import { MainMenu } from "../../components/Menu/menu";
 import * as S from "../../style/App.style";
 import * as T from "./article.styled";
-export const MyArticle = () => {
+export const MyArticle = ({ ads }) => {
   return (
     <>
       <HeaderAuth />
