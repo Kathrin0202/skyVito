@@ -2,8 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import * as S from "./header.styled";
 import img from "../../img/logo.png";
 import { removeTokenFromLocalStorage } from "../../api";
-import { useDispatch } from "react-redux";
-import { setAuth } from "../../store/slices/auth";
+import { useState } from "react";
+import { AddAds } from "../../modal/AddAds/addAds";
 export const Header = () => {
   const navigate = useNavigate();
   return (
@@ -17,31 +17,38 @@ export const Header = () => {
   );
 };
 
-export const HeaderAuth = () => {
+export const HeaderAuth = ({ ads }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const handleClickLogout = () => {
     removeTokenFromLocalStorage();
     navigate("/login");
   };
+  const [openFormAddAds, setOpenFormAddAds] = useState(false);
   return (
-    <S.Header>
-      <S.HeaderNav>
-        <S.HeaderLogo>
-          <S.LogoMobLink>
-            <Link to="/">
-              <S.LogoMobImg src={img} alt="logo" />
-            </Link>
-          </S.LogoMobLink>
-        </S.HeaderLogo>
-        <S.HeaderBtnPutAd>Разместить объявление</S.HeaderBtnPutAd>
-        <S.HeaderBtnLk onClick={() => navigate("/profile/me")}>
-          Личный кабинет
-        </S.HeaderBtnLk>
-        <S.HeaderBtnPutAd onClick={() => handleClickLogout()}>
-          Выход
-        </S.HeaderBtnPutAd>
-      </S.HeaderNav>
-    </S.Header>
+    <>
+      {openFormAddAds && (
+        <AddAds setOpenFormAddAds={setOpenFormAddAds} ads={ads} />
+      )}
+      <S.Header>
+        <S.HeaderNav>
+          <S.HeaderLogo>
+            <S.LogoMobLink>
+              <Link to="/">
+                <S.LogoMobImg src={img} alt="logo" />
+              </Link>
+            </S.LogoMobLink>
+          </S.HeaderLogo>
+          <S.HeaderBtnPutAd onClick={() => setOpenFormAddAds(true)}>
+            Разместить объявление
+          </S.HeaderBtnPutAd>
+          <S.HeaderBtnLk onClick={() => navigate("/profile/me")}>
+            Личный кабинет
+          </S.HeaderBtnLk>
+          <S.HeaderBtnPutAd onClick={() => handleClickLogout()}>
+            Выход
+          </S.HeaderBtnPutAd>
+        </S.HeaderNav>
+      </S.Header>
+    </>
   );
 };

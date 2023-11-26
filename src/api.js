@@ -19,23 +19,9 @@ export const updateToken = async () => {
     const data = await getToken(token);
     saveTokenToLocalStorage(data);
   } catch (error) {
+    navigator("/login");
     throw new Error(`Ошибка при обновлении токена:`);
   }
-};
-
-export const getAllAds = async (userId) => {
-  const userParam = userId ? `user_id=${userId}&` : "";
-  return fetch(`${host}/ads?${userParam}sorting=new`, {
-    method: "GET",
-    headers: {
-      "content-type": "application/json",
-    },
-  }).then((response) => {
-    if (response.status === 200) {
-      return response.json();
-    }
-    throw new Error("Ошибка");
-  });
 };
 
 export async function getUser(token) {
@@ -144,7 +130,7 @@ export const getToken = async (token) => {
 };
 
 export const updateUser = async (user, token) => {
-  return fetch(`${host}/user`, {
+  return await fetch(`${host}/user`, {
     method: "PATCH",
     headers: {
       "content-type": "application/json",

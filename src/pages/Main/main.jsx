@@ -6,12 +6,11 @@ import img from "../../img/logo.png";
 import imgMob from "../../img/logo-mob.png";
 import * as S from "./main.style";
 import noPhoto from "../../img/no-photo.avif";
-export const MainPage = ({ ads, isLoading }) => {
+export const MainPage = ({ ads, isLoading, setAds }) => {
   const [searchType, setSearchType] = useState("");
-
   const filteredAds = () => {
     let filterAds = ads;
-    if (searchType.length > 0) {
+    if (searchType?.length > 0) {
       filterAds = filterAds.filter(({ title }) =>
         title.toLocaleLowerCase().includes(searchType.toLocaleLowerCase())
       );
@@ -19,10 +18,9 @@ export const MainPage = ({ ads, isLoading }) => {
     return filterAds;
   };
   const filterAd = filteredAds();
-
   return (
     <>
-      <Header />
+      <Header ads={ads} setAds={setAds}/>
       <S.MainSearch>
         <S.SearchLogoLink href="#" target="_blank">
           <Link to="/">
@@ -58,7 +56,7 @@ export const MainPage = ({ ads, isLoading }) => {
           <S.ContentCards>
             {isLoading ? (
               <S.MainH2>Объявления загружаются...</S.MainH2>
-            ) : filterAd.length > 0 ? (
+            ) : filterAd?.length > 0 ? (
               filterAd.map((ad, item) => (
                 <S.CardsItem key={item}>
                   <S.CardsCard>

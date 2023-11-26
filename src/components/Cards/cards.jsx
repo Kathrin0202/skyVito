@@ -1,31 +1,21 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getAllAds } from "../../api";
 import * as T from "./card.styled";
 import noPhoto from "../../img/no-photo.avif";
+import { useGetAllUserAdsQuery } from "../../store/services/auth";
 export const ContentCard = ({ userId }) => {
-  const [data, setDataAds] = useState(null);
-
+  const [data1, setDataAds] = useState(null);
+  const { data } = useGetAllUserAdsQuery(userId);
   useEffect(() => {
-    const fetchData = () => {
-      getAllAds(userId)
-        .then((data) => {
-          setDataAds(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching workout data:", error);
-        });
-    };
-
-    fetchData();
-  }, [userId]);
+    setDataAds(data);
+  }, [data]);
 
   return (
     <>
       {data?.length !== 0 ? (
         <T.ContentCards>
-          {data &&
-            data.map((item) => (
+          {data1 &&
+            data1.map((item) => (
               <T.CardsItem key={item.id}>
                 <T.CardsCard>
                   <T.CardImage>

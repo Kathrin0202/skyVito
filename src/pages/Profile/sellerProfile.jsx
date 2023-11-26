@@ -5,13 +5,12 @@ import { HeaderAuth } from "../../components/Header/header";
 import { MainMenu } from "../../components/Menu/menu";
 import * as S from "../../style/App.style";
 import * as T from "./sellerProfile.style";
-export const SellerProfile = ({ userProfile }) => {
+export const SellerProfile = ({userProfile, setUserProfile}) => {
   const [showPhone, setShowPhone] = useState(false);
   const clickShowPhone = () => {
     setShowPhone(true);
   };
-
-  console.log(userProfile);
+  
   return (
     <>
       <HeaderAuth />
@@ -26,17 +25,17 @@ export const SellerProfile = ({ userProfile }) => {
                   <T.SellerLeft>
                     <T.SellerImg>
                       <T.SellerImgImg
-                        src={`http://localhost:8090/${userProfile.avatar}`}
+                        src={`http://localhost:8090/${userProfile?.avatar}`}
                         alt="avatar"
                       />
                     </T.SellerImg>
                   </T.SellerLeft>
                   <T.SellerRight>
-                    <T.SellerTitle>{userProfile.name}</T.SellerTitle>
-                    <T.SellerCity>{userProfile.city}</T.SellerCity>
+                    <T.SellerTitle>{userProfile?.name}</T.SellerTitle>
+                    <T.SellerCity>{userProfile?.city}</T.SellerCity>
                     <T.SellerInf>
                       Продает товары с{" "}
-                      {new Date(userProfile.sells_from).toLocaleString("ru", {
+                      {new Date(userProfile?.sells_from).toLocaleString("ru", {
                         year: "numeric",
                         month: "long",
                       })}
@@ -53,7 +52,7 @@ export const SellerProfile = ({ userProfile }) => {
                     <T.ArticleBtn onClick={clickShowPhone}>
                       Показать&nbsp;телефон
                       <T.ArticleBtnSpan>
-                        {!showPhone ? `+7 XXX XXX XX XX` : userProfile.phone}
+                        {!showPhone ? `+7 XXX XXX XX XX` : userProfile?.phone}
                       </T.ArticleBtnSpan>
                     </T.ArticleBtn>
                   </T.SellerRight>
@@ -64,7 +63,7 @@ export const SellerProfile = ({ userProfile }) => {
             <T.MainTitle>Товары продавца</T.MainTitle>
           </T.MainCenterBlock>
           <T.MainContent>
-            <ContentCard userId={userProfile.id} />
+            <ContentCard userId={userProfile?.id} />
           </T.MainContent>
         </T.MainContainer>
       </S.Main>

@@ -10,13 +10,12 @@ import {
   updateUser,
   uploadUserAvatar,
 } from "../../api";
-import { useEffect } from "react";
 import { useRef } from "react";
 import noPhoto from "../../img/myprofile.png";
 
 export const MyProfile = ({ userProfile, setUserProfile }) => {
   const [currentProfiled, setCurrentProfiled] = useState(userProfile);
-  const [active, setActive] = useState(true);
+  const [setActive] = useState(true);
   const [img, setImg] = useState(null);
   const profiledRef = useRef();
 
@@ -37,7 +36,6 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
     setActive(false);
   };
   const handleAvatarClick = (event) => {
-    event.preventDefault();
     const fileUpload = document.getElementById("file-upload");
     fileUpload.click();
     setCurrentProfiled({ ...currentProfiled, avatar: event.target.value });
@@ -67,9 +65,6 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
         console.error("Error fetching workout data:", error);
       });
   };
-  useEffect(() => {
-    setCurrentProfiled({ ...userProfile });
-  }, [userProfile]);
 
   return (
     <>
@@ -112,7 +107,6 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
                           handleAvatarUpload(file);
                         }
                       }}
-                      ref={profiledRef}
                     ></T.SettingsImgInput>
                     <T.SettingsChangePhoto onClick={handleAvatarClick}>
                       Заменить
@@ -129,10 +123,8 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
                           name="name"
                           type="text"
                           placeholder={userProfile.name}
-                          onChange={(event) => {
-                            handleName(event);
-                          }}
                           ref={profiledRef}
+                          onChange={(event) => handleName(event)}
                         />
                       </T.SettingsDiv>
 
@@ -145,10 +137,10 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
                           name="surname"
                           type="text"
                           placeholder={userProfile.surname}
+                          ref={profiledRef}
                           onChange={(event) => {
                             handleSurname(event);
                           }}
-                          ref={profiledRef}
                         />
                       </T.SettingsDiv>
 
@@ -161,10 +153,10 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
                           name="city"
                           type="text"
                           placeholder={userProfile.city}
+                          ref={profiledRef}
                           onChange={(event) => {
                             handleCity(event);
                           }}
-                          ref={profiledRef}
                         />
                       </T.SettingsDiv>
 
@@ -178,16 +170,15 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
                           type="tel"
                           width={614}
                           placeholder={userProfile.phone}
+                          ref={profiledRef}
                           onChange={(event) => {
                             handlePhone(event);
                           }}
-                          ref={profiledRef}
                         />
                       </T.SettingsDiv>
-
                       <T.SettingsBtn
                         id="settings-btn"
-                        onClick={(event) => handleSaveChanges(event)}
+                        onClick={handleSaveChanges()}
                       >
                         Сохранить
                       </T.SettingsBtn>

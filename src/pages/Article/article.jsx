@@ -9,12 +9,10 @@ import noPhoto from "../../img/no-photo.avif";
 export const Article = ({ ads, isLoading }) => {
   const params = useParams();
   let [articl] = ads.filter((artic) => artic.id == params.id);
-
   const [showPhone, setShowPhone] = useState(false);
   const clickShowPhone = () => {
     setShowPhone(true);
   };
-
   return (
     <>
       <HeaderAuth />
@@ -80,10 +78,13 @@ export const Article = ({ ads, isLoading }) => {
                       </T.ArticleBtn>
                       <T.ArticleAuthor>
                         <T.AuthorImg>
-                          <T.AuthorImgImg src={`http://localhost:8090/${articl.user.avatar}`} alt="" />
+                          <T.AuthorImgImg
+                            src={`http://localhost:8090/${articl.user.avatar}`}
+                            alt=""
+                          />
                         </T.AuthorImg>
                         <T.AuthorCont key={articl?.user.id}>
-                          <Link to={`/profile/${articl?.user.id}`}>
+                          <Link to={`/profile/${articl.user.id}`}>
                             <T.AuthorName>{articl?.user.name}</T.AuthorName>
                             <T.AuthorAbout>
                               Продает товары с&nbsp;
