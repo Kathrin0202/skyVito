@@ -2,7 +2,12 @@ import * as S from "./login.style";
 import img from "../../img/logo_modal.png";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getUser, loginUser, registerUser, saveTokenToLocalStorage } from "../../api";
+import {
+  getUser,
+  loginUser,
+  registerUser,
+  saveTokenToLocalStorage,
+} from "../../api";
 import { setAuth } from "../../store/slices/auth";
 import { useNavigate } from "react-router-dom";
 import { saveUserIdToState } from "../../App";
@@ -28,7 +33,7 @@ export const Login = ({ isLoginMode = true }) => {
       await loginUser(email, password).then((dat) => {
         //sessionStorage.setItem("user", JSON.stringify(dat));
         saveTokenToLocalStorage(dat);
-        saveUserIdToState(false)
+        saveUserIdToState(false);
         dispatch(
           setAuth({
             token: JSON.parse(sessionStorage.getItem("user")),
@@ -36,13 +41,13 @@ export const Login = ({ isLoginMode = true }) => {
             password: password,
           })
         );
+        console.log(dat);
         navigate("/");
       });
     } catch (erro) {
       setError(erro.message);
     } finally {
       setLogin(false);
-      console.log(email);
     }
   };
   useEffect(() => {
@@ -123,7 +128,6 @@ export const Registration = ({ isLoginMode = false }) => {
       await registerUser(email, password, name, city).then((dat) => {
         sessionStorage.setItem("user", JSON.stringify(dat));
         sessionStorage.setItem("token", JSON.stringify(dat?.access_token));
-        console.log(dat);
         dispatch(
           setAuth({
             email: dat.email,
@@ -134,6 +138,7 @@ export const Registration = ({ isLoginMode = false }) => {
             city: dat.city,
           })
         );
+        console.log(dat);
         navigate("/");
       });
     } catch (error) {

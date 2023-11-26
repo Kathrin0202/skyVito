@@ -1,5 +1,19 @@
 import styled from "styled-components";
 
+export const Wrapper = styled.div`
+  width: 100%;
+  min-height: 100%;
+  overflow: auto;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
 export const ContainerBg = styled.div`
   max-width: 100%;
   height: 100vh;
