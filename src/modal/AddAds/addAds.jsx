@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getTokenFromLocalStorage, updateToken } from "../../api";
-import { useGetAddAdsMutation } from "../../store/services/auth";
+import { getTokenFromLocalStorage, host, updateToken } from "../../api";
+import {
+  useDeleteAdsImagesMutation,
+  useGetAddAdsMutation,
+  usePostAdsImageMutation,
+} from "../../store/services/auth";
 import * as T from "./addAds.styled";
 export const AddAds = ({ setOpenFormAddAds }) => {
   const ads = {
@@ -15,8 +19,13 @@ export const AddAds = ({ setOpenFormAddAds }) => {
   const refName = useRef(null);
   const refDescription = useRef(null);
   const refPrice = useRef(null);
+  const refImages = useRef(null);
   const [adsState, setAdsState] = useState(ads);
   const navigate = useNavigate();
+  const addImg = document.getElementById("upload-photo");
+  const [images, setImages] = useState([addImg]);
+  const [postAdsImg] = usePostAdsImageMutation();
+  const [deleteAdsImg] = useDeleteAdsImagesMutation();
   const updateAdsState = (value, field) => {
     setAdsState({ ...adsState, [field]: value });
   };
@@ -36,6 +45,31 @@ export const AddAds = ({ setOpenFormAddAds }) => {
     } else {
       refName.current.classList.add("--error-input");
     }
+  };
+  const handleImgClick = (event) => {
+    refImages.current?.click();
+  };
+
+  const handleAdsPicture = () => {
+    if (refImages.current?.files) {
+      const file = refImages.current.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      postAdsImg({
+        token: getTokenFromLocalStorage(),
+        image: formData,
+        adsId: ads.id,
+      });
+    }
+  };
+
+  const handleClickDeleteImage = (event, imageUrl) => {
+    event.preventDefault();
+    deleteAdsImg({
+      token: getTokenFromLocalStorage(),
+      imageUrl: imageUrl,
+      adsId: ads.id,
+    });
   };
 
   useEffect(() => {
@@ -105,25 +139,72 @@ export const AddAds = ({ setOpenFormAddAds }) => {
                   <T.FormNewArtPSpan>не более 5 фотографий</T.FormNewArtPSpan>
                 </T.FormNewArtP>
                 <T.FormNewArtBarImg>
-                  <T.FormNewArtImg>
-                    <T.FormNewArtImgImg src="" alt="" />
-                    <T.FormNewArtImgCover></T.FormNewArtImgCover>
+                  <input
+                    style={{ display: "none" }}
+                    type="file"
+                    accept="image/*"
+                    ref={refImages}
+                    onChange={(event) => {
+                      handleAdsPicture(event);
+                    }}
+                  />
+                  <T.FormNewArtImg
+                    type="file"
+                    accept="image/*"
+                    onClick={(event) => handleImgClick(event)}
+                  >
+                    <T.FormNewArtImgImg src={images} alt="" />
+                    <T.FormNewArtImgCover
+                      id="upload-photo"
+                      type="file"
+                      accept="image/*"
+                      ref={refImages}
+                      onChange={(event) => {
+                        handleAdsPicture(event);
+                      }}
+                    ></T.FormNewArtImgCover>
                   </T.FormNewArtImg>
-                  <T.FormNewArtImg>
-                    <T.FormNewArtImgImg src="" alt="" />
-                    <T.FormNewArtImgCover></T.FormNewArtImgCover>
+                  <T.FormNewArtImg onClick={(event) => handleImgClick(event)}>
+                    <T.FormNewArtImgImg src={images} alt="" />
+                    <T.FormNewArtImgCover
+                      id="upload-photo"
+                      type="file"
+                      accept="image/*"
+                      onChange={(event) => {}}
+                    ></T.FormNewArtImgCover>
                   </T.FormNewArtImg>
-                  <T.FormNewArtImg>
-                    <T.FormNewArtImgCover></T.FormNewArtImgCover>
-                    <T.FormNewArtImgImg src="" alt="" />
+                  <T.FormNewArtImg onClick={(event) => handleImgClick(event)}>
+                    <T.FormNewArtImgCover
+                      id="upload-photo"
+                      type="file"
+                      accept="image/*"
+                      onChange={(event) => {}}
+                    ></T.FormNewArtImgCover>
+                    <T.FormNewArtImgImg src={images} alt="" />
                   </T.FormNewArtImg>
-                  <T.FormNewArtImg>
-                    <T.FormNewArtImgCover></T.FormNewArtImgCover>
-                    <T.FormNewArtImgImg src="" alt="" />
+                  <T.FormNewArtImg
+                    id="upload-photo"
+                    onClick={(event) => handleImgClick(event)}
+                  >
+                    <T.FormNewArtImgCover
+                      id="upload-photo"
+                      type="file"
+                      accept="image/*"
+                      onChange={(event) => {}}
+                    ></T.FormNewArtImgCover>
+                    <T.FormNewArtImgImg src={images} alt="" />
                   </T.FormNewArtImg>
-                  <T.FormNewArtImg>
-                    <T.FormNewArtImgCover></T.FormNewArtImgCover>
-                    <T.FormNewArtImgImg src="" alt="" />
+                  <T.FormNewArtImg
+                    id="upload-photo"
+                    onClick={(event) => handleImgClick(event)}
+                  >
+                    <T.FormNewArtImgCover
+                      id="upload-photo"
+                      type="file"
+                      accept="image/*"
+                      onChange={(event) => {}}
+                    ></T.FormNewArtImgCover>
+                    <T.FormNewArtImgImg src={images} alt="" />
                   </T.FormNewArtImg>
                 </T.FormNewArtBarImg>
               </T.FormNewArtBlock>

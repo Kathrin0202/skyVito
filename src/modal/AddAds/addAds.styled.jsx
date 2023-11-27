@@ -439,14 +439,19 @@ export const FormNewArtImgImg = styled.img`
   }
 `;
 
-export const FormNewArtImgCover = styled.div`
+export const FormNewArtImgCover = styled.input`
+  &::-webkit-file-upload-button {
+    visibility: hidden;
+  }
+  content: "Файл";
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
   background-color: #f0f0f0;
-  z-index: -1;
+  z-index: -2;
+  cursor: pointer;
   &::after {
     content: "";
     position: absolute;

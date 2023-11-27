@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import { Article } from "./pages/Article/article";
-import { MyArticle } from "./pages/Article/myarticle";
 import { Login, Registration } from "./pages/Login/login";
 import { MainPage } from "./pages/Main/main";
 import { NotFound } from "./pages/NotFound/notFound";

@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { host } from "../../api";
+import { getTokenFromLocalStorage, host } from "../../api";
 
 export const setUserId = (userId) => {
   return {
@@ -12,6 +12,14 @@ export const userApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: host,
+    /*prepareHeaders: (headers) => {
+      const token = getTokenFromLocalStorage();
+      console.debug("Токен из стора", { token });
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },*/
   }),
   endpoints: (builder) => ({
     getAllAds: builder.query({
@@ -42,29 +50,68 @@ export const userApi = createApi({
       invalidatesTags: "USER_TAG",
     }),
     getEditAds: builder.mutation({
-      query: (ads) => ({
-        url: `/ads/${ads.id}`,
+      query: ({ id, token, title, description, price }) => ({
+        url: `/ads/${id}`,
         method: "PATCH",
         headers: {
           "content-type": "application/json",
-          Authorization: `${ads.token.token_type} ${ads.token.access_token}`,
+          Authorization: `${token.token_type} ${token.access_token}`,
         },
         body: JSON.stringify({
-          title: ads.title,
-          description: ads.description,
-          price: ads.price,
+          title,
+          description,
+          price,
         }),
       }),
       invalidatesTags: "USER_TAG",
     }),
     postAdsImage: builder.mutation({
-      query: ({ token, image, id }) => ({
-        url: `/ads/${id}/image`,
+      query: ({ token, image, adsId }) => ({
+        url: `/ads/${adsId}/image`,
         method: "POST",
         headers: {
           Authorization: `${token.token_type} ${token.access_token}`,
         },
         body: image,
+      }),
+      invalidatesTags: "USER_TAG",
+    }),
+    deleteAds: builder.mutation({
+      query: ({ id, token }) => {
+        return {
+          url: `/ads/${id}`,
+          method: "DELETE",
+          headers: {
+            "content-type": "application/json",
+            Authorization: `${token.token_type} ${token.access_token}`,
+          },
+        };
+      },
+      invalidatesTags: "USER_TAG",
+    }),
+    deleteAdsImages: builder.mutation({
+      query: ({ data, token }) => {
+        const url = data.image.url;
+        return {
+          url: `/ads/${data.id}/image?file_url=${url}`,
+          method: "DELETE",
+          headers: {
+            "content-type": "application/json",
+            Authorization: `${token.token_type} ${token.access_token}`,
+          },
+        };
+      },
+      invalidatesTags: "USER_TAG",
+    }),
+    uploadAdsImage: builder.mutation({
+      query: ({ id, formData, token }) => ({
+        url: `/ads/${id}/image`,
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          Authorization: `${token.token_type} ${token.access_token}`,
+        },
+        body: formData,
       }),
       invalidatesTags: "USER_TAG",
     }),
@@ -79,4 +126,7 @@ export const {
   useGetAllAdsQuery,
   useGetAllUserAdsQuery,
   useGetEditAdsMutation,
+  useDeleteAdsMutation,
+  useDeleteAdsImagesMutation,
+  useUploadAdsImageMutation,
 } = userApi;
