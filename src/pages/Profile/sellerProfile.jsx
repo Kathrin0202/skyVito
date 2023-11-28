@@ -3,17 +3,18 @@ import { ContentCard } from "../../components/Cards/cards";
 import { Footer } from "../../components/Footer/footer";
 import { HeaderAuth } from "../../components/Header/header";
 import { MainMenu } from "../../components/Menu/menu";
+import noAvatar from "../../img/myprofile.png";
 import * as S from "../../style/App.style";
 import * as T from "./sellerProfile.style";
-export const SellerProfile = ({userProfile, setUserProfile}) => {
+export const SellerProfile = ({ userProfile, setUserProfile }) => {
   const [showPhone, setShowPhone] = useState(false);
   const clickShowPhone = () => {
     setShowPhone(true);
   };
-  
+
   return (
     <>
-      <HeaderAuth/>
+      <HeaderAuth />
       <S.Main>
         <T.MainContainer>
           <T.MainCenterBlock>
@@ -24,10 +25,14 @@ export const SellerProfile = ({userProfile, setUserProfile}) => {
                 <T.ProfileSellSeller>
                   <T.SellerLeft>
                     <T.SellerImg>
-                      <T.SellerImgImg
-                        src={`http://localhost:8090/${userProfile?.avatar}`}
-                        alt="avatar"
-                      />
+                      {userProfile?.avatar ? (
+                        <T.SellerImgImg
+                          src={`http://localhost:8090/${userProfile?.avatar}`}
+                          alt="avatar"
+                        />
+                      ) : (
+                        <T.SellerImgImg src={noAvatar} alt="avatar" />
+                      )}
                     </T.SellerImg>
                   </T.SellerLeft>
                   <T.SellerRight>

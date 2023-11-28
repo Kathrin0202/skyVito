@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Footer } from "../../components/Footer/footer";
 import { Header } from "../../components/Header/header";
@@ -18,9 +18,14 @@ export const MainPage = ({ ads, isLoading, setAds }) => {
     return filterAds;
   };
   const filterAd = filteredAds();
+  useEffect(() => {
+    if (ads) {
+      setAds(ads);
+    }
+  }, [ads]);
   return (
     <>
-      <Header ads={ads} setAds={setAds}/>
+      <Header ads={ads} setAds={setAds} />
       <S.MainSearch>
         <S.SearchLogoLink href="#" target="_blank">
           <Link to="/">

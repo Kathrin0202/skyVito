@@ -180,6 +180,7 @@ export const ArticleImgBarDiv = styled.div`
   background-color: #f0f0f0;
   border: 2px solid #f0f0f0;
   margin: 0 5px;
+  float: left;
 `;
 export const ArticleImgBarDivImg = styled.img`
   width: 100%;
@@ -187,6 +188,11 @@ export const ArticleImgBarDivImg = styled.img`
   display: block;
   -o-object-fit: cover;
   object-fit: cover;
+  opacity: 0.8;
+  cursor: pointer;
+  &:hover {
+    opacity: 1;
+  }
 `;
 
 export const ArticleImgBarMob = styled.div`
@@ -294,10 +300,12 @@ export const ArticleCity = styled.p`
     margin-bottom: 4px;
   }
 `;
-export const ArticleLink = styled.div`
+export const ArticleLink = styled.button`
   font-size: 16px;
   line-height: 21px;
   color: #009ee4;
+  border: 0;
+  background-color: transparent;
   @media screen and (max-width: 768px) {
     font-size: 14px;
     line-height: 19px;

@@ -4,11 +4,18 @@ import { HeaderAuth } from "../../components/Header/header";
 import { MainMenu } from "../../components/Menu/menu";
 import * as S from "../../style/App.style";
 import * as T from "./article.styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import noPhoto from "../../img/no-photo.avif";
-import { useGetAdsByIdQuery } from "../../store/services/auth";
+import noAvatar from "../../img/myprofile.png";
+import {
+  useGetAdsByIdQuery,
+  useDeleteAdsMutation,
+  useGetAllCommentsQuery,
+} from "../../store/services/auth";
 import { useAuthSelector } from "../../store/slices/auth";
 import { EditAds } from "../../modal/AddAds/editAds";
+import { Comments } from "../../modal/comments/comments";
+import { getTokenFromLocalStorage, updateToken } from "../../api";
 export const Article = () => {
   const adsId = parseInt(useParams().id);
   const { data, isLoading } = useGetAdsByIdQuery(adsId);
@@ -18,10 +25,47 @@ export const Article = () => {
   };
   const auth = useAuthSelector();
   const [openFormEditAds, setOpenFormEditAds] = useState(false);
+  const [openFormComments, setOpenFormComments] = useState(false);
+  const [deleteAdv, { isError }] = useDeleteAdsMutation();
+  const [deleted, setDeleted] = useState(false);
+  const [adComments, setAdvComments] = useState([]);
+  const { data: advComments } = useGetAllCommentsQuery(adsId);
+
+  const handleDeleteAdv = () => {
+    setDeleted(true);
+    deleteAdv({
+      token: getTokenFromLocalStorage(),
+      id: adsId,
+    });
+  };
+
+  useEffect(() => {
+    setDeleted(data);
+    if (isError.status === 401) {
+      updateToken(
+        deleteAdv({
+          token: getTokenFromLocalStorage(),
+          id: adsId,
+        })
+      );
+    }
+  }, [isError]);
+  useEffect(() => {
+    if (advComments) {
+      setAdvComments(advComments);
+    }
+  }, [advComments]);
+
   return (
     <>
       {openFormEditAds && (
         <EditAds setOpenFormEditAds={setOpenFormEditAds} ads={data} />
+      )}
+      {openFormComments && (
+        <Comments
+          setOpenFormComments={setOpenFormComments}
+          comments={advComments}
+        />
       )}
       <HeaderAuth adsData={data} />
       <S.Main>
@@ -45,14 +89,14 @@ export const Article = () => {
                         )}
                       </T.ArticleImg>
                       <T.ArticleImgBar>
-                        {data.images.map((imag, index) => {
+                        {data.images.map((imag, index) => (
                           <T.ArticleImgBarDiv key={index}>
                             <T.ArticleImgBarDivImg
                               src={`http://localhost:8090/${imag.url}`}
                               alt=""
                             />
-                          </T.ArticleImgBarDiv>;
-                        })}
+                          </T.ArticleImgBarDiv>
+                        ))}
                       </T.ArticleImgBar>
                       <T.ArticleImgBarMob>
                         <T.ImgBarMobCircleActive></T.ImgBarMobCircleActive>
@@ -73,15 +117,21 @@ export const Article = () => {
                           })}
                         </T.ArticleDate>
                         <T.ArticleCity>{data.user.city}</T.ArticleCity>
-                        <T.ArticleLink href="" target="_blank" rel="">
-                          23 отзыва
+                        <T.ArticleLink
+                          onClick={() => setOpenFormComments(true)}
+                        >
+                          {adComments ? adComments.length : "..."} отзыва
                         </T.ArticleLink>
                       </T.ArticleInfo>
                       <T.ArticlePrice>{data.price}.p</T.ArticlePrice>
                       {auth.email === data.user.email ? (
                         <T.ArticleBtnBlock>
-                          <T.ArticleBtnReduct onClick={() => setOpenFormEditAds(true)}>Редактировать</T.ArticleBtnReduct>
-                          <T.ArticleBtnRemove>
+                          <T.ArticleBtnReduct
+                            onClick={() => setOpenFormEditAds(true)}
+                          >
+                            Редактировать
+                          </T.ArticleBtnReduct>
+                          <T.ArticleBtnRemove onClick={() => handleDeleteAdv()}>
                             Снять с публикации
                           </T.ArticleBtnRemove>
                         </T.ArticleBtnBlock>
@@ -95,10 +145,14 @@ export const Article = () => {
                       )}
                       <T.ArticleAuthor>
                         <T.AuthorImg>
-                          <T.AuthorImgImg
-                            src={`http://localhost:8090/${data.user.avatar}`}
-                            alt=""
-                          />
+                          {data.user.avatar ? (
+                            <T.AuthorImgImg
+                              src={`http://localhost:8090/${data.user.avatar}`}
+                              alt=""
+                            />
+                          ) : (
+                            <T.AuthorImgImg src={noAvatar} alt="" />
+                          )}
                         </T.AuthorImg>
                         <T.AuthorCont key={data.user.id}>
                           <Link to={`/profile/${data.user.id}`}>

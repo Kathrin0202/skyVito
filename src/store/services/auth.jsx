@@ -72,7 +72,7 @@ export const userApi = createApi({
         headers: {
           Authorization: `${token.token_type} ${token.access_token}`,
         },
-        body: image,
+        body: JSON.stringify({ image }),
       }),
       invalidatesTags: "USER_TAG",
     }),
@@ -111,7 +111,23 @@ export const userApi = createApi({
           "content-type": "application/json",
           Authorization: `${token.token_type} ${token.access_token}`,
         },
-        body: formData,
+        body: JSON.stringify({ formData }),
+      }),
+      invalidatesTags: "USER_TAG",
+    }),
+    getAllComments: builder.query({
+      query: (id) => `/ads/${id}/comments`,
+      invalidatesTags: "USER_TAG",
+    }),
+    addComment: builder.mutation({
+      query: ({ id, text, token }) => ({
+        url: `/ads/${id}/comments`,
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          Authorization: `${token.token_type} ${token.access_token}`,
+        },
+        body: JSON.stringify({ text }),
       }),
       invalidatesTags: "USER_TAG",
     }),
@@ -129,4 +145,6 @@ export const {
   useDeleteAdsMutation,
   useDeleteAdsImagesMutation,
   useUploadAdsImageMutation,
+  useGetAllCommentsQuery,
+  useAddCommentMutation,
 } = userApi;
