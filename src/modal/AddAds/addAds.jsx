@@ -1,31 +1,24 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getTokenFromLocalStorage, host, updateToken } from "../../api";
+import { getTokenFromLocalStorage, updateToken } from "../../api";
 import {
-  useDeleteAdsImagesMutation,
   useGetAddAdsMutation,
   usePostAdsImageMutation,
 } from "../../store/services/auth";
 import * as T from "./addAds.styled";
-export const AddAds = ({ setOpenFormAddAds }) => {
-  const ads = {
-    id: 0,
-    title: "",
-    description: "",
-    price: null,
-    images: [],
-  };
+export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
+
   const [postAdsText, { data, isError, isStatus }] = useGetAddAdsMutation();
   const refName = useRef(null);
   const refDescription = useRef(null);
   const refPrice = useRef(null);
   const refImages = useRef(null);
-  const [adsState, setAdsState] = useState(ads);
+  const [adsState, setAdsState] = useState();
   const navigate = useNavigate();
   const addImg = document.getElementById("upload-photo");
   const [images, setImages] = useState([addImg]);
   const [postAdsImg] = usePostAdsImageMutation();
-  const [deleteAdsImg] = useDeleteAdsImagesMutation();
+
   const updateAdsState = (value, field) => {
     setAdsState({ ...adsState, [field]: value });
   };
@@ -33,6 +26,7 @@ export const AddAds = ({ setOpenFormAddAds }) => {
     setOpenFormAddAds(false);
   };
   const handleClickPublic = (event) => {
+    event.preventDefault();
     if (refName.current && refDescription.current && refPrice.current) {
       postAdsText({
         token: getTokenFromLocalStorage(),
@@ -45,12 +39,10 @@ export const AddAds = ({ setOpenFormAddAds }) => {
     } else {
       refName.current.classList.add("--error-input");
     }
-  };
-  const handleImgClick = (event) => {
-    refImages.current?.click();
+    setAds(ads);
   };
 
-  const handleAdsPicture = () => {
+  const handleAdsPicture = (event) => {
     if (refImages.current?.files) {
       const file = refImages.current.files[0];
       const formData = new FormData();
@@ -58,18 +50,10 @@ export const AddAds = ({ setOpenFormAddAds }) => {
       postAdsImg({
         token: getTokenFromLocalStorage(),
         image: formData,
-        adsId: ads.id,
+        id: ads.id,
       });
+      setImages(formData);
     }
-  };
-
-  const handleClickDeleteImage = (event, imageUrl) => {
-    event.preventDefault();
-    deleteAdsImg({
-      token: getTokenFromLocalStorage(),
-      imageUrl: imageUrl,
-      adsId: ads.id,
-    });
   };
 
   useEffect(() => {
@@ -77,7 +61,6 @@ export const AddAds = ({ setOpenFormAddAds }) => {
       navigate(`/ads/${data.id}`);
       setOpenFormAddAds(false);
     }
-
     if (isError.status === 401) {
       updateToken();
       if (refName.current && refDescription.current && refPrice.current) {
@@ -139,70 +122,86 @@ export const AddAds = ({ setOpenFormAddAds }) => {
                   <T.FormNewArtPSpan>не более 5 фотографий</T.FormNewArtPSpan>
                 </T.FormNewArtP>
                 <T.FormNewArtBarImg>
-                  <input
-                    style={{ display: "none" }}
-                    type="file"
-                    accept="image/*"
-                    ref={refImages}
-                    onChange={(event) => {
-                      handleAdsPicture(event);
-                    }}
-                  />
                   <T.FormNewArtImg
-                    type="file"
-                    accept="image/*"
-                    onClick={(event) => handleImgClick(event)}
                   >
                     <T.FormNewArtImgImg src={images} alt="" />
                     <T.FormNewArtImgCover
-                      id="upload-photo"
                       type="file"
+                      id="upload-photo"
                       accept="image/*"
-                      ref={refImages}
                       onChange={(event) => {
-                        handleAdsPicture(event);
+                        event.preventDefault();
+                        const file = event.target.files?.[0];
+                        if (file) {
+                          setImages(file);
+                          handleAdsPicture(file);
+                        }
                       }}
                     ></T.FormNewArtImgCover>
                   </T.FormNewArtImg>
-                  <T.FormNewArtImg onClick={(event) => handleImgClick(event)}>
+                  <T.FormNewArtImg>
                     <T.FormNewArtImgImg src={images} alt="" />
                     <T.FormNewArtImgCover
-                      id="upload-photo"
-                      type="file"
-                      accept="image/*"
-                      onChange={(event) => {}}
+                       type="file"
+                       id="upload-photo"
+                       accept="image/*"
+                       onChange={(event) => {
+                         event.preventDefault();
+                         const file = event.target.files?.[0];
+                         if (file) {
+                           setImages(file);
+                           handleAdsPicture(file);
+                         }
+                       }}
                     ></T.FormNewArtImgCover>
                   </T.FormNewArtImg>
-                  <T.FormNewArtImg onClick={(event) => handleImgClick(event)}>
+                  <T.FormNewArtImg>
                     <T.FormNewArtImgCover
-                      id="upload-photo"
-                      type="file"
-                      accept="image/*"
-                      onChange={(event) => {}}
+                     type="file"
+                     id="upload-photo"
+                     accept="image/*"
+                     onChange={(event) => {
+                       event.preventDefault();
+                       const file = event.target.files?.[0];
+                       if (file) {
+                         setImages(file);
+                         handleAdsPicture(file);
+                       }
+                     }}
                     ></T.FormNewArtImgCover>
                     <T.FormNewArtImgImg src={images} alt="" />
                   </T.FormNewArtImg>
                   <T.FormNewArtImg
-                    id="upload-photo"
-                    onClick={(event) => handleImgClick(event)}
                   >
                     <T.FormNewArtImgCover
-                      id="upload-photo"
-                      type="file"
-                      accept="image/*"
-                      onChange={(event) => {}}
+                     type="file"
+                     id="upload-photo"
+                     accept="image/*"
+                     onChange={(event) => {
+                       event.preventDefault();
+                       const file = event.target.files?.[0];
+                       if (file) {
+                         setImages(file);
+                         handleAdsPicture(file);
+                       }
+                     }}
                     ></T.FormNewArtImgCover>
                     <T.FormNewArtImgImg src={images} alt="" />
                   </T.FormNewArtImg>
                   <T.FormNewArtImg
-                    id="upload-photo"
-                    onClick={(event) => handleImgClick(event)}
                   >
                     <T.FormNewArtImgCover
-                      id="upload-photo"
-                      type="file"
-                      accept="image/*"
-                      onChange={(event) => {}}
+                     type="file"
+                     id="upload-photo"
+                     accept="image/*"
+                     onChange={(event) => {
+                       event.preventDefault();
+                       const file = event.target.files?.[0];
+                       if (file) {
+                         setImages(file);
+                         handleAdsPicture(file);
+                       }
+                     }}
                     ></T.FormNewArtImgCover>
                     <T.FormNewArtImgImg src={images} alt="" />
                   </T.FormNewArtImg>

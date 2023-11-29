@@ -1,70 +1,119 @@
-# Getting Started with Create React App
+# Сайт - аналог Avito
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Дипломная работа
 
-## Available Scripts
+## Примечания по локальному запуску проекта для разработки
 
-In the project directory, you can run:
+Для клонирования репозитория выполните команду:
 
-### `npm start`
+```bash
+git clone https://github.com/Kathrin0202/skyVito.git
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Перед запуском проекта необходимо установить зависимости:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+npm install
+```
 
-### `npm test`
+Запуск проекта:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm run start
+```
 
-### `npm run build`
+Проект будет запущен по адресу: http://localhost:3000
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Backend и защита данных
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+## Стэк библиотек проекта
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Назначение папок и файлов проекта
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+**/public** - статические файлы, доступные для всех пользователей  
+**/components** - компоненты общие для всего проекта
+**/hooks** - хуки неоднократно используемые по всему проекту  
+**/page** - страницы приложения  
+**/store** - файлы, относящиеся к управлению состоянием приложения
+**/style** - глобальные стили приложения
+**/api** - функционал посвященный операциям с API (бэкэндом)  
+**/App** - главный компонент приложения, который объединяет все другие компоненты
+**/firebase** - файлы, связанные с настройкой и взаимодействием с Firebase  
+**/routes** - файлы, относящиеся к маршрутизации в приложении
 
-## Learn More
+## Структура приложения
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Главная страница:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- логотип "SkyFitnessPro" приложения и краткое описание онлайн школы, при клике на логотип осуществляется переход на "Главную страницу"
+- список карточек с названиями всех курсов, имеющихся в базе данных
+- кнопка "Войти", при клике на которую пользователь попадает на страницу авторизации
 
-### Code Splitting
+2. Страница курса:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- описание курса
+- кнопка "Записаться на тренировку", при клике на которую пользователь добавляет выбранный курс тренировок в свой профиль
+- в левом верхнем углу отображается логотип "SkyFitnessPro", при клике на который осуществляется переход на "Главную страницу"
+- в правом верхнем углу отображается имя пользователя(email), при клике на которое осуществляется переход на страницу "Мой профиль"
 
-### Analyzing the Bundle Size
+3. Страница авторизации:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- на данной странице пользователь имеет возможность зарегистрироваться или войти в свой аккаунт
 
-### Making a Progressive Web App
+4. Страница "Мой профиль":
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- логотип приложения и информация о пользователе
+- кнопки для смены логина и пароля
+- кнопка выхода из аккаунта
+- список курсов пользователя с кнопкой "Перейти", при клике на которую открывается модальное окно со всеми тренировками данного курса
+- в правом верхнем углу отображается имя (email) пользователя
+- в левом верхнем углу отображается логотип "SkyFitnessPro", при клике на который осуществляется переход на "Главную страницу"
 
-### Advanced Configuration
+5. Страница тренировки:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- логотип приложения и название курса
+- видео тренировки с названием и кратким описанием, при клике на которые открывается модальное окно со всеми тренировками данного курса
+- список упражнений из базы данных
+- таблица с прогрессом пользователя
+- кнопка "Заполнить свой прогресс" для заполнения прогресса по тренировке
+- в правом верхнем углу отображается имя пользователя(email), при клике на которое осуществляется переход на страницу "Мой профиль"
+- в левом верхнем углу отображается логотип "SkyFitnessPro", при клике на который осуществляется переход на "Главную страницу"
 
-### Deployment
+### Функционал приложения
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [x] Главная страница:
+  - [x] при клике на кнопку "Войти" пользователь попадает на страницу Авторизации, если он еще не авторизован
+  - [x] если пользователь авторизован, то при клике на кнопку "Войти" он сразу попадает на страницу профиля
+  - [x] список карточек выводится в соответствии с названиями всех курсов, имеющихся в базе данных
+  - [x] пока данные прогружаются, пользователь видит скелетоны карточек
+  - [x] при ошибке запроса на странице выводится соответствующая надпись
+  - [x] по клику на выбранный курс пользователь попадает на страницу, где может ознакомиться с его описанием
+  - [x] при нажатии на кнопку "Наверх" страница прокручивается в начало списка доступных курсов
+- [x] Страницы авторизации и регистрации:
+  - [x] настроена валидация полей логина и пароля
+  - [x] при возникновении ошибки выводится соответствующее сообщение
+- [x] Страница профиля пользователя:
+  - [x] при клике на кнопки "Редактировать логин", "Редактировать пароль" появляется модальное окно с возможностью редактировать и сохранять введенные данные. Поскольку требования политики безопасности Firebase требуют, чтобы была свежая регистрация пользователя, то пользователю, возможно, придется авторизоваться снова, чтобы сменить e-mail или пароль
+  - [x] в правом верхнем углу отображается имя пользователя, при клике на которое появляется меню с возможностью остаться на странице профиля, а также выйти из приложения
+  - [x] при клике на кнопку "Перейти" у карточки курса появляется модальное окно с возможностью выбора тренировки
+  - [x] при клике на тренировку пользователь попадает на страницу соответствующей тренировки
+  - [x] есть кнопка "Посмотреть все курсы"
+  - [x] при выборе тренировки, отправляет на страницу training-video с выбранными тренировками
+- [x] Страница тренировки:
+  - [x] пока данные по тренировке прогружаются, пользователь видит скелетоны страницы
+  - [x] в правом верхнем углу отображается имя пользователя, при клике на которое появляется меню с возможностью перейти на страницу профиля, а также выйти из приложения
+  - [x] если открыт курс, которого еще нет у пользователя, появляется кнопка "Записаться на тренировку"
+  - [x] если открыт курс на который пользователь уже записан, появлятеся кнопка перейти в профиль
+  - [x] при клике на название курса появляется модальное окно с возможностью выбрать тренировку
+  - [x] возможность просматривать видео тренировки (play, stop, pause, регулировка громкости)
+  - [x] при клике на кнопку "Заполнить свой прогресс" появляется модальное окно с возможностью ввести данные и сохранить их, при этом уже имеющиеся до этого данные о количестве выполненных повторений отображаются сразу при открытии окна
+  - [x] после сохранения данных появляется модальное окно с надписью "Ваш прогресс засчитан".
+  - [x] в таблице прогресса выводится прогресс в процентах (автоматически рассчитывается после ввода данных пользователем),прогресс отображается и считается из базы данных
+- [x] при попытке авторизованного пользователя зайти на страницу тренировки, которой нет в списке его курсов, пользователю показывается сообщение с кнопкой "Записаться на тренировку".
+- [x] реализована адаптивная верстка
+- [x] Настроен localStorage
+- [x] если пользователь попал на страницу, но не записан на курс (например перешел по прямой ссылке), то у него будет отсутствовать блок прогресса и кнопка записать свой прогресс

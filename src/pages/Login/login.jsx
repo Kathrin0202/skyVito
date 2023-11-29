@@ -31,7 +31,6 @@ export const Login = ({ isLoginMode = true }) => {
     setLogin(true);
     try {
       await loginUser(email, password).then((dat) => {
-        //sessionStorage.setItem("user", JSON.stringify(dat));
         saveTokenToLocalStorage(dat);
         saveUserIdToState(false);
         dispatch(
@@ -41,7 +40,6 @@ export const Login = ({ isLoginMode = true }) => {
             password: password,
           })
         );
-        console.log(dat);
         navigate("/");
       });
     } catch (erro) {

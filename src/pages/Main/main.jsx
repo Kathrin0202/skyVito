@@ -6,6 +6,7 @@ import img from "../../img/logo.png";
 import imgMob from "../../img/logo-mob.png";
 import * as S from "./main.style";
 import noPhoto from "../../img/no-photo.avif";
+
 export const MainPage = ({ ads, isLoading, setAds }) => {
   const [searchType, setSearchType] = useState("");
   const filteredAds = () => {
@@ -22,10 +23,10 @@ export const MainPage = ({ ads, isLoading, setAds }) => {
     if (ads) {
       setAds(ads);
     }
-  }, [ads]);
+  }, [ads, setAds]);
   return (
     <>
-      <Header ads={ads} setAds={setAds} />
+      <Header/>
       <S.MainSearch>
         <S.SearchLogoLink href="#" target="_blank">
           <Link to="/">

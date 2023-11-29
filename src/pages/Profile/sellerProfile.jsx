@@ -1,20 +1,21 @@
 import { useState } from "react";
 import { ContentCard } from "../../components/Cards/cards";
 import { Footer } from "../../components/Footer/footer";
-import { HeaderAuth } from "../../components/Header/header";
+import { HeaderAuth, Header } from "../../components/Header/header";
 import { MainMenu } from "../../components/Menu/menu";
 import noAvatar from "../../img/myprofile.png";
+import { useAuthSelector } from "../../store/slices/auth";
 import * as S from "../../style/App.style";
 import * as T from "./sellerProfile.style";
-export const SellerProfile = ({ userProfile, setUserProfile }) => {
+export const SellerProfile = ({ userProfile, ads, setAds }) => {
   const [showPhone, setShowPhone] = useState(false);
   const clickShowPhone = () => {
     setShowPhone(true);
   };
-
+  const auth = useAuthSelector();
   return (
     <>
-      <HeaderAuth />
+      {auth.isAuth === true ? <HeaderAuth ads={ads} setAds={setAds}/> : <Header />}
       <S.Main>
         <T.MainContainer>
           <T.MainCenterBlock>

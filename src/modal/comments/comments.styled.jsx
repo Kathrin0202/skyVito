@@ -333,11 +333,12 @@ export const ReviewsReview = styled.div`
   display: flex;
   -webkit-box-align: center;
   -ms-flex-align: center;
-  align-items: center;
+  align-items: stretch;
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
   margin: 15px 0;
+  flex-direction: column;
 `;
 
 export const ReviewItem = styled.div`

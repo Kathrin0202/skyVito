@@ -66,13 +66,13 @@ export const userApi = createApi({
       invalidatesTags: "USER_TAG",
     }),
     postAdsImage: builder.mutation({
-      query: ({ token, image, adsId }) => ({
-        url: `/ads/${adsId}/image`,
+      query: ({ token, image, id }) => ({
+        url: `/ads/${id}/image`,
         method: "POST",
         headers: {
           Authorization: `${token.token_type} ${token.access_token}`,
         },
-        body: JSON.stringify({ image }),
+        body: image,
       }),
       invalidatesTags: "USER_TAG",
     }),
@@ -90,10 +90,11 @@ export const userApi = createApi({
       invalidatesTags: "USER_TAG",
     }),
     deleteAdsImages: builder.mutation({
-      query: ({ data, token }) => {
-        const url = data.image.url;
+      query: ({ image, token, id }) => {
+        const url = image?.url;
+        console.log(url);
         return {
-          url: `/ads/${data.id}/image?file_url=${url}`,
+          url: `/ads/${id}/image?file_url=${url}`,
           method: "DELETE",
           headers: {
             "content-type": "application/json",
@@ -103,24 +104,12 @@ export const userApi = createApi({
       },
       invalidatesTags: "USER_TAG",
     }),
-    uploadAdsImage: builder.mutation({
-      query: ({ id, formData, token }) => ({
-        url: `/ads/${id}/image`,
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          Authorization: `${token.token_type} ${token.access_token}`,
-        },
-        body: JSON.stringify({ formData }),
-      }),
-      invalidatesTags: "USER_TAG",
-    }),
     getAllComments: builder.query({
       query: (id) => `/ads/${id}/comments`,
       invalidatesTags: "USER_TAG",
     }),
     addComment: builder.mutation({
-      query: ({ id, text, token }) => ({
+      query: ({ token, text, id }) => ({
         url: `/ads/${id}/comments`,
         method: "POST",
         headers: {
@@ -144,7 +133,6 @@ export const {
   useGetEditAdsMutation,
   useDeleteAdsMutation,
   useDeleteAdsImagesMutation,
-  useUploadAdsImageMutation,
   useGetAllCommentsQuery,
   useAddCommentMutation,
 } = userApi;

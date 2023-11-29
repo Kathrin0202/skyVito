@@ -13,7 +13,7 @@ import {
 import { useRef } from "react";
 import noPhoto from "../../img/myprofile.png";
 
-export const MyProfile = ({ userProfile, setUserProfile }) => {
+export const MyProfile = ({ userProfile, setUserProfile, ads, setAds }) => {
   const [currentProfiled, setCurrentProfiled] = useState(userProfile);
   const [setActive] = useState(true);
   const [img, setImg] = useState(null);
@@ -21,19 +21,15 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
 
   const handleName = (event) => {
     setCurrentProfiled({ ...currentProfiled, name: event.target.value });
-    setActive(false);
   };
   const handleSurname = (event) => {
     setCurrentProfiled({ ...currentProfiled, surname: event.target.value });
-    setActive(false);
   };
   const handleCity = (event) => {
     setCurrentProfiled({ ...currentProfiled, city: event.target.value });
-    setActive(false);
   };
   const handlePhone = (event) => {
     setCurrentProfiled({ ...currentProfiled, phone: event.target.value });
-    setActive(false);
   };
   const handleAvatarClick = (event) => {
     const fileUpload = document.getElementById("file-upload");
@@ -56,7 +52,8 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
     }
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = (event) => {
+    event.preventDefault();
     updateUser(currentProfiled, getTokenFromLocalStorage())
       .then((data) => {
         setUserProfile(data);
@@ -68,7 +65,7 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
 
   return (
     <>
-      <HeaderAuth/>
+      <HeaderAuth setAds={setAds} ads={ads}/>
       <S.Main>
         <T.MainContainer>
           <T.MainCenterBlock>
@@ -178,7 +175,7 @@ export const MyProfile = ({ userProfile, setUserProfile }) => {
                       </T.SettingsDiv>
                       <T.SettingsBtn
                         id="settings-btn"
-                        onClick={handleSaveChanges()}
+                        onClick={(event) => handleSaveChanges(event)}
                       >
                         Сохранить
                       </T.SettingsBtn>

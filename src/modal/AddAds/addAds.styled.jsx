@@ -426,7 +426,7 @@ export const FormNewArtImg = styled.div`
 export const FormNewArtImgImg = styled.img`
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
   -o-object-fit: cover;
   object-fit: cover;
   z-index: 2;
@@ -616,5 +616,23 @@ export const FormNewArtBtnPub = styled.button`
     margin-top: 10px;
     width: 100%;
     height: 46px;
+  }
+`;
+
+export const DeleteImageBtn = styled.button`
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 5px;
+  right: 5px;
+  border: transparent;
+  background-color: transparent;
+  color: red;
+  transition: all 0.3s;
+  color: #fff;
+  font-weight: 700;
+  z-index: 1;
+  &:hover {
+    scale: 1.1;
   }
 `;

@@ -1,46 +1,32 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getTokenFromLocalStorage, updateToken } from "../../api";
+import { getTokenFromLocalStorage } from "../../api";
 import {
   useDeleteAdsImagesMutation,
   useGetAdsByIdQuery,
   useGetEditAdsMutation,
-  useUploadAdsImageMutation,
+  usePostAdsImageMutation,
 } from "../../store/services/auth";
 import * as T from "./addAds.styled";
-export const EditAds = ({ setOpenFormEditAds }) => {
+
+export const EditAds = ({ setOpenFormEditAds, setAds }) => {
   const closeForm = () => {
     setOpenFormEditAds(false);
   };
   const { id } = useParams();
   const { data } = useGetAdsByIdQuery(id);
-  const [editAdvRequest] = useGetEditAdsMutation(id);
-  const [deleteAdvImages] = useDeleteAdsImagesMutation(id);
-  const [uploadAdvImage] = useUploadAdsImageMutation(id);
+  const [editAdsRequest] = useGetEditAdsMutation(id);
+  const [deleteImages] = useDeleteAdsImagesMutation(id);
+  const [postAdsImage] = usePostAdsImageMutation(id);
   const [isLoading, setIsLoading] = useState(true);
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [saveButtonActive, setSaveButtonActive] = useState(true);
-  const [selectedFile, setSelectedFile] = useState(null);
-  useEffect(() => {
-    if (data) {
-      setIsLoading(false);
-      setImages(data.images);
-    }
-  }, [data]);
-
-  const adv = useMemo(() => data || [], [data]);
-
-  useEffect(() => {
-    setTitle(adv.title);
-    setDescription(adv.description);
-    setPrice(adv.price);
-  }, [data]);
 
   const handleSaveChanges = async (event) => {
-    editAdvRequest({
+    editAdsRequest({
       title: title,
       description: description,
       price: price,
@@ -49,28 +35,44 @@ export const EditAds = ({ setOpenFormEditAds }) => {
     });
     setSaveButtonActive(false);
   };
+  const ads = useMemo(() => data || [], [data]);
 
-  const handleImgUpload = (event) => {
-    event.preventDefault();
-    updateToken();
-    const selectedImg = event.target.files[0];
-    setSelectedFile(event.target.files[0]);
-    if (!selectedImg) {
-      console.log("Файл не выбран");
-    } else {
-      const formData = new FormData();
-      formData.append("file", selectedImg);
-      let token = getTokenFromLocalStorage();
-      uploadAdvImage({ formData, id, token });
+  const handleImgUpload = (file) => {
+    const formData = new FormData();
+    if (file) {
+      formData.append("file", file);
+      postAdsImage({
+        token: getTokenFromLocalStorage(),
+        image: formData,
+        id: ads.id,
+      });
       setSaveButtonActive(true);
+      setImages(images);
+    } else {
+      console.log("Файл не найден");
     }
   };
 
-  const handleDeleteAdvImage = (image) => {
-    updateToken();
-    const data = { image, id };
-    deleteAdvImages(data);
+  const handleDeleteImage = (image) => {
+    deleteImages({
+      token: getTokenFromLocalStorage(),
+      image: image,
+      id: ads.id,
+    });
   };
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false);
+      setImages(data.images);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    setTitle(ads.title);
+    setDescription(ads.description);
+    setPrice(ads.price);
+  }, [data]);
 
   const handleAdTitleChange = (event) => {
     setTitle(event.target.value);
@@ -86,6 +88,7 @@ export const EditAds = ({ setOpenFormEditAds }) => {
     setPrice(event.target.value);
     setSaveButtonActive(true);
   };
+  useEffect(() => setAds(data), [data]);
 
   return (
     <T.Wrapper>
@@ -103,7 +106,7 @@ export const EditAds = ({ setOpenFormEditAds }) => {
                   type="text"
                   name="name"
                   id="formName"
-                  placeholder={adv.title}
+                  placeholder={ads.title}
                   onChange={handleAdTitleChange}
                 />
               </T.FormNewArtBlock>
@@ -114,7 +117,7 @@ export const EditAds = ({ setOpenFormEditAds }) => {
                   id="formArea"
                   cols="auto"
                   rows="10"
-                  placeholder={adv.description}
+                  placeholder={ads.description}
                   onChange={handleAdDescriptionChange}
                 ></T.FormNewArtArea>
               </T.FormNewArtBlock>
@@ -124,48 +127,93 @@ export const EditAds = ({ setOpenFormEditAds }) => {
                   <T.FormNewArtPSpan>не более 5 фотографий</T.FormNewArtPSpan>
                 </T.FormNewArtP>
                 <T.FormNewArtBarImg>
-                  {data?.images.map((image, index) => (
-                    <T.FormNewArtImg key={index}>
-                      <T.FormNewArtImgImg
-                        src={
-                          !image.url ? "" : `http://localhost:8090/${image.url}`
+                  {data &&
+                    data.images.map((image, index) => (
+                      <T.FormNewArtImg key={index}>
+                        <T.DeleteImageBtn
+                          onClick={() => handleDeleteImage(image)}
+                        >
+                          x
+                        </T.DeleteImageBtn>
+                        <T.FormNewArtImgImg
+                          src={
+                            !image.url
+                              ? ""
+                              : `http://localhost:8090/${image.url}`
+                          }
+                          alt=""
+                        />
+                      </T.FormNewArtImg>
+                    ))}
+                  <T.FormNewArtImg>
+                    <T.FormNewArtImgCover
+                      type="file"
+                      id="upload-photo"
+                      accept="image/*"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (file) {
+                          setImages(file);
+                          handleImgUpload(file);
                         }
-                        alt=""
-                      />
-                      <T.FormNewArtImgCover></T.FormNewArtImgCover>
-                    </T.FormNewArtImg>
-                  ))}
-                  <T.FormNewArtImg>
-                    <T.FormNewArtImgImg src="" alt="" />
-                    <T.FormNewArtImgCover
-                      type="file"
-                      id="upload-photo"
-                      onChange={handleImgUpload}
+                      }}
                     ></T.FormNewArtImgCover>
                   </T.FormNewArtImg>
                   <T.FormNewArtImg>
                     <T.FormNewArtImgCover
                       type="file"
                       id="upload-photo"
-                      onChange={handleImgUpload}
+                      accept="image/*"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (file) {
+                          setImages(file);
+                          handleImgUpload(file);
+                        }
+                      }}
                     ></T.FormNewArtImgCover>
-                    <T.FormNewArtImgImg src="" alt="" />
                   </T.FormNewArtImg>
                   <T.FormNewArtImg>
                     <T.FormNewArtImgCover
                       type="file"
                       id="upload-photo"
-                      onChange={handleImgUpload}
+                      accept="image/*"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (file) {
+                          setImages(file);
+                          handleImgUpload(file);
+                        }
+                      }}
                     ></T.FormNewArtImgCover>
-                    <T.FormNewArtImgImg src="" alt="" />
                   </T.FormNewArtImg>
                   <T.FormNewArtImg>
                     <T.FormNewArtImgCover
                       type="file"
                       id="upload-photo"
-                      onChange={handleImgUpload}
+                      accept="image/*"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (file) {
+                          setImages(file);
+                          handleImgUpload(file);
+                        }
+                      }}
                     ></T.FormNewArtImgCover>
-                    <T.FormNewArtImgImg src="" alt="" />
+                  </T.FormNewArtImg>
+                  <T.FormNewArtImg>
+                    <T.FormNewArtImgCover
+                      type="file"
+                      id="upload-photo"
+                      accept="image/*"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (file) {
+                          setImages(file);
+                          handleImgUpload(file);
+                        }
+                      }}
+                    ></T.FormNewArtImgCover>
                   </T.FormNewArtImg>
                 </T.FormNewArtBarImg>
               </T.FormNewArtBlock>
@@ -175,6 +223,7 @@ export const EditAds = ({ setOpenFormEditAds }) => {
                   type="text"
                   name="price"
                   id="formName"
+                  accept="image/*"
                   placeholder={data?.price}
                   onChange={handleAdPriceChange}
                 />

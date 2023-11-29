@@ -1,6 +1,6 @@
 import { Footer } from "../../components/Footer/footer";
 import { Link, useParams } from "react-router-dom";
-import { HeaderAuth } from "../../components/Header/header";
+import { HeaderAuth, Header } from "../../components/Header/header";
 import { MainMenu } from "../../components/Menu/menu";
 import * as S from "../../style/App.style";
 import * as T from "./article.styled";
@@ -16,7 +16,7 @@ import { useAuthSelector } from "../../store/slices/auth";
 import { EditAds } from "../../modal/AddAds/editAds";
 import { Comments } from "../../modal/comments/comments";
 import { getTokenFromLocalStorage, updateToken } from "../../api";
-export const Article = () => {
+export const Article = ({ setAds }) => {
   const adsId = parseInt(useParams().id);
   const { data, isLoading } = useGetAdsByIdQuery(adsId);
   const [showPhone, setShowPhone] = useState(false);
@@ -26,48 +26,57 @@ export const Article = () => {
   const auth = useAuthSelector();
   const [openFormEditAds, setOpenFormEditAds] = useState(false);
   const [openFormComments, setOpenFormComments] = useState(false);
-  const [deleteAdv, { isError }] = useDeleteAdsMutation();
+  const [deleteAds, { isError }] = useDeleteAdsMutation();
   const [deleted, setDeleted] = useState(false);
-  const [adComments, setAdvComments] = useState([]);
-  const { data: advComments } = useGetAllCommentsQuery(adsId);
+  const [adComments, setAdsComments] = useState([]);
+  const { data: adsComments } = useGetAllCommentsQuery(adsId);
 
-  const handleDeleteAdv = () => {
+  const handleDeleteAds = () => {
     setDeleted(true);
-    deleteAdv({
+    deleteAds({
       token: getTokenFromLocalStorage(),
       id: adsId,
     });
+    setAds(deleted);
   };
 
   useEffect(() => {
     setDeleted(data);
     if (isError.status === 401) {
-      updateToken(
-        deleteAdv({
-          token: getTokenFromLocalStorage(),
-          id: adsId,
-        })
-      );
+      updateToken();
+      deleteAds({
+        token: getTokenFromLocalStorage(),
+        id: adsId,
+      });
     }
-  }, [isError]);
-  useEffect(() => {
-    if (advComments) {
-      setAdvComments(advComments);
-    }
-  }, [advComments]);
+  }, [isError, adsId, data, deleteAds]);
 
+  useEffect(() => {
+    if (adsComments) {
+      setAdsComments([adsComments]);
+    }
+  }, [adsComments]);
   return (
     <>
       {openFormEditAds && (
-        <EditAds setOpenFormEditAds={setOpenFormEditAds} ads={data} />
+        <EditAds
+          setOpenFormEditAds={setOpenFormEditAds}
+          ads={data}
+          setAds={setAds}
+        />
       )}
       {openFormComments && (
         <Comments
           setOpenFormComments={setOpenFormComments}
-          comments={advComments}
+          comments={adsComments}
+          setAdsComments={setAdsComments}
         />
       )}
-      <HeaderAuth adsData={data} />
+      {auth.isAuth === true ? (
+        <HeaderAuth ads={data} setAds={setAds} />
+      ) : (
+        <Header />
+      )}
       <S.Main>
         <T.MainContainer>
           {isLoading ? (
@@ -120,7 +129,7 @@ export const Article = () => {
                         <T.ArticleLink
                           onClick={() => setOpenFormComments(true)}
                         >
-                          {adComments ? adComments.length : "..."} отзыва
+                          {adsComments ? adsComments.length : "..."} отзыв
                         </T.ArticleLink>
                       </T.ArticleInfo>
                       <T.ArticlePrice>{data.price}.p</T.ArticlePrice>
@@ -131,7 +140,7 @@ export const Article = () => {
                           >
                             Редактировать
                           </T.ArticleBtnReduct>
-                          <T.ArticleBtnRemove onClick={() => handleDeleteAdv()}>
+                          <T.ArticleBtnRemove onClick={() => handleDeleteAds()}>
                             Снять с публикации
                           </T.ArticleBtnRemove>
                         </T.ArticleBtnBlock>

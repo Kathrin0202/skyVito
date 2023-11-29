@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export const host = "http://127.0.0.1:8090";
 
 export const saveTokenToLocalStorage = (token) => {
@@ -19,6 +21,7 @@ export const updateToken = async () => {
     const data = await getToken(token);
     saveTokenToLocalStorage(data);
   } catch (error) {
+    <Link to="login" />;
     throw new Error(`Ошибка при обновлении токена:`);
   }
 };
