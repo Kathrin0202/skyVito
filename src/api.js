@@ -177,7 +177,7 @@ export const uploadUserAvatar = async (avatar, token) => {
   });
 };
 
-export const updatePassword = async (oldPassword, newPassword, token) => {
+export const updatePassword = async ({ oldPassword, newPassword, token }) => {
   return await fetch(`${host}/user/password`, {
     method: "PUT",
     headers: {

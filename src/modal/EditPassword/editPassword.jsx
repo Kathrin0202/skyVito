@@ -30,7 +30,7 @@ export const EditPassword = ({ setOpenFormChangePassword }) => {
     if (newPassword !== repeatPassword) {
       setError("Пароли не совпадают");
     }
-    updatePassword({
+    await updatePassword({
       oldPassword: oldPassword,
       newPassword: newPassword,
       token: getTokenFromLocalStorage(),
@@ -42,8 +42,7 @@ export const EditPassword = ({ setOpenFormChangePassword }) => {
         setError(error.message);
       });
   };
-
-  console.log(newPassword);
+  
   return (
     <T.Wrapper>
       <T.ContainerBg>
