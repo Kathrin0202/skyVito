@@ -6,7 +6,7 @@ import { NotFound } from "../NotFound/notFound";
 import { MyProfile } from "./myprofile";
 import { SellerProfile } from "./sellerProfile";
 
-export const Profiled = () => {
+export const Profiled = (ads, setAds) => {
   const useAuth = useAuthSelector();
   const [userProfile, setUserProfile] = useState(null);
   const userID = useParams().id;
@@ -58,12 +58,21 @@ export const Profiled = () => {
   return (
     <>
       {pageMode === "my-profile" && userProfile && (
-        <MyProfile userProfile={userProfile} setUserProfile={setUserProfile} />
+        <MyProfile
+          userProfile={userProfile}
+          setUserProfile={setUserProfile}
+          ads={ads}
+          setAds={setAds}
+        />
       )}
-    {pageMode === "guest" && userProfile && (
-        <SellerProfile userProfile={userProfile} setUserProfile={setUserProfile} />
+      {pageMode === "guest" && userProfile && (
+        <SellerProfile
+          userProfile={userProfile}
+          ads={ads}
+          setAds={setAds}
+        />
       )}
-      {pageMode === "error" && userProfile && <NotFound/>}
+      {pageMode === "error" && userProfile && <NotFound />}
     </>
   );
 };

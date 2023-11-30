@@ -12,6 +12,7 @@ const initialState = {
   role: "",
   id: 0,
   token: "",
+  isAuth: false,
 };
 
 const authSlice = createSlice({
@@ -27,6 +28,7 @@ const authSlice = createSlice({
       state.sells_from = action.payload.sells_from;
       state.phone = action.payload.phone;
       state.token = action.payload.token;
+      state.isAuth = true;
     },
   },
 });
@@ -34,10 +36,10 @@ export const { setAuth } = authSlice.actions;
 export default authSlice.reducer;
 
 export const useAuthSelector = () => {
-  const { email, id, city, name, surname, sells_from, phone, token } =
+  const { email, id, city, name, surname, sells_from, phone, token, isAuth } =
     useSelector((store) => store.auth);
   return {
-    isAuth: !!id,
+    isAuth,
     email,
     id,
     city,

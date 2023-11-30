@@ -17,7 +17,7 @@ export const Header = () => {
   );
 };
 
-export const HeaderAuth = ({ ads }) => {
+export const HeaderAuth = ({ ads, setAds }) => {
   const navigate = useNavigate();
   const handleClickLogout = () => {
     removeTokenFromLocalStorage();
@@ -27,7 +27,11 @@ export const HeaderAuth = ({ ads }) => {
   return (
     <>
       {openFormAddAds && (
-        <AddAds setOpenFormAddAds={setOpenFormAddAds} ads={ads} />
+        <AddAds
+          setOpenFormAddAds={setOpenFormAddAds}
+          ads={ads}
+          setAds={setAds}
+        />
       )}
       <S.Header>
         <S.HeaderNav>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Footer } from "../../components/Footer/footer";
 import { Header } from "../../components/Header/header";
@@ -6,6 +6,7 @@ import img from "../../img/logo.png";
 import imgMob from "../../img/logo-mob.png";
 import * as S from "./main.style";
 import noPhoto from "../../img/no-photo.avif";
+
 export const MainPage = ({ ads, isLoading, setAds }) => {
   const [searchType, setSearchType] = useState("");
   const filteredAds = () => {
@@ -18,9 +19,14 @@ export const MainPage = ({ ads, isLoading, setAds }) => {
     return filterAds;
   };
   const filterAd = filteredAds();
+  useEffect(() => {
+    if (ads) {
+      setAds(ads);
+    }
+  }, [ads, setAds]);
   return (
     <>
-      <Header ads={ads} setAds={setAds}/>
+      <Header/>
       <S.MainSearch>
         <S.SearchLogoLink href="#" target="_blank">
           <Link to="/">

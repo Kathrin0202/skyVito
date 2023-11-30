@@ -1,70 +1,110 @@
-# Getting Started with Create React App
+# Сайт - аналог Avito
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Дипломная работа
 
-## Available Scripts
+## Примечания по локальному запуску проекта для разработки
 
-In the project directory, you can run:
+Для клонирования репозитория выполните команду:
 
-### `npm start`
+```bash
+git clone https://github.com/Kathrin0202/skyVito.git
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Перед запуском проекта необходимо установить зависимости:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+npm install
+```
 
-### `npm test`
+Запуск проекта:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm run start
+```
 
-### `npm run build`
+Проект будет запущен по адресу: http://localhost:3000
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Backend и защита данных
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Backend находится по адресу http://127.0.0.1:8090/ для запуска потребуется Doker
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Язык проекта
 
-### `npm run eject`
+<div id="socials" aligh="center">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" title="js" width="40" height="40"/>&nbsp;
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" title="html" width="40" height="40"/>&nbsp;
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" title="css" width="40" height="40"/>&nbsp;
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" title="react" width="40" height="40"/>&nbsp;
+</div>
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Стэк библиотек проекта
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+React
+React Scripts
+React Router Dom
+React Redux
+Styled Components
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Назначение папок и файлов проекта
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+**/components** - компоненты общие для всего проекта
+**/img** - картинки, доступные для всех пользователей  
+**/modal** - модульные окна приложения, которые открываются поверх основной страницы
+**/pages** - страницы приложения  
+**/store** - файлы, относящиеся к управлению состоянием приложения
+**/style** - глобальные стили приложения
+**/api** - функционал посвященный операциям с API (бэкэндом)  
+**/App** - главный компонент приложения, который объединяет все другие компоненты
+**/protector-routes** - частный маршрут, для авторизованного пользователя
 
-## Learn More
+## Структура приложения
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Главная страница:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- список объявлений, имеющихся в базе данных
+- кнопка "Вход в личный кабинет", при клике на которую пользователь попадает на страницу авторизации
+- окно поиска по объявлениям
 
-### Code Splitting
+2. Страница объявления:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- описание товара, цена, информация о продавце
+- кнопка "Показать телефон", при клике на которую пользователь может увидеть телефон продавца
+- кнопка "Вернуться на главную" ведет на главную страницу
 
-### Analyzing the Bundle Size
+Если пользователь авторизован и он зашел в свое объявление:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- кнопка "Редактировать" - пользователь может редактировать объявление
+- кнопка "Удалить" - пользователь может удалить объявление
 
-### Making a Progressive Web App
+3. Страница авторизации:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- на данной странице пользователь имеет возможность зарегистрироваться или войти в свой аккаунт
 
-### Advanced Configuration
+4. Страница "Личный кабинет": (доступна только для авторизованного пользователя)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- кнопка "Вернуться на главную" ведет на главную страницу
+- кнопки для смены пароля
+- кнопка сохранить изменение о пользователе
+- список объявлений пользователя, ведет на страницу объявления
 
-### Deployment
+5. Страница "Профиль продавца":
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- кнопка "Вернуться на главную" ведет на главную страницу
+- информация о пользователе
+- список объявлений пользователя, ведет на страницу объявления
 
-### `npm run build` fails to minify
+### Функционал приложения
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [x] Если пользователь авторизован:
+
+  - [x] может редактировать свои данные
+  - [x] может просматривать объявления
+  - [x] может просматривать профиль продавца
+  - [x] может редактировать объявление
+  - [x] может создавать новое объявление
+  - [x] оставлять комментарии
+
+- [x] Если пользователь не авторизован:
+  - [x] может просматривать объявления
+  - [x] просматривать комментарии
+  - [x] может просматривать профиль продавца

@@ -1,25 +1,38 @@
 import { Link } from "react-router-dom";
 import * as S from "./footer.styled";
-export const Footer = () => {
+import img01 from "../../img/icon_01.png";
+import img02 from "../../img/icon_02.png";
+import img03 from "../../img/icon_03.png";
+import { AddAds } from "../../modal/AddAds/addAds";
+import { useState } from "react";
+export const Footer = ({ ads }) => {
+  const [openFormAddAds, setOpenFormAddAds] = useState(false);
   return (
-    <S.Footer>
-      <S.FooterContainer>
-        <S.FooterImg>
-          <Link to={"/"}>
-            <S.Img src="img/icon_01.png" alt="home" />
-          </Link>
-        </S.FooterImg>
-        <S.FooterImg>
-          <Link to={"/login"}>
-            <S.Img src="img/icon_02.png" alt="add" />
-          </Link>
-        </S.FooterImg>
-        <S.FooterImg>
-          <Link to={"/login"}>
-            <S.Img src="img/icon_03.png" alt="login" />
-          </Link>
-        </S.FooterImg>
-      </S.FooterContainer>
-    </S.Footer>
+    <>
+      {openFormAddAds && (
+        <AddAds setOpenFormAddAds={setOpenFormAddAds} ads={ads} />
+      )}
+      <S.Footer>
+        <S.FooterContainer>
+          <S.FooterImg>
+            <Link to={"/"}>
+              <S.Img src={img01} alt="home" />
+            </Link>
+          </S.FooterImg>
+          <S.FooterImg>
+            <S.Img
+              src={img02}
+              alt="add"
+              onClick={() => setOpenFormAddAds(true)}
+            />
+          </S.FooterImg>
+          <S.FooterImg>
+            <Link to={"/login"}>
+              <S.Img src={img03} alt="login" />
+            </Link>
+          </S.FooterImg>
+        </S.FooterContainer>
+      </S.Footer>
+    </>
   );
 };

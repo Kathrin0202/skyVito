@@ -426,7 +426,7 @@ export const FormNewArtImg = styled.div`
 export const FormNewArtImgImg = styled.img`
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
   -o-object-fit: cover;
   object-fit: cover;
   z-index: 2;
@@ -439,14 +439,19 @@ export const FormNewArtImgImg = styled.img`
   }
 `;
 
-export const FormNewArtImgCover = styled.div`
+export const FormNewArtImgCover = styled.input`
+  &::-webkit-file-upload-button {
+    visibility: hidden;
+  }
+  content: "Файл";
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
   background-color: #f0f0f0;
-  z-index: -1;
+  z-index: -2;
+  cursor: pointer;
   &::after {
     content: "";
     position: absolute;
@@ -611,5 +616,23 @@ export const FormNewArtBtnPub = styled.button`
     margin-top: 10px;
     width: 100%;
     height: 46px;
+  }
+`;
+
+export const DeleteImageBtn = styled.button`
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 5px;
+  right: 5px;
+  border: transparent;
+  background-color: transparent;
+  color: red;
+  transition: all 0.3s;
+  color: #fff;
+  font-weight: 700;
+  z-index: 1;
+  &:hover {
+    scale: 1.1;
   }
 `;

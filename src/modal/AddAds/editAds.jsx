@@ -1,86 +1,101 @@
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getTokenFromLocalStorage, updateToken } from "../../api";
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
+import { getTokenFromLocalStorage } from "../../api";
 import {
-  useGetAddAdsMutation,
+  useDeleteAdsImagesMutation,
+  useGetAdsByIdQuery,
+  useGetEditAdsMutation,
   usePostAdsImageMutation,
 } from "../../store/services/auth";
 import * as T from "./addAds.styled";
-export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
-  const [postAdsText, { data, isError, isStatus }] = useGetAddAdsMutation();
-  const refName = useRef(null);
-  const refDescription = useRef(null);
-  const refPrice = useRef(null);
-  const refImages = useRef(null);
-  const [adsState, setAdsState] = useState();
-  const navigate = useNavigate();
-  const addImg = document.getElementById("upload-photo");
-  const [images, setImages] = useState([addImg]);
-  const [postAdsImg] = usePostAdsImageMutation();
 
-  const updateAdsState = (value, field) => {
-    setAdsState({ ...adsState, [field]: value });
-  };
+export const EditAds = ({ setOpenFormEditAds }) => {
   const closeForm = () => {
-    setOpenFormAddAds(false);
+    setOpenFormEditAds(false);
   };
-  const handleClickPublic = (event) => {
-    event.preventDefault();
-    if (refName.current && refDescription.current && refPrice.current) {
-      postAdsText({
-        token: getTokenFromLocalStorage(),
-        ads: {
-          title: refName.current.value,
-          description: refDescription.current.value,
-          price: refPrice.current.value,
-        },
-      });
-    }
-  };
+  const { id } = useParams();
+  const { data } = useGetAdsByIdQuery(id);
+  const [editAdsRequest] = useGetEditAdsMutation(id);
+  const [deleteImages] = useDeleteAdsImagesMutation(id);
+  const [postAdsImage] = usePostAdsImageMutation(id);
+  const [images, setImages] = useState(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [saveButtonActive, setSaveButtonActive] = useState(true);
 
-  const handleAdsPicture = (event) => {
-    if (refImages.current?.files) {
-      const file = refImages.current.files[0];
-      const formData = new FormData();
+  const handleSaveChanges = async (event) => {
+    editAdsRequest({
+      title: title,
+      description: description,
+      price: price,
+      id: id,
+      token: getTokenFromLocalStorage(),
+    });
+    setTitle(title);
+    setDescription(description);
+    setPrice(price);
+    setSaveButtonActive(false);
+  };
+  const ads = useMemo(() => data || [], [data]);
+
+  const handleImgUpload = (file) => {
+    const formData = new FormData();
+    if (file) {
       formData.append("file", file);
-      postAdsImg({
+      postAdsImage({
         token: getTokenFromLocalStorage(),
         image: formData,
         id: ads.id,
       });
-      setImages(formData);
+      setSaveButtonActive(true);
+      setImages(images);
+    } else {
+      console.log("Файл не найден");
     }
   };
 
+  const handleDeleteImage = (image) => {
+    deleteImages({
+      token: getTokenFromLocalStorage(),
+      image: image,
+      id: ads.id,
+    });
+  };
+
   useEffect(() => {
-    if (isStatus === "fulfilled" && data) {
-      navigate(`/ads/${data.id}`);
-      setOpenFormAddAds(false);
+    if (data) {
+      setImages(data.images);
     }
-    if (isError.status === 401) {
-      updateToken();
-      if (refName.current && refDescription.current && refPrice.current) {
-        if (refName.current.value) {
-          postAdsText({
-            token: getTokenFromLocalStorage(),
-            ads: {
-              title: refName.current.value,
-              description: refDescription.current.value,
-              price: refPrice.current.value
-                ? parseInt(refPrice.current.value)
-                : 0,
-            },
-          });
-        }
-      }
-    }
-  }, [isError]);
+  }, [data]);
+
+  useEffect(() => {
+    setTitle(ads.title);
+    setDescription(ads.description);
+    setPrice(ads.price);
+  }, [data]);
+
+  const handleAdTitleChange = (event) => {
+    setTitle(event.target.value);
+    setSaveButtonActive(true);
+  };
+
+  const handleAdDescriptionChange = (event) => {
+    setDescription(event.target.value);
+    setSaveButtonActive(true);
+  };
+
+  const handleAdPriceChange = (event) => {
+    setPrice(event.target.value);
+    setSaveButtonActive(true);
+  };
+
   return (
     <T.Wrapper>
       <T.ContainerBg>
         <T.ModalBlock>
           <T.ModalContent>
-            <T.ModalTitle>Новое объявление</T.ModalTitle>
+            <T.ModalTitle>Редактировать объявление</T.ModalTitle>
             <T.ModalBtnClose>
               <T.ModalBtnCloseLine onClick={closeForm}></T.ModalBtnCloseLine>
             </T.ModalBtnClose>
@@ -88,28 +103,22 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
               <T.FormNewArtBlock>
                 <T.FormNewArtLabel htmlFor="name">Название</T.FormNewArtLabel>
                 <T.FormNewArtInput
-                  ref={refName}
                   type="text"
                   name="name"
                   id="formName"
-                  placeholder="Введите название"
-                  onChange={(event) => {
-                    updateAdsState(event.target.value, "title");
-                  }}
+                  placeholder={ads.title}
+                  onChange={handleAdTitleChange}
                 />
               </T.FormNewArtBlock>
               <T.FormNewArtBlock>
                 <T.FormNewArtLabel htmlFor="text">Описание</T.FormNewArtLabel>
                 <T.FormNewArtArea
-                  ref={refDescription}
                   name="text"
                   id="formArea"
                   cols="auto"
                   rows="10"
-                  placeholder="Введите описание"
-                  onChange={(event) => {
-                    updateAdsState(event.target.value, "description");
-                  }}
+                  placeholder={ads.description}
+                  onChange={handleAdDescriptionChange}
                 ></T.FormNewArtArea>
               </T.FormNewArtBlock>
               <T.FormNewArtBlock>
@@ -118,17 +127,34 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
                   <T.FormNewArtPSpan>не более 5 фотографий</T.FormNewArtPSpan>
                 </T.FormNewArtP>
                 <T.FormNewArtBarImg>
+                  {data &&
+                    data.images.map((image, index) => (
+                      <T.FormNewArtImg key={index}>
+                        <T.DeleteImageBtn
+                          onClick={() => handleDeleteImage(image)}
+                        >
+                          x
+                        </T.DeleteImageBtn>
+                        <T.FormNewArtImgImg
+                          src={
+                            !image.url
+                              ? ""
+                              : `http://localhost:8090/${image.url}`
+                          }
+                          alt=""
+                        />
+                      </T.FormNewArtImg>
+                    ))}
                   <T.FormNewArtImg>
                     <T.FormNewArtImgCover
                       type="file"
                       id="upload-photo"
                       accept="image/*"
                       onChange={(event) => {
-                        event.preventDefault();
                         const file = event.target.files?.[0];
                         if (file) {
                           setImages(file);
-                          handleAdsPicture(file);
+                          handleImgUpload(file);
                         }
                       }}
                     ></T.FormNewArtImgCover>
@@ -139,11 +165,10 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
                       id="upload-photo"
                       accept="image/*"
                       onChange={(event) => {
-                        event.preventDefault();
                         const file = event.target.files?.[0];
                         if (file) {
                           setImages(file);
-                          handleAdsPicture(file);
+                          handleImgUpload(file);
                         }
                       }}
                     ></T.FormNewArtImgCover>
@@ -154,11 +179,10 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
                       id="upload-photo"
                       accept="image/*"
                       onChange={(event) => {
-                        event.preventDefault();
                         const file = event.target.files?.[0];
                         if (file) {
                           setImages(file);
-                          handleAdsPicture(file);
+                          handleImgUpload(file);
                         }
                       }}
                     ></T.FormNewArtImgCover>
@@ -169,11 +193,10 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
                       id="upload-photo"
                       accept="image/*"
                       onChange={(event) => {
-                        event.preventDefault();
                         const file = event.target.files?.[0];
                         if (file) {
                           setImages(file);
-                          handleAdsPicture(file);
+                          handleImgUpload(file);
                         }
                       }}
                     ></T.FormNewArtImgCover>
@@ -184,11 +207,10 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
                       id="upload-photo"
                       accept="image/*"
                       onChange={(event) => {
-                        event.preventDefault();
                         const file = event.target.files?.[0];
                         if (file) {
                           setImages(file);
-                          handleAdsPicture(file);
+                          handleImgUpload(file);
                         }
                       }}
                     ></T.FormNewArtImgCover>
@@ -201,19 +223,15 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
                   type="text"
                   name="price"
                   id="formName"
-                  ref={refPrice}
-                  onChange={(event) => {
-                    updateAdsState(event.target.value, "price");
-                  }}
+                  accept="image/*"
+                  placeholder={data?.price}
+                  onChange={handleAdPriceChange}
                 />
                 <T.FormNewArtInputPriceCover></T.FormNewArtInputPriceCover>
               </T.FormNewArtBlockPrice>
 
-              <T.FormNewArtBtnPub
-                id="btnPublish"
-                onClick={(event) => handleClickPublic(event)}
-              >
-                Опубликовать
+              <T.FormNewArtBtnPub id="btnPublish" onClick={handleSaveChanges}>
+                Сохранить
               </T.FormNewArtBtnPub>
             </T.ModalFormNewArt>
           </T.ModalContent>

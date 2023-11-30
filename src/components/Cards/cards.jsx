@@ -4,7 +4,7 @@ import * as T from "./card.styled";
 import noPhoto from "../../img/no-photo.avif";
 import { useGetAllUserAdsQuery } from "../../store/services/auth";
 export const ContentCard = ({ userId }) => {
-  const [data1, setDataAds] = useState(null);
+  const [dataAds, setDataAds] = useState(null);
   const { data } = useGetAllUserAdsQuery(userId);
   useEffect(() => {
     setDataAds(data);
@@ -14,8 +14,8 @@ export const ContentCard = ({ userId }) => {
     <>
       {data?.length !== 0 ? (
         <T.ContentCards>
-          {data1 &&
-            data1.map((item) => (
+          {dataAds &&
+            dataAds.map((item) => (
               <T.CardsItem key={item.id}>
                 <T.CardsCard>
                   <T.CardImage>
