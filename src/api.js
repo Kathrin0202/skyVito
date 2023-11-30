@@ -21,7 +21,6 @@ export const updateToken = async () => {
     const data = await getToken(token);
     saveTokenToLocalStorage(data);
   } catch (error) {
-    <Link to="login" />;
     throw new Error(`Ошибка при обновлении токена:`);
   }
 };
@@ -38,6 +37,7 @@ export async function getUser(token) {
     return response.json();
   } else if (response.status === 401) {
     updateToken();
+    <Link to="login" />;
   }
   throw new Error("Нет авторизации");
 }
@@ -172,6 +172,33 @@ export const uploadUserAvatar = async (avatar, token) => {
     if (response.status === 401) {
       updateToken();
       return uploadUserAvatar(avatar, getTokenFromLocalStorage());
+    }
+    throw new Error("Неизвестная ошибка, попробуйте позже");
+  });
+};
+
+export const updatePassword = async (oldPassword, newPassword, token) => {
+  return await fetch(`${host}/user/password`, {
+    method: "PUT",
+    headers: {
+      "content-type": "application/json",
+      Authorization: `${token.token_type} ${token.access_token}`,
+    },
+    body: JSON.stringify({
+      password_1: oldPassword,
+      password_2: newPassword,
+    }),
+  }).then((response) => {
+    if (response.status === 200) {
+      return response.json();
+    }
+    if (response.status === 401) {
+      updateToken();
+      return updatePassword(
+        oldPassword,
+        newPassword,
+        getTokenFromLocalStorage()
+      );
     }
     throw new Error("Неизвестная ошибка, попробуйте позже");
   });

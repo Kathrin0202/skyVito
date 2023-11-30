@@ -20,6 +20,7 @@ export const Article = ({ setAds }) => {
   const adsId = parseInt(useParams().id);
   const { data, isLoading } = useGetAdsByIdQuery(adsId);
   const [showPhone, setShowPhone] = useState(false);
+  
   const clickShowPhone = () => {
     setShowPhone(true);
   };
@@ -37,7 +38,6 @@ export const Article = ({ setAds }) => {
       token: getTokenFromLocalStorage(),
       id: adsId,
     });
-    setAds(deleted);
   };
 
   useEffect(() => {
@@ -56,6 +56,7 @@ export const Article = ({ setAds }) => {
       setAdsComments([adsComments]);
     }
   }, [adsComments]);
+
   return (
     <>
       {openFormEditAds && (

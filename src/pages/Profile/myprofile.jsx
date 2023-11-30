@@ -12,30 +12,37 @@ import {
 } from "../../api";
 import { useRef } from "react";
 import noPhoto from "../../img/myprofile.png";
+import { EditPassword } from "../../modal/EditPassword/editPassword";
 
 export const MyProfile = ({ userProfile, setUserProfile, ads, setAds }) => {
   const [currentProfiled, setCurrentProfiled] = useState(userProfile);
-  const [setActive] = useState(true);
   const [img, setImg] = useState(null);
   const profiledRef = useRef();
+  const [openFormChangePassword, setOpenFormChangePassword] = useState(false);
 
   const handleName = (event) => {
+    event.preventDefault();
     setCurrentProfiled({ ...currentProfiled, name: event.target.value });
   };
   const handleSurname = (event) => {
+    event.preventDefault();
     setCurrentProfiled({ ...currentProfiled, surname: event.target.value });
   };
   const handleCity = (event) => {
+    event.preventDefault();
     setCurrentProfiled({ ...currentProfiled, city: event.target.value });
   };
   const handlePhone = (event) => {
+    event.preventDefault();
     setCurrentProfiled({ ...currentProfiled, phone: event.target.value });
   };
+
   const handleAvatarClick = (event) => {
     const fileUpload = document.getElementById("file-upload");
     fileUpload.click();
     setCurrentProfiled({ ...currentProfiled, avatar: event.target.value });
   };
+
   const handleAvatarUpload = (file) => {
     const formData = new FormData();
     if (file) {
@@ -65,7 +72,10 @@ export const MyProfile = ({ userProfile, setUserProfile, ads, setAds }) => {
 
   return (
     <>
-      <HeaderAuth setAds={setAds} ads={ads}/>
+      {openFormChangePassword && (
+        <EditPassword setOpenFormChangePassword={setOpenFormChangePassword} />
+      )}
+      <HeaderAuth setAds={setAds} ads={ads} />
       <S.Main>
         <T.MainContainer>
           <T.MainCenterBlock>
@@ -178,6 +188,14 @@ export const MyProfile = ({ userProfile, setUserProfile, ads, setAds }) => {
                         onClick={(event) => handleSaveChanges(event)}
                       >
                         Сохранить
+                      </T.SettingsBtn>
+                      <T.SettingsBtn
+                        onClick={(event) => {
+                          event.preventDefault();
+                          setOpenFormChangePassword(true);
+                        }}
+                      >
+                        Изменить пароль
                       </T.SettingsBtn>
                     </T.SettingsForm>
                   </T.SettingsRight>

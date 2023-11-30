@@ -9,7 +9,7 @@ import {
 } from "../../store/services/auth";
 import * as T from "./addAds.styled";
 
-export const EditAds = ({ setOpenFormEditAds, setAds }) => {
+export const EditAds = ({ setOpenFormEditAds }) => {
   const closeForm = () => {
     setOpenFormEditAds(false);
   };
@@ -18,7 +18,6 @@ export const EditAds = ({ setOpenFormEditAds, setAds }) => {
   const [editAdsRequest] = useGetEditAdsMutation(id);
   const [deleteImages] = useDeleteAdsImagesMutation(id);
   const [postAdsImage] = usePostAdsImageMutation(id);
-  const [isLoading, setIsLoading] = useState(true);
   const [images, setImages] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -33,6 +32,9 @@ export const EditAds = ({ setOpenFormEditAds, setAds }) => {
       id: id,
       token: getTokenFromLocalStorage(),
     });
+    setTitle(title);
+    setDescription(description);
+    setPrice(price);
     setSaveButtonActive(false);
   };
   const ads = useMemo(() => data || [], [data]);
@@ -63,7 +65,6 @@ export const EditAds = ({ setOpenFormEditAds, setAds }) => {
 
   useEffect(() => {
     if (data) {
-      setIsLoading(false);
       setImages(data.images);
     }
   }, [data]);
@@ -88,7 +89,6 @@ export const EditAds = ({ setOpenFormEditAds, setAds }) => {
     setPrice(event.target.value);
     setSaveButtonActive(true);
   };
-  useEffect(() => setAds(data), [data]);
 
   return (
     <T.Wrapper>

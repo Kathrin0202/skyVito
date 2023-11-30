@@ -7,7 +7,6 @@ import {
 } from "../../store/services/auth";
 import * as T from "./addAds.styled";
 export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
-
   const [postAdsText, { data, isError, isStatus }] = useGetAddAdsMutation();
   const refName = useRef(null);
   const refDescription = useRef(null);
@@ -36,10 +35,7 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
           price: refPrice.current.value,
         },
       });
-    } else {
-      refName.current.classList.add("--error-input");
     }
-    setAds(ads);
   };
 
   const handleAdsPicture = (event) => {
@@ -122,9 +118,7 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
                   <T.FormNewArtPSpan>не более 5 фотографий</T.FormNewArtPSpan>
                 </T.FormNewArtP>
                 <T.FormNewArtBarImg>
-                  <T.FormNewArtImg
-                  >
-                    <T.FormNewArtImgImg src={images} alt="" />
+                  <T.FormNewArtImg>
                     <T.FormNewArtImgCover
                       type="file"
                       id="upload-photo"
@@ -140,70 +134,64 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
                     ></T.FormNewArtImgCover>
                   </T.FormNewArtImg>
                   <T.FormNewArtImg>
-                    <T.FormNewArtImgImg src={images} alt="" />
                     <T.FormNewArtImgCover
-                       type="file"
-                       id="upload-photo"
-                       accept="image/*"
-                       onChange={(event) => {
-                         event.preventDefault();
-                         const file = event.target.files?.[0];
-                         if (file) {
-                           setImages(file);
-                           handleAdsPicture(file);
-                         }
-                       }}
+                      type="file"
+                      id="upload-photo"
+                      accept="image/*"
+                      onChange={(event) => {
+                        event.preventDefault();
+                        const file = event.target.files?.[0];
+                        if (file) {
+                          setImages(file);
+                          handleAdsPicture(file);
+                        }
+                      }}
                     ></T.FormNewArtImgCover>
                   </T.FormNewArtImg>
                   <T.FormNewArtImg>
                     <T.FormNewArtImgCover
-                     type="file"
-                     id="upload-photo"
-                     accept="image/*"
-                     onChange={(event) => {
-                       event.preventDefault();
-                       const file = event.target.files?.[0];
-                       if (file) {
-                         setImages(file);
-                         handleAdsPicture(file);
-                       }
-                     }}
+                      type="file"
+                      id="upload-photo"
+                      accept="image/*"
+                      onChange={(event) => {
+                        event.preventDefault();
+                        const file = event.target.files?.[0];
+                        if (file) {
+                          setImages(file);
+                          handleAdsPicture(file);
+                        }
+                      }}
                     ></T.FormNewArtImgCover>
-                    <T.FormNewArtImgImg src={images} alt="" />
                   </T.FormNewArtImg>
-                  <T.FormNewArtImg
-                  >
+                  <T.FormNewArtImg>
                     <T.FormNewArtImgCover
-                     type="file"
-                     id="upload-photo"
-                     accept="image/*"
-                     onChange={(event) => {
-                       event.preventDefault();
-                       const file = event.target.files?.[0];
-                       if (file) {
-                         setImages(file);
-                         handleAdsPicture(file);
-                       }
-                     }}
+                      type="file"
+                      id="upload-photo"
+                      accept="image/*"
+                      onChange={(event) => {
+                        event.preventDefault();
+                        const file = event.target.files?.[0];
+                        if (file) {
+                          setImages(file);
+                          handleAdsPicture(file);
+                        }
+                      }}
                     ></T.FormNewArtImgCover>
-                    <T.FormNewArtImgImg src={images} alt="" />
                   </T.FormNewArtImg>
-                  <T.FormNewArtImg
-                  >
+                  <T.FormNewArtImg>
                     <T.FormNewArtImgCover
-                     type="file"
-                     id="upload-photo"
-                     accept="image/*"
-                     onChange={(event) => {
-                       event.preventDefault();
-                       const file = event.target.files?.[0];
-                       if (file) {
-                         setImages(file);
-                         handleAdsPicture(file);
-                       }
-                     }}
+                      type="file"
+                      id="upload-photo"
+                      accept="image/*"
+                      onChange={(event) => {
+                        event.preventDefault();
+                        const file = event.target.files?.[0];
+                        if (file) {
+                          setImages(file);
+                          handleAdsPicture(file);
+                        }
+                      }}
                     ></T.FormNewArtImgCover>
-                    <T.FormNewArtImgImg src={images} alt="" />
                   </T.FormNewArtImg>
                 </T.FormNewArtBarImg>
               </T.FormNewArtBlock>

@@ -465,7 +465,6 @@ export const ModalBtnReg = styled.button`
   background-color: #009ee4;
   border-radius: 6px;
   border: none;
-  margin-top: 30px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -518,4 +517,15 @@ export const Error = styled.div`
   line-height: 24px;
   margin-top: 20px;
   text-align: left;
+`;
+
+export const ModalBlockText = styled.p`
+  font-size: 16px;
+  line-height: 32px;
+  color: #000000;
+  @media screen and (max-width: 600px) {
+    font-size: 14px;
+    line-height: 28px;
+    color: #000000;
+  }
 `;

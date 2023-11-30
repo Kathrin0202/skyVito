@@ -4,7 +4,7 @@ import { useAddCommentMutation } from "../../store/services/auth";
 import { useEffect, useState } from "react";
 import { getTokenFromLocalStorage, updateToken } from "../../api";
 import { useAuthSelector } from "../../store/slices/auth";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 export const Comments = ({
   setOpenFormComments,
   comments = [],
@@ -18,7 +18,7 @@ export const Comments = ({
   const [setError] = useState(null);
   const auth = useAuthSelector();
   const id = useParams().id;
-  
+
   const handleAddComment = async (event) => {
     event.preventDefault();
     if (!newComment) {
@@ -59,9 +59,10 @@ export const Comments = ({
                 <T.ModalBtnCloseLine onClick={closeForm}></T.ModalBtnCloseLine>
               </T.ModalBtnClose>
               <T.ModalScroll>
-                {!auth ? (
+                {auth.isAuth === false ? (
                   <T.FormNewArt>
-                    Для того чтобы оставить отзыв, авторизуйтесь
+                    Для того чтобы оставить отзыв,{" "}
+                    <Link to={"/login"}>авторизуйтесь </Link>
                   </T.FormNewArt>
                 ) : (
                   <T.ModalFormNewArt id="formNewArt" action="#">

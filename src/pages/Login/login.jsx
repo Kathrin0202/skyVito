@@ -9,7 +9,7 @@ import {
   saveTokenToLocalStorage,
 } from "../../api";
 import { setAuth } from "../../store/slices/auth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { saveUserIdToState } from "../../App";
 
 export const Login = ({ isLoginMode = true }) => {
@@ -233,6 +233,9 @@ export const Registration = ({ isLoginMode = false }) => {
               Зарегистрироваться
             </S.ModalBtnRegLink>
           </S.ModalBtnReg>
+          <S.ModalBlockText>
+            Уже есть аккаунт, <Link to={"/login"}>войдите</Link>
+          </S.ModalBlockText>
         </S.ModalFormReg>
       </S.ModalBlockRegister>
     </S.ContainerEnter>
