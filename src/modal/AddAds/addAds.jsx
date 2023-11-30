@@ -13,13 +13,14 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
   const refPrice = useRef(null);
   const refImages = useRef(null);
   const [adsState, setAdsState] = useState();
-  const navigate = useNavigate();
   const addImg = document.getElementById("upload-photo");
   const [images, setImages] = useState([addImg]);
   const [postAdsImg] = usePostAdsImageMutation();
+  const [saveButtonActive, setSaveButtonActive] = useState(true);
 
   const updateAdsState = (value, field) => {
     setAdsState({ ...adsState, [field]: value });
+    setSaveButtonActive(true);
   };
   const closeForm = () => {
     setOpenFormAddAds(false);
@@ -37,6 +38,7 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
         },
       });
       setAdsState(adsState);
+      setSaveButtonActive(false);
       setOpenFormAddAds(false);
     }
   };
@@ -53,6 +55,7 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
       });
       setImages(formData);
       setOpenFormAddAds(false);
+      setSaveButtonActive(false);
     }
   };
 
@@ -73,6 +76,7 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
           });
           setAdsState(adsState);
           setOpenFormAddAds(false);
+          setSaveButtonActive(false);
         }
       }
     }
