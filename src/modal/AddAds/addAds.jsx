@@ -24,6 +24,7 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
   const closeForm = () => {
     setOpenFormAddAds(false);
   };
+
   const handleClickPublic = (event) => {
     event.preventDefault();
     if (refName.current && refDescription.current && refPrice.current) {
@@ -35,6 +36,7 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
           price: refPrice.current.value,
         },
       });
+      setAdsState(adsState)
     }
   };
 
@@ -75,6 +77,8 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
       }
     }
   }, [isError]);
+
+  
   return (
     <T.Wrapper>
       <T.ContainerBg>
