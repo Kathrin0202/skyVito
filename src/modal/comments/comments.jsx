@@ -32,7 +32,7 @@ export const Comments = ({
         id: id,
       });
     }
-    setNewComment(newComment);
+    setAdsComments(newComment);
   };
 
   useEffect(() => {
