@@ -1,6 +1,7 @@
 import * as T from "../AddAds/addAds.styled";
 import { getTokenFromLocalStorage, updatePassword } from "../../api";
-import { useRef, useState } from "react";
+import { useState } from "react";
+import { saveUserIdToState } from "../../App";
 
 export const EditPassword = ({ setOpenFormChangePassword }) => {
   const [error, setError] = useState(null);
@@ -26,23 +27,21 @@ export const EditPassword = ({ setOpenFormChangePassword }) => {
     setSaveButton(true);
   };
 
-  const handleSaveChange = async () => {
+  const handleSaveChange = (event) => {
+    event.preventDefault();
     if (newPassword !== repeatPassword) {
       setError("Пароли не совпадают");
     }
-    await updatePassword({
-      oldPassword: oldPassword,
-      newPassword: newPassword,
-      token: getTokenFromLocalStorage(),
-    })
+    const token = getTokenFromLocalStorage();
+    updatePassword(oldPassword, newPassword, token)
       .then(() => {
-        setSaveButton(false);
+        setOpenFormChangePassword(false);
       })
       .catch((error) => {
         setError(error.message);
       });
   };
-  
+
   return (
     <T.Wrapper>
       <T.ContainerBg>
@@ -52,47 +51,35 @@ export const EditPassword = ({ setOpenFormChangePassword }) => {
             <T.ModalBtnClose>
               <T.ModalBtnCloseLine onClick={closeForm}></T.ModalBtnCloseLine>
             </T.ModalBtnClose>
-            <T.ModalFormNewArt id="formNewArt" action="#">
+            <T.ModalFormNewArt>
               <T.FormNewArtBlock>
-                <T.FormNewArtLabel htmlFor="name">
-                  Старый пароль
-                </T.FormNewArtLabel>
+                <T.FormNewArtLabel>Старый пароль</T.FormNewArtLabel>
                 <T.FormNewArtInput
                   type="password"
                   name="oldPassword"
-                  id="formName"
                   placeholder="Введите старый пароль"
                   onChange={(event) => handleOldPasswordChange(event)}
                 />
               </T.FormNewArtBlock>
               <T.FormNewArtBlock>
-                <T.FormNewArtLabel htmlFor="name">
-                  Новый пароль
-                </T.FormNewArtLabel>
+                <T.FormNewArtLabel>Новый пароль</T.FormNewArtLabel>
                 <T.FormNewArtInput
                   type="password"
                   name="newPassword"
-                  id="formName"
                   placeholder="Введите новый пароль"
                   onChange={(event) => handleNewPasswordChange(event)}
                 />
               </T.FormNewArtBlock>
               <T.FormNewArtBlock>
-                <T.FormNewArtLabel htmlFor="name">
-                  Повторите новый пароль
-                </T.FormNewArtLabel>
+                <T.FormNewArtLabel>Повторите новый пароль</T.FormNewArtLabel>
                 <T.FormNewArtInput
                   type="password"
                   name="repeatPassword"
-                  id="formName"
                   placeholder="Повторите новый пароль"
                   onChange={(event) => handleRepeatPasswordChange(event)}
                 />
               </T.FormNewArtBlock>
-              <T.FormNewArtBtnPub
-                id="btnPublish"
-                onClick={() => handleSaveChange()}
-              >
+              <T.FormNewArtBtnPub onClick={(event) => handleSaveChange(event)}>
                 Сохранить
               </T.FormNewArtBtnPub>
             </T.ModalFormNewArt>

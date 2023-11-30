@@ -54,9 +54,11 @@ export async function loginUser(email, password) {
     },
   });
   if (response.status === 401 || response.status === 422) {
+    console.log(password);
     throw new Error("Пользователь не авторизован");
   }
-  const data = await response.json();
+  const data = response.json();
+  console.log(password);
   return data;
 }
 
@@ -94,6 +96,7 @@ export async function registerUser(
   const data = await response.json();
   return data;
 }
+
 export const getAllUsers = async () => {
   return fetch(`${host}/user/all`, {
     method: "GET",
@@ -177,7 +180,7 @@ export const uploadUserAvatar = async (avatar, token) => {
   });
 };
 
-export const updatePassword = async ({ oldPassword, newPassword, token }) => {
+export const updatePassword = async (oldPassword, newPassword, token) => {
   return await fetch(`${host}/user/password`, {
     method: "PUT",
     headers: {
@@ -194,11 +197,7 @@ export const updatePassword = async ({ oldPassword, newPassword, token }) => {
     }
     if (response.status === 401) {
       updateToken();
-      return updatePassword(
-        oldPassword,
-        newPassword,
-        getTokenFromLocalStorage()
-      );
+      return updatePassword(newPassword, oldPassword, token);
     }
     throw new Error("Неизвестная ошибка, попробуйте позже");
   });
