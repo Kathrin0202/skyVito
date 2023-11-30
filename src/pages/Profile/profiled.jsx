@@ -6,7 +6,7 @@ import { NotFound } from "../NotFound/notFound";
 import { MyProfile } from "./myprofile";
 import { SellerProfile } from "./sellerProfile";
 
-export const Profiled = (ads, setAds) => {
+export const Profiled = (ads, setAds, isLoading) => {
   const useAuth = useAuthSelector();
   const [userProfile, setUserProfile] = useState(null);
   const userID = useParams().id;
@@ -63,6 +63,7 @@ export const Profiled = (ads, setAds) => {
           setUserProfile={setUserProfile}
           ads={ads}
           setAds={setAds}
+          isLoading={isLoading}
         />
       )}
       {pageMode === "guest" && userProfile && (
@@ -70,6 +71,7 @@ export const Profiled = (ads, setAds) => {
           userProfile={userProfile}
           ads={ads}
           setAds={setAds}
+          isLoading={isLoading}
         />
       )}
       {pageMode === "error" && userProfile && <NotFound />}

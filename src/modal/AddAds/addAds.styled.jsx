@@ -636,3 +636,12 @@ export const DeleteImageBtn = styled.button`
     scale: 1.1;
   }
 `;
+
+export const Error = styled.div`
+  color: coral;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  margin-top: 20px;
+  text-align: left;
+`;

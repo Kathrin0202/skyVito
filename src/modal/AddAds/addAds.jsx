@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getTokenFromLocalStorage, updateToken } from "../../api";
 import {
   useGetAddAdsMutation,
   usePostAdsImageMutation,
 } from "../../store/services/auth";
 import * as T from "./addAds.styled";
-export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
-  const [postAdsText, { data, isError, isStatus }] = useGetAddAdsMutation();
+export const AddAds = ({ setOpenFormAddAds, ads }) => {
+  const [postAdsText, { isError }] = useGetAddAdsMutation();
   const refName = useRef(null);
   const refDescription = useRef(null);
   const refPrice = useRef(null);
@@ -43,7 +42,7 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
     }
   };
 
-  const handleAdsPicture = (event) => {
+  const handleAdsPicture = () => {
     if (refImages.current?.files) {
       const file = refImages.current.files[0];
       const formData = new FormData();
@@ -80,7 +79,7 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
         }
       }
     }
-  }, [isError]);
+  }, [isError, adsState, postAdsText, setOpenFormAddAds]);
 
   return (
     <T.Wrapper>

@@ -1,7 +1,6 @@
 import * as T from "../AddAds/addAds.styled";
 import { getTokenFromLocalStorage, updatePassword } from "../../api";
 import { useState } from "react";
-import { saveUserIdToState } from "../../App";
 
 export const EditPassword = ({ setOpenFormChangePassword }) => {
   const [error, setError] = useState(null);
@@ -82,6 +81,7 @@ export const EditPassword = ({ setOpenFormChangePassword }) => {
               <T.FormNewArtBtnPub onClick={(event) => handleSaveChange(event)}>
                 Сохранить
               </T.FormNewArtBtnPub>
+              {error && <T.Error>{error}</T.Error>}
             </T.ModalFormNewArt>
           </T.ModalContent>
         </T.ModalBlock>

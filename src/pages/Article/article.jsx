@@ -20,7 +20,7 @@ export const Article = ({ setAds }) => {
   const adsId = parseInt(useParams().id);
   const { data, isLoading } = useGetAdsByIdQuery(adsId);
   const [showPhone, setShowPhone] = useState(false);
-  
+
   const clickShowPhone = () => {
     setShowPhone(true);
   };
@@ -29,7 +29,7 @@ export const Article = ({ setAds }) => {
   const [openFormComments, setOpenFormComments] = useState(false);
   const [deleteAds, { isError }] = useDeleteAdsMutation();
   const [deleted, setDeleted] = useState(false);
-  const [adComments, setAdsComments] = useState([]);
+  const [setAdsComments] = useState([]);
   const { data: adsComments } = useGetAllCommentsQuery(adsId);
 
   const handleDeleteAds = () => {
@@ -55,8 +55,16 @@ export const Article = ({ setAds }) => {
     if (adsComments) {
       setAdsComments([adsComments]);
     }
-  }, [adsComments]);
+  }, [adsComments, setAdsComments]);
 
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [setInd] = useState(null);
+
+  const handleCardClick = (card, i) => {
+    setSelectedCard(card);
+    setInd(i);
+  };
+  
   return (
     <>
       {openFormEditAds && (
@@ -91,16 +99,25 @@ export const Article = ({ setAds }) => {
                     <T.ArticleFillImg>
                       <T.ArticleImg>
                         {data.images.length !== 0 ? (
-                          <T.ArticleImgImg
-                            src={`http://localhost:8090/${data.images[0].url}`}
-                          />
+                          !selectedCard ? (
+                            <T.ArticleImgImg
+                              src={`http://localhost:8090/${data.images[0].url}`}
+                            />
+                          ) : (
+                            <T.ArticleImgImg
+                              src={`http://localhost:8090/${selectedCard.url}`}
+                            />
+                          )
                         ) : (
                           <T.ArticleImgImg src={noPhoto} alt="noPhoto" />
                         )}
                       </T.ArticleImg>
                       <T.ArticleImgBar>
                         {data.images.map((imag, index) => (
-                          <T.ArticleImgBarDiv key={index}>
+                          <T.ArticleImgBarDiv
+                            key={index}
+                            onClick={() => handleCardClick(imag, index)}
+                          >
                             <T.ArticleImgBarDivImg
                               src={`http://localhost:8090/${imag.url}`}
                               alt=""

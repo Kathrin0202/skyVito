@@ -18,7 +18,7 @@ export const AppRoutes = ({ ads, isLoading, setAds }) => {
       <Route path="/ads/:id" element={<Article />} />
       <Route
         path="/profile/:id"
-        element={<Profiled ads={ads} setAds={setAds} />}
+        element={<Profiled ads={ads} setAds={setAds} isLoading={isLoading}/>}
       />
       <Route
         element={

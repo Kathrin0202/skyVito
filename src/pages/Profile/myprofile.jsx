@@ -14,7 +14,13 @@ import { useRef } from "react";
 import noPhoto from "../../img/myprofile.png";
 import { EditPassword } from "../../modal/EditPassword/editPassword";
 
-export const MyProfile = ({ userProfile, setUserProfile, ads, setAds }) => {
+export const MyProfile = ({
+  userProfile,
+  setUserProfile,
+  ads,
+  setAds,
+  isLoading,
+}) => {
   const [currentProfiled, setCurrentProfiled] = useState(userProfile);
   const [img, setImg] = useState(null);
   const profiledRef = useRef();
@@ -77,137 +83,141 @@ export const MyProfile = ({ userProfile, setUserProfile, ads, setAds }) => {
       )}
       <HeaderAuth setAds={setAds} ads={ads} />
       <S.Main>
-        <T.MainContainer>
-          <T.MainCenterBlock>
-            <MainMenu />
-            <T.MainH2>
-              Здравствуйте,&nbsp;
-              {userProfile.name ? userProfile.name : userProfile.email}!
-            </T.MainH2>
-            <T.MainProfile>
-              <T.ProfileContent>
-                <T.ProfileTitle>Настройки профиля</T.ProfileTitle>
-                <T.ProfileSettings>
-                  <T.SettingsLeft>
-                    <T.SettingsImg>
-                      {userProfile.avatar ? (
-                        <T.Img
-                          src={
-                            img
-                              ? URL.createObjectURL(img)
-                              : `http://localhost:8090/${userProfile.avatar}`
-                          }
-                        />
-                      ) : (
-                        <T.Img src={noPhoto} />
-                      )}
-                    </T.SettingsImg>
-                    <T.SettingsImgInput
-                      id="file-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={(event) => {
-                        event.preventDefault();
-                        const file = event.target.files?.[0];
-                        if (file) {
-                          setImg(file);
-                          handleAvatarUpload(file);
-                        }
-                      }}
-                    ></T.SettingsImgInput>
-                    <T.SettingsChangePhoto onClick={handleAvatarClick}>
-                      Заменить
-                    </T.SettingsChangePhoto>
-                  </T.SettingsLeft>
-                  <T.SettingsRight>
-                    <T.SettingsForm>
-                      <T.SettingsDiv>
-                        <T.SettingsFormLabel htmlFor="name">
-                          Имя
-                        </T.SettingsFormLabel>
-                        <T.SettingsFormInput
-                          id="settings-name"
-                          name="name"
-                          type="text"
-                          placeholder={userProfile.name}
-                          ref={profiledRef}
-                          onChange={(event) => handleName(event)}
-                        />
-                      </T.SettingsDiv>
-
-                      <T.SettingsDiv>
-                        <T.SettingsFormLabel htmlFor="name">
-                          Фамилия
-                        </T.SettingsFormLabel>
-                        <T.SettingsFormInput
-                          id="settings-name"
-                          name="surname"
-                          type="text"
-                          placeholder={userProfile.surname}
-                          ref={profiledRef}
-                          onChange={(event) => {
-                            handleSurname(event);
-                          }}
-                        />
-                      </T.SettingsDiv>
-
-                      <T.SettingsDiv>
-                        <T.SettingsFormLabel htmlFor="city">
-                          Город
-                        </T.SettingsFormLabel>
-                        <T.SettingsFormInput
-                          id="settings-city"
-                          name="city"
-                          type="text"
-                          placeholder={userProfile.city}
-                          ref={profiledRef}
-                          onChange={(event) => {
-                            handleCity(event);
-                          }}
-                        />
-                      </T.SettingsDiv>
-
-                      <T.SettingsDiv>
-                        <T.SettingsFormLabel htmlFor="phone">
-                          Телефон
-                        </T.SettingsFormLabel>
-                        <T.SettingsFormInput
-                          id="settings-phone"
-                          name="phone"
-                          type="tel"
-                          width={614}
-                          placeholder={userProfile.phone}
-                          ref={profiledRef}
-                          onChange={(event) => {
-                            handlePhone(event);
-                          }}
-                        />
-                      </T.SettingsDiv>
-                      <T.SettingsBtn
-                        id="settings-btn"
-                        onClick={(event) => handleSaveChanges(event)}
-                      >
-                        Сохранить
-                      </T.SettingsBtn>
-                      <T.SettingsBtn
-                        onClick={(event) => {
+        {isLoading ? (
+          <T.MainContainer>
+            <T.MainCenterBlock>
+              <MainMenu />
+              <T.MainH2>
+                Здравствуйте,&nbsp;
+                {userProfile.name ? userProfile.name : userProfile.email}!
+              </T.MainH2>
+              <T.MainProfile>
+                <T.ProfileContent>
+                  <T.ProfileTitle>Настройки профиля</T.ProfileTitle>
+                  <T.ProfileSettings>
+                    <T.SettingsLeft>
+                      <T.SettingsImg>
+                        {userProfile.avatar ? (
+                          <T.Img
+                            src={
+                              img
+                                ? URL.createObjectURL(img)
+                                : `http://localhost:8090/${userProfile.avatar}`
+                            }
+                          />
+                        ) : (
+                          <T.Img src={noPhoto} />
+                        )}
+                      </T.SettingsImg>
+                      <T.SettingsImgInput
+                        id="file-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={(event) => {
                           event.preventDefault();
-                          setOpenFormChangePassword(true);
+                          const file = event.target.files?.[0];
+                          if (file) {
+                            setImg(file);
+                            handleAvatarUpload(file);
+                          }
                         }}
-                      >
-                        Изменить пароль
-                      </T.SettingsBtn>
-                    </T.SettingsForm>
-                  </T.SettingsRight>
-                </T.ProfileSettings>
-              </T.ProfileContent>
-            </T.MainProfile>
-            <T.MainTitle>Мои товары</T.MainTitle>
-          </T.MainCenterBlock>
-          <T.MainContent>
-            <ContentCard userId={userProfile.id} />
-          </T.MainContent>
-        </T.MainContainer>
+                      ></T.SettingsImgInput>
+                      <T.SettingsChangePhoto onClick={handleAvatarClick}>
+                        Заменить
+                      </T.SettingsChangePhoto>
+                    </T.SettingsLeft>
+                    <T.SettingsRight>
+                      <T.SettingsForm>
+                        <T.SettingsDiv>
+                          <T.SettingsFormLabel htmlFor="name">
+                            Имя
+                          </T.SettingsFormLabel>
+                          <T.SettingsFormInput
+                            id="settings-name"
+                            name="name"
+                            type="text"
+                            placeholder={userProfile.name}
+                            ref={profiledRef}
+                            onChange={(event) => handleName(event)}
+                          />
+                        </T.SettingsDiv>
+
+                        <T.SettingsDiv>
+                          <T.SettingsFormLabel htmlFor="name">
+                            Фамилия
+                          </T.SettingsFormLabel>
+                          <T.SettingsFormInput
+                            id="settings-name"
+                            name="surname"
+                            type="text"
+                            placeholder={userProfile.surname}
+                            ref={profiledRef}
+                            onChange={(event) => {
+                              handleSurname(event);
+                            }}
+                          />
+                        </T.SettingsDiv>
+
+                        <T.SettingsDiv>
+                          <T.SettingsFormLabel htmlFor="city">
+                            Город
+                          </T.SettingsFormLabel>
+                          <T.SettingsFormInput
+                            id="settings-city"
+                            name="city"
+                            type="text"
+                            placeholder={userProfile.city}
+                            ref={profiledRef}
+                            onChange={(event) => {
+                              handleCity(event);
+                            }}
+                          />
+                        </T.SettingsDiv>
+
+                        <T.SettingsDiv>
+                          <T.SettingsFormLabel htmlFor="phone">
+                            Телефон
+                          </T.SettingsFormLabel>
+                          <T.SettingsFormInput
+                            id="settings-phone"
+                            name="phone"
+                            type="tel"
+                            width={614}
+                            placeholder={userProfile.phone}
+                            ref={profiledRef}
+                            onChange={(event) => {
+                              handlePhone(event);
+                            }}
+                          />
+                        </T.SettingsDiv>
+                        <T.SettingsBtn
+                          id="settings-btn"
+                          onClick={(event) => handleSaveChanges(event)}
+                        >
+                          Сохранить
+                        </T.SettingsBtn>
+                        <T.SettingsBtn
+                          onClick={(event) => {
+                            event.preventDefault();
+                            setOpenFormChangePassword(true);
+                          }}
+                        >
+                          Изменить пароль
+                        </T.SettingsBtn>
+                      </T.SettingsForm>
+                    </T.SettingsRight>
+                  </T.ProfileSettings>
+                </T.ProfileContent>
+              </T.MainProfile>
+              <T.MainTitle>Мои товары</T.MainTitle>
+            </T.MainCenterBlock>
+            <T.MainContent>
+              <ContentCard userId={userProfile.id} />
+            </T.MainContent>
+          </T.MainContainer>
+        ) : (
+          <T.ProfileTitle>Профиль загружается...</T.ProfileTitle>
+        )}
       </S.Main>
       <Footer />
     </>
