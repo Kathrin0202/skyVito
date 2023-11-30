@@ -124,19 +124,19 @@ export const Registration = ({ isLoginMode = false }) => {
     setRegister(true);
     try {
       await registerUser(email, password, name, city).then((dat) => {
-        sessionStorage.setItem("user", JSON.stringify(dat));
-        sessionStorage.setItem("token", JSON.stringify(dat?.access_token));
+        saveTokenToLocalStorage(dat);
         dispatch(
           setAuth({
+            token: JSON.parse(sessionStorage.getItem("user")),
             email: dat.email,
-            id: dat.id,
+            id: 0,
             name: dat.name,
-            login: dat.login,
+            surname: "",
             password: dat.password,
             city: dat.city,
+            role: "user",
           })
         );
-        console.log(dat);
         navigate("/");
       });
     } catch (error) {

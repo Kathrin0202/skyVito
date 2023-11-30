@@ -33,11 +33,11 @@ export const Article = ({ setAds }) => {
   const { data: adsComments } = useGetAllCommentsQuery(adsId);
 
   const handleDeleteAds = () => {
-    setDeleted(true);
     deleteAds({
       token: getTokenFromLocalStorage(),
       id: adsId,
     });
+    setDeleted(true);
   };
 
   useEffect(() => {

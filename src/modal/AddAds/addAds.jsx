@@ -24,6 +24,7 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
   const closeForm = () => {
     setOpenFormAddAds(false);
   };
+
   const handleClickPublic = (event) => {
     event.preventDefault();
     if (refName.current && refDescription.current && refPrice.current) {
@@ -35,6 +36,8 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
           price: refPrice.current.value,
         },
       });
+      setAdsState(adsState);
+      setOpenFormAddAds(false);
     }
   };
 
@@ -49,14 +52,11 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
         id: ads.id,
       });
       setImages(formData);
+      setOpenFormAddAds(false);
     }
   };
 
   useEffect(() => {
-    if (isStatus === "fulfilled" && data) {
-      navigate(`/ads/${data.id}`);
-      setOpenFormAddAds(false);
-    }
     if (isError.status === 401) {
       updateToken();
       if (refName.current && refDescription.current && refPrice.current) {
@@ -71,10 +71,13 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
                 : 0,
             },
           });
+          setAdsState(adsState);
+          setOpenFormAddAds(false);
         }
       }
     }
   }, [isError]);
+
   return (
     <T.Wrapper>
       <T.ContainerBg>
