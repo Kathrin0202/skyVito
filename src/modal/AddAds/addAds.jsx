@@ -10,7 +10,6 @@ export const AddAds = ({ setOpenFormAddAds, ads }) => {
   const refName = useRef(null);
   const refDescription = useRef(null);
   const refPrice = useRef(null);
-  const refImages = useRef(null);
   const [adsState, setAdsState] = useState();
   const addImg = document.getElementById("upload-photo");
   const [images, setImages] = useState([addImg]);
@@ -42,19 +41,19 @@ export const AddAds = ({ setOpenFormAddAds, ads }) => {
     }
   };
 
-  const handleAdsPicture = () => {
-    if (refImages.current?.files) {
-      const file = refImages.current.files[0];
-      const formData = new FormData();
+  const handleAdsPicture = async (file) => {
+    const formData = new FormData();
+    if (file) {
       formData.append("file", file);
       postAdsImg({
         token: getTokenFromLocalStorage(),
         image: formData,
-        id: ads.id,
+        id: adsState.id,
       });
-      setImages(formData);
-      setOpenFormAddAds(false);
-      setSaveButtonActive(false);
+      setSaveButtonActive(true);
+      setImages(images);
+    } else {
+      console.log("Файл не найден");
     }
   };
 
@@ -68,9 +67,7 @@ export const AddAds = ({ setOpenFormAddAds, ads }) => {
             ads: {
               title: refName.current.value,
               description: refDescription.current.value,
-              price: refPrice.current.value
-                ? parseInt(refPrice.current.value)
-                : 0,
+              price: refPrice.current.value,
             },
           });
           setAdsState(adsState);
@@ -80,6 +77,10 @@ export const AddAds = ({ setOpenFormAddAds, ads }) => {
       }
     }
   }, [isError, adsState, postAdsText, setOpenFormAddAds]);
+
+  useEffect(() => {
+    setAdsState(adsState);
+  }, [adsState]);
 
   return (
     <T.Wrapper>
@@ -130,7 +131,6 @@ export const AddAds = ({ setOpenFormAddAds, ads }) => {
                       id="upload-photo"
                       accept="image/*"
                       onChange={(event) => {
-                        event.preventDefault();
                         const file = event.target.files?.[0];
                         if (file) {
                           setImages(file);
@@ -145,8 +145,7 @@ export const AddAds = ({ setOpenFormAddAds, ads }) => {
                       id="upload-photo"
                       accept="image/*"
                       onChange={(event) => {
-                        event.preventDefault();
-                        const file = event.target.files?.[0];
+                        const file = event.target.files?.[1];
                         if (file) {
                           setImages(file);
                           handleAdsPicture(file);
@@ -160,8 +159,7 @@ export const AddAds = ({ setOpenFormAddAds, ads }) => {
                       id="upload-photo"
                       accept="image/*"
                       onChange={(event) => {
-                        event.preventDefault();
-                        const file = event.target.files?.[0];
+                        const file = event.target.files?.[2];
                         if (file) {
                           setImages(file);
                           handleAdsPicture(file);
@@ -175,8 +173,7 @@ export const AddAds = ({ setOpenFormAddAds, ads }) => {
                       id="upload-photo"
                       accept="image/*"
                       onChange={(event) => {
-                        event.preventDefault();
-                        const file = event.target.files?.[0];
+                        const file = event.target.files?.[3];
                         if (file) {
                           setImages(file);
                           handleAdsPicture(file);
@@ -190,8 +187,7 @@ export const AddAds = ({ setOpenFormAddAds, ads }) => {
                       id="upload-photo"
                       accept="image/*"
                       onChange={(event) => {
-                        event.preventDefault();
-                        const file = event.target.files?.[0];
+                        const file = event.target.files?.[4];
                         if (file) {
                           setImages(file);
                           handleAdsPicture(file);

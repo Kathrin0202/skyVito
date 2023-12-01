@@ -54,11 +54,9 @@ export async function loginUser(email, password) {
     },
   });
   if (response.status === 401 || response.status === 422) {
-    console.log(password);
     throw new Error("Пользователь не авторизован");
   }
   const data = response.json();
-  console.log(password);
   return data;
 }
 

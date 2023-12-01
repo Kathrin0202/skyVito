@@ -34,7 +34,7 @@ export const Login = ({ isLoginMode = true }) => {
         );
         navigate("/");
         saveTokenToLocalStorage(dat);
-        saveUserIdToState(false);
+        saveUserIdToState(dat);
       });
     } catch (erro) {
       setError(erro.message);

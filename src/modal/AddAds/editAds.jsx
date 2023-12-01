@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getTokenFromLocalStorage } from "../../api";
+import { getTokenFromLocalStorage, updateToken } from "../../api";
 import {
   useDeleteAdsImagesMutation,
   useGetAdsByIdQuery,
@@ -39,7 +39,7 @@ export const EditAds = ({ setOpenFormEditAds }) => {
   };
   const ads = useMemo(() => data || [], [data]);
 
-  const handleImgUpload = (file) => {
+  const handleImgUpload = async (file) => {
     const formData = new FormData();
     if (file) {
       formData.append("file", file);
@@ -55,12 +55,14 @@ export const EditAds = ({ setOpenFormEditAds }) => {
     }
   };
 
-  const handleDeleteImage = (image) => {
+  const handleDeleteImage = async (image) => {
     deleteImages({
       token: getTokenFromLocalStorage(),
       image: image,
       id: ads.id,
     });
+    setSaveButtonActive(true);
+    setImages(images);
   };
 
   useEffect(() => {
@@ -73,7 +75,7 @@ export const EditAds = ({ setOpenFormEditAds }) => {
     setTitle(ads.title);
     setDescription(ads.description);
     setPrice(ads.price);
-  }, [data]);
+  }, [ads]);
 
   const handleAdTitleChange = (event) => {
     setTitle(event.target.value);

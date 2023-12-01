@@ -29,8 +29,9 @@ export const Article = ({ setAds }) => {
   const [openFormComments, setOpenFormComments] = useState(false);
   const [deleteAds, { isError }] = useDeleteAdsMutation();
   const [deleted, setDeleted] = useState(false);
-  const [setAdsComments] = useState([]);
+  const [comments, setAdsComments] = useState([]);
   const { data: adsComments } = useGetAllCommentsQuery(adsId);
+  const [saveButton, setSaveButton] = useState(true);
 
   const handleDeleteAds = () => {
     deleteAds({
@@ -38,10 +39,11 @@ export const Article = ({ setAds }) => {
       id: adsId,
     });
     setDeleted(true);
+    setSaveButton(true)
   };
 
   useEffect(() => {
-    setDeleted(data);
+    setDeleted(true);
     if (isError.status === 401) {
       updateToken();
       deleteAds({
@@ -49,22 +51,24 @@ export const Article = ({ setAds }) => {
         id: adsId,
       });
     }
-  }, [isError, adsId, data, deleteAds]);
+    setSaveButton(true)
+  }, [isError]);
 
   useEffect(() => {
     if (adsComments) {
       setAdsComments([adsComments]);
+      setSaveButton(true)
     }
-  }, [adsComments, setAdsComments]);
+  }, [adsComments]);
 
   const [selectedCard, setSelectedCard] = useState(null);
-  const [setInd] = useState(null);
+  const [ind, setInd] = useState(null);
 
   const handleCardClick = (card, i) => {
     setSelectedCard(card);
     setInd(i);
   };
-  
+
   return (
     <>
       {openFormEditAds && (
@@ -150,7 +154,7 @@ export const Article = ({ setAds }) => {
                           {adsComments ? adsComments.length : "..."} отзыв
                         </T.ArticleLink>
                       </T.ArticleInfo>
-                      <T.ArticlePrice>{data.price}.p</T.ArticlePrice>
+                      <T.ArticlePrice>{data.price}.₽</T.ArticlePrice>
                       {auth.email === data.user.email ? (
                         <T.ArticleBtnBlock>
                           <T.ArticleBtnReduct

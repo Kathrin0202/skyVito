@@ -83,7 +83,7 @@ export const MyProfile = ({
       )}
       <HeaderAuth setAds={setAds} ads={ads} />
       <S.Main>
-        {isLoading ? (
+        {!isLoading ? (
           <T.MainContainer>
             <T.MainCenterBlock>
               <MainMenu />
