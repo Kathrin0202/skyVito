@@ -15,7 +15,7 @@ export const Comments = ({
   };
   const [addComment, { isLoading, isError }] = useAddCommentMutation();
   const [newComment, setNewComment] = useState("");
-  const [setError] = useState(null);
+  const [error, setError] = useState(null);
   const auth = useAuthSelector();
   const id = useParams().id;
 
@@ -32,7 +32,7 @@ export const Comments = ({
         id: id,
       });
     }
-    setAdsComments(newComment);
+    setNewComment(newComment);
   };
 
   useEffect(() => {
@@ -83,6 +83,7 @@ export const Comments = ({
                     >
                       Опубликовать
                     </T.FormNewArtBtnPub>
+                    {error && <T.Error>{error}</T.Error>}
                   </T.ModalFormNewArt>
                 )}
                 <T.ModalReviews>

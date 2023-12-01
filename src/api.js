@@ -3,16 +3,16 @@ import { Link } from "react-router-dom";
 export const host = "http://127.0.0.1:8090";
 
 export const saveTokenToLocalStorage = (token) => {
-  sessionStorage.setItem("token", JSON.stringify(token));
+  localStorage.setItem("token", JSON.stringify(token));
 };
 
 export const getTokenFromLocalStorage = () => {
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   return token ? JSON.parse(token) : null;
 };
 
 export const removeTokenFromLocalStorage = () => {
-  sessionStorage.removeItem("token");
+  localStorage.removeItem("token");
 };
 
 export const updateToken = async () => {
@@ -38,6 +38,7 @@ export async function getUser(token) {
   } else if (response.status === 401) {
     updateToken();
     <Link to="login" />;
+    return getUser(getTokenFromLocalStorage());
   }
   throw new Error("Нет авторизации");
 }
@@ -56,7 +57,7 @@ export async function loginUser(email, password) {
   if (response.status === 401 || response.status === 422) {
     throw new Error("Пользователь не авторизован");
   }
-  const data = await response.json();
+  const data = response.json();
   return data;
 }
 
@@ -94,6 +95,7 @@ export async function registerUser(
   const data = await response.json();
   return data;
 }
+
 export const getAllUsers = async () => {
   return fetch(`${host}/user/all`, {
     method: "GET",
@@ -177,7 +179,7 @@ export const uploadUserAvatar = async (avatar, token) => {
   });
 };
 
-export const updatePassword = async ({ oldPassword, newPassword, token }) => {
+export const updatePassword = async (oldPassword, newPassword, token) => {
   return await fetch(`${host}/user/password`, {
     method: "PUT",
     headers: {
@@ -194,11 +196,7 @@ export const updatePassword = async ({ oldPassword, newPassword, token }) => {
     }
     if (response.status === 401) {
       updateToken();
-      return updatePassword(
-        oldPassword,
-        newPassword,
-        getTokenFromLocalStorage()
-      );
+      return updatePassword(newPassword, oldPassword, token);
     }
     throw new Error("Неизвестная ошибка, попробуйте позже");
   });

@@ -20,7 +20,7 @@ export const Article = ({ setAds }) => {
   const adsId = parseInt(useParams().id);
   const { data, isLoading } = useGetAdsByIdQuery(adsId);
   const [showPhone, setShowPhone] = useState(false);
-  
+
   const clickShowPhone = () => {
     setShowPhone(true);
   };
@@ -29,8 +29,9 @@ export const Article = ({ setAds }) => {
   const [openFormComments, setOpenFormComments] = useState(false);
   const [deleteAds, { isError }] = useDeleteAdsMutation();
   const [deleted, setDeleted] = useState(false);
-  const [adComments, setAdsComments] = useState([]);
+  const [comments, setAdsComments] = useState([]);
   const { data: adsComments } = useGetAllCommentsQuery(adsId);
+  const [saveButton, setSaveButton] = useState(true);
 
   const handleDeleteAds = () => {
     deleteAds({
@@ -38,10 +39,11 @@ export const Article = ({ setAds }) => {
       id: adsId,
     });
     setDeleted(true);
+    setSaveButton(true)
   };
 
   useEffect(() => {
-    setDeleted(data);
+    setDeleted(true);
     if (isError.status === 401) {
       updateToken();
       deleteAds({
@@ -49,13 +51,23 @@ export const Article = ({ setAds }) => {
         id: adsId,
       });
     }
-  }, [isError, adsId, data, deleteAds]);
+    setSaveButton(true)
+  }, [isError]);
 
   useEffect(() => {
     if (adsComments) {
       setAdsComments([adsComments]);
+      setSaveButton(true)
     }
   }, [adsComments]);
+
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [ind, setInd] = useState(null);
+
+  const handleCardClick = (card, i) => {
+    setSelectedCard(card);
+    setInd(i);
+  };
 
   return (
     <>
@@ -91,16 +103,25 @@ export const Article = ({ setAds }) => {
                     <T.ArticleFillImg>
                       <T.ArticleImg>
                         {data.images.length !== 0 ? (
-                          <T.ArticleImgImg
-                            src={`http://localhost:8090/${data.images[0].url}`}
-                          />
+                          !selectedCard ? (
+                            <T.ArticleImgImg
+                              src={`http://localhost:8090/${data.images[0].url}`}
+                            />
+                          ) : (
+                            <T.ArticleImgImg
+                              src={`http://localhost:8090/${selectedCard.url}`}
+                            />
+                          )
                         ) : (
                           <T.ArticleImgImg src={noPhoto} alt="noPhoto" />
                         )}
                       </T.ArticleImg>
                       <T.ArticleImgBar>
                         {data.images.map((imag, index) => (
-                          <T.ArticleImgBarDiv key={index}>
+                          <T.ArticleImgBarDiv
+                            key={index}
+                            onClick={() => handleCardClick(imag, index)}
+                          >
                             <T.ArticleImgBarDivImg
                               src={`http://localhost:8090/${imag.url}`}
                               alt=""
@@ -133,7 +154,7 @@ export const Article = ({ setAds }) => {
                           {adsComments ? adsComments.length : "..."} отзыв
                         </T.ArticleLink>
                       </T.ArticleInfo>
-                      <T.ArticlePrice>{data.price}.p</T.ArticlePrice>
+                      <T.ArticlePrice>{data.price}.₽</T.ArticlePrice>
                       {auth.email === data.user.email ? (
                         <T.ArticleBtnBlock>
                           <T.ArticleBtnReduct

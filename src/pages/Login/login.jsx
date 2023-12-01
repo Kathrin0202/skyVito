@@ -2,12 +2,7 @@ import * as S from "./login.style";
 import img from "../../img/logo_modal.png";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import {
-  getUser,
-  loginUser,
-  registerUser,
-  saveTokenToLocalStorage,
-} from "../../api";
+import { loginUser, registerUser, saveTokenToLocalStorage } from "../../api";
 import { setAuth } from "../../store/slices/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { saveUserIdToState } from "../../App";
@@ -31,16 +26,15 @@ export const Login = ({ isLoginMode = true }) => {
     setLogin(true);
     try {
       await loginUser(email, password).then((dat) => {
-        saveTokenToLocalStorage(dat);
-        saveUserIdToState(false);
         dispatch(
           setAuth({
-            token: JSON.parse(sessionStorage.getItem("user")),
             email: email,
             password: password,
           })
         );
         navigate("/");
+        saveTokenToLocalStorage(dat);
+        saveUserIdToState(dat);
       });
     } catch (erro) {
       setError(erro.message);
@@ -81,7 +75,7 @@ export const Login = ({ isLoginMode = true }) => {
           />
           {error && <S.Error>{error}</S.Error>}
           <S.ModalBtnEnter id="btnEnter">
-            <S.ModalBtnEnterLink onClick={() => handleLogin(password, email)}>
+            <S.ModalBtnEnterLink onClick={() => handleLogin(email, password)}>
               Войти
             </S.ModalBtnEnterLink>
           </S.ModalBtnEnter>
@@ -124,10 +118,8 @@ export const Registration = ({ isLoginMode = false }) => {
     setRegister(true);
     try {
       await registerUser(email, password, name, city).then((dat) => {
-        saveTokenToLocalStorage(dat);
         dispatch(
           setAuth({
-            token: JSON.parse(sessionStorage.getItem("user")),
             email: dat.email,
             id: 0,
             name: dat.name,
@@ -137,7 +129,9 @@ export const Registration = ({ isLoginMode = false }) => {
             role: "user",
           })
         );
-        navigate("/");
+        saveTokenToLocalStorage(dat);
+        saveUserIdToState(false);
+        navigate("/login");
       });
     } catch (error) {
       setError(error.message);

@@ -26,7 +26,7 @@ export const MainPage = ({ ads, isLoading, setAds }) => {
   }, [ads, setAds]);
   return (
     <>
-      <Header/>
+      <Header />
       <S.MainSearch>
         <S.SearchLogoLink href="#" target="_blank">
           <Link to="/">
@@ -82,7 +82,7 @@ export const MainPage = ({ ads, isLoading, setAds }) => {
                       <Link to={`/ads/${ad.id}`}>
                         <S.CardTitle>{ad.title}</S.CardTitle>
                       </Link>
-                      <S.CardPrice>{ad.price}</S.CardPrice>
+                      <S.CardPrice>{ad.price}&nbsp;₽</S.CardPrice>
                       <S.CardPlace>{ad.user.city}</S.CardPlace>
                       <S.CardDate>
                         {new Date(ad.created_on).toLocaleString("ru", {

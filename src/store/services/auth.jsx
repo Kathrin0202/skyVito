@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getTokenFromLocalStorage, host } from "../../api";
 
+
 export const setUserId = (userId) => {
   return {
     type: "USER_TAG",
@@ -12,14 +13,11 @@ export const userApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: host,
-    /*prepareHeaders: (headers) => {
+    prepareHeaders: (headers) => {
       const token = getTokenFromLocalStorage();
       console.debug("Токен из стора", { token });
-      if (token) {
-        headers.set("authorization", `Bearer ${token}`);
-      }
       return headers;
-    },*/
+    },
   }),
   endpoints: (builder) => ({
     getAllAds: builder.query({

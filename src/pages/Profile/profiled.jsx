@@ -6,7 +6,7 @@ import { NotFound } from "../NotFound/notFound";
 import { MyProfile } from "./myprofile";
 import { SellerProfile } from "./sellerProfile";
 
-export const Profiled = (ads, setAds) => {
+export const Profiled = (ads, setAds, isLoading) => {
   const useAuth = useAuthSelector();
   const [userProfile, setUserProfile] = useState(null);
   const userID = useParams().id;
@@ -14,42 +14,40 @@ export const Profiled = (ads, setAds) => {
 
   useEffect(() => {
     const fetchData = () => {
-      if (userID) {
-        if (userID === "me" || parseInt(userID) === useAuth) {
-          if (useAuth) {
-            getUser(getTokenFromLocalStorage())
-              .then((data) => {
-                setUserProfile(data);
-                setPageMode("my-profile");
-              })
-              .catch(() => {
-                setPageMode("error");
-              });
-          } else {
-            setPageMode("error");
-          }
-        } else {
-          getAllUsers()
+      if (userID === "me" || parseInt(userID) === useAuth) {
+        if (useAuth) {
+          getUser(getTokenFromLocalStorage())
             .then((data) => {
-              if (data) {
-                const findUser = (arrUsers) => {
-                  for (let i = 0; i < arrUsers?.length; i++) {
-                    if (arrUsers[i].id === parseInt(userID)) {
-                      setPageMode("guest");
-                      return arrUsers[i];
-                    }
-                  }
-                  setPageMode("error");
-                  return null;
-                };
-
-                setUserProfile(findUser(data));
-              }
+              setUserProfile(data);
+              setPageMode("my-profile");
             })
             .catch(() => {
               setPageMode("error");
             });
+        } else {
+          setPageMode("error");
         }
+      } else {
+        getAllUsers()
+          .then((data) => {
+            if (data) {
+              const findUser = (arrUsers) => {
+                for (let i = 0; i < arrUsers?.length; i++) {
+                  if (arrUsers[i].id === parseInt(userID)) {
+                    setPageMode("guest");
+                    return arrUsers[i];
+                  }
+                }
+                setPageMode("error");
+                return null;
+              };
+
+              setUserProfile(findUser(data));
+            }
+          })
+          .catch(() => {
+            setPageMode("error");
+          });
       }
     };
 
@@ -63,6 +61,7 @@ export const Profiled = (ads, setAds) => {
           setUserProfile={setUserProfile}
           ads={ads}
           setAds={setAds}
+          isLoading={isLoading}
         />
       )}
       {pageMode === "guest" && userProfile && (
@@ -70,6 +69,7 @@ export const Profiled = (ads, setAds) => {
           userProfile={userProfile}
           ads={ads}
           setAds={setAds}
+          isLoading={isLoading}
         />
       )}
       {pageMode === "error" && userProfile && <NotFound />}
