@@ -3,16 +3,16 @@ import { Link } from "react-router-dom";
 export const host = "http://127.0.0.1:8090";
 
 export const saveTokenToLocalStorage = (token) => {
-  sessionStorage.setItem("token", JSON.stringify(token));
+  localStorage.setItem("token", JSON.stringify(token));
 };
 
 export const getTokenFromLocalStorage = () => {
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   return token ? JSON.parse(token) : null;
 };
 
 export const removeTokenFromLocalStorage = () => {
-  sessionStorage.removeItem("token");
+  localStorage.removeItem("token");
 };
 
 export const updateToken = async () => {
@@ -38,6 +38,7 @@ export async function getUser(token) {
   } else if (response.status === 401) {
     updateToken();
     <Link to="login" />;
+    return getUser(getTokenFromLocalStorage());
   }
   throw new Error("Нет авторизации");
 }

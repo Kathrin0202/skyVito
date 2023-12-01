@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
+import { getTokenFromLocalStorage } from "../../api";
 
 const initialState = {
   email: "",
@@ -17,7 +18,7 @@ const initialState = {
 
 const authSlice = createSlice({
   name: "auth",
-  initialState,
+  initialState: getTokenFromLocalStorage() ?? initialState,
   reducers: {
     setAuth(state, action) {
       state.email = action.payload.email;
@@ -29,6 +30,8 @@ const authSlice = createSlice({
       state.phone = action.payload.phone;
       state.token = action.payload.token;
       state.isAuth = true;
+
+      localStorage.setItem("auth", JSON.stringify(state));
     },
   },
 });

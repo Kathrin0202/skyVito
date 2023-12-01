@@ -14,42 +14,40 @@ export const Profiled = (ads, setAds, isLoading) => {
 
   useEffect(() => {
     const fetchData = () => {
-      if (userID) {
-        if (userID === "me" || parseInt(userID) === useAuth) {
-          if (useAuth) {
-            getUser(getTokenFromLocalStorage())
-              .then((data) => {
-                setUserProfile(data);
-                setPageMode("my-profile");
-              })
-              .catch(() => {
-                setPageMode("error");
-              });
-          } else {
-            setPageMode("error");
-          }
-        } else {
-          getAllUsers()
+      if (userID === "me" || parseInt(userID) === useAuth) {
+        if (useAuth) {
+          getUser(getTokenFromLocalStorage())
             .then((data) => {
-              if (data) {
-                const findUser = (arrUsers) => {
-                  for (let i = 0; i < arrUsers?.length; i++) {
-                    if (arrUsers[i].id === parseInt(userID)) {
-                      setPageMode("guest");
-                      return arrUsers[i];
-                    }
-                  }
-                  setPageMode("error");
-                  return null;
-                };
-
-                setUserProfile(findUser(data));
-              }
+              setUserProfile(data);
+              setPageMode("my-profile");
             })
             .catch(() => {
               setPageMode("error");
             });
+        } else {
+          setPageMode("error");
         }
+      } else {
+        getAllUsers()
+          .then((data) => {
+            if (data) {
+              const findUser = (arrUsers) => {
+                for (let i = 0; i < arrUsers?.length; i++) {
+                  if (arrUsers[i].id === parseInt(userID)) {
+                    setPageMode("guest");
+                    return arrUsers[i];
+                  }
+                }
+                setPageMode("error");
+                return null;
+              };
+
+              setUserProfile(findUser(data));
+            }
+          })
+          .catch(() => {
+            setPageMode("error");
+          });
       }
     };
 

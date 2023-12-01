@@ -48,7 +48,7 @@ export const AddAds = ({ setOpenFormAddAds, ads }) => {
       postAdsImg({
         token: getTokenFromLocalStorage(),
         image: formData,
-        id: adsState.id,
+        id: ads.id,
       });
       setSaveButtonActive(true);
       setImages(images);

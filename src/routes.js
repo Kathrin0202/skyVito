@@ -23,7 +23,7 @@ export const AppRoutes = ({ ads, isLoading, setAds }) => {
       <Route
         element={
           <ProtectedRoute
-            isAllowed={Boolean(sessionStorage.getItem("token"))}
+            isAllowed={Boolean(localStorage.getItem("token"))}
           />
         }
       >
