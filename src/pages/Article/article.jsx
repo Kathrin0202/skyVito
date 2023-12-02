@@ -1,5 +1,5 @@
 import { Footer } from "../../components/Footer/footer";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { HeaderAuth, Header } from "../../components/Header/header";
 import { MainMenu } from "../../components/Menu/menu";
 import * as S from "../../style/App.style";
@@ -39,7 +39,7 @@ export const Article = ({ setAds }) => {
       id: adsId,
     });
     setDeleted(true);
-    setSaveButton(true)
+    setSaveButton(true);
   };
 
   useEffect(() => {
@@ -51,13 +51,13 @@ export const Article = ({ setAds }) => {
         id: adsId,
       });
     }
-    setSaveButton(true)
+    setSaveButton(true);
   }, [isError]);
 
   useEffect(() => {
     if (adsComments) {
       setAdsComments([adsComments]);
-      setSaveButton(true)
+      setSaveButton(true);
     }
   }, [adsComments]);
 
