@@ -9,14 +9,13 @@ import {
 } from "../../store/services/auth";
 import * as T from "./addAds.styled";
 
-export const EditAds = ({ setOpenFormEditAds}) => {
-
+export const EditAds = ({ setOpenFormEditAds }) => {
   const closeForm = () => {
     setOpenFormEditAds(false);
   };
   const { id } = useParams();
   const { data } = useGetAdsByIdQuery(id);
-  const [editAdsRequest] = useGetEditAdsMutation(id);
+  const [editAdsRequest, { isError }] = useGetEditAdsMutation(id);
   const [deleteImages] = useDeleteAdsImagesMutation(id);
   const [postAdsImage] = usePostAdsImageMutation(id);
   const [images, setImages] = useState(null);
@@ -73,10 +72,20 @@ export const EditAds = ({ setOpenFormEditAds}) => {
   }, [data]);
 
   useEffect(() => {
+    if (isError.status === 401) {
+      updateToken();
+      editAdsRequest({
+        title: title,
+        description: description,
+        price: price,
+        id: id,
+        token: getTokenFromLocalStorage(),
+      });
+    }
     setTitle(ads.title);
     setDescription(ads.description);
     setPrice(ads.price);
-  }, [ads]);
+  }, []);
 
   const handleAdTitleChange = (event) => {
     setTitle(event.target.value);

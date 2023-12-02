@@ -8,6 +8,11 @@ export const setUserId = (userId) => {
   };
 };
 
+const DATA_TAG = {
+  type: "ADS",
+  id: "LIST",
+};
+
 export const userApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
@@ -21,18 +26,19 @@ export const userApi = createApi({
   endpoints: (builder) => ({
     getAllAds: builder.query({
       query: () => "/ads?sorting=new",
-      providesTags: "USER_TAG",
+      providesTags: [DATA_TAG],
     }),
     getAllUserAds: builder.query({
       query: (userId) => `/ads?user_id=${userId}&sorting=new`,
-      providesTags: "USER_TAG",
+      providesTags: [DATA_TAG],
     }),
     getCurrentUserAds: builder.query({
       query: () => `/ads/me`,
+      providesTags: [DATA_TAG],
     }),
     getAdsById: builder.query({
       query: (id) => `/ads/${id}`,
-      providesTags: "USER_TAG",
+      providesTags: [DATA_TAG],
     }),
     getAddAds: builder.mutation({
       query: ({ token, title, description, price }) => ({
@@ -44,7 +50,7 @@ export const userApi = createApi({
         },
         body: JSON.stringify({ title, description, price }),
       }),
-      invalidatesTags: "USER_TAG",
+      invalidatesTags: [DATA_TAG],
     }),
     getEditAds: builder.mutation({
       query: ({ id, token, title, description, price }) => ({
@@ -60,7 +66,7 @@ export const userApi = createApi({
           price,
         }),
       }),
-      invalidatesTags: "USER_TAG",
+      invalidatesTags: [DATA_TAG],
     }),
     postAdsImage: builder.mutation({
       query: ({ token, image, id }) => ({
@@ -71,7 +77,7 @@ export const userApi = createApi({
         },
         body: image,
       }),
-      invalidatesTags: "USER_TAG",
+      invalidatesTags: [DATA_TAG],
     }),
     deleteAds: builder.mutation({
       query: ({ id, token }) => {
@@ -82,9 +88,9 @@ export const userApi = createApi({
             "content-type": "application/json",
             Authorization: `${token.token_type} ${token.access_token}`,
           },
-        }
+        };
       },
-      invalidatesTags: "USER_TAG",
+      invalidatesTags: [DATA_TAG],
     }),
     deleteAdsImages: builder.mutation({
       query: ({ image, token, id }) => {
@@ -98,11 +104,11 @@ export const userApi = createApi({
           },
         };
       },
-      invalidatesTags: "USER_TAG",
+      invalidatesTags: [DATA_TAG],
     }),
     getAllComments: builder.query({
       query: (id) => `/ads/${id}/comments`,
-      invalidatesTags: "USER_TAG",
+      invalidatesTags: [DATA_TAG],
     }),
     addComment: builder.mutation({
       query: ({ token, text, id }) => ({
@@ -114,7 +120,7 @@ export const userApi = createApi({
         },
         body: JSON.stringify({ text }),
       }),
-      invalidatesTags: "USER_TAG",
+      invalidatesTags: [DATA_TAG],
     }),
   }),
 });

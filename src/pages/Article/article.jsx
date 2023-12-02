@@ -24,7 +24,7 @@ export const Article = ({ setAds }) => {
   const auth = useAuthSelector();
   const [openFormEditAds, setOpenFormEditAds] = useState(false);
   const [openFormComments, setOpenFormComments] = useState(false);
-  const [deleteAds] = useDeleteAdsMutation(id);
+  const [deleteAds, { isError }] = useDeleteAdsMutation(id);
   const [comments, setAdsComments] = useState([]);
   const { data: adsComments } = useGetAllCommentsQuery(id);
   const [saveButton, setSaveButton] = useState(true);
@@ -41,8 +41,17 @@ export const Article = ({ setAds }) => {
       id: id,
     });
     setSaveButton(false);
-    setAds(data.id)
   };
+
+  useEffect(() => {
+    if (isError.status === 401) {
+      deleteAds({
+        token: getTokenFromLocalStorage(),
+        id: id,
+      });
+      setSaveButton(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (adsComments) {
@@ -153,9 +162,7 @@ export const Article = ({ setAds }) => {
                           >
                             Редактировать
                           </T.ArticleBtnReduct>
-                          <T.ArticleBtnRemove
-                            onClick={handleDeleteAds}
-                          >
+                          <T.ArticleBtnRemove onClick={handleDeleteAds}>
                             Снять с публикации
                           </T.ArticleBtnRemove>
                           {!saveButton ? (
