@@ -35,17 +35,17 @@ export const Article = ({ setAds }) => {
     setShowPhone(true);
   };
 
-  const handleDeleteAds = async (data) => {
+  const handleDeleteAds = async () => {
     deleteAds({
       token: getTokenFromLocalStorage(),
-      id: data.id,
+      id: id,
     });
     setSaveButton(false);
     setAds(data.id)
   };
 
   useEffect(() => {
-    if (data) {
+    if (adsComments) {
       setCurrAds(data);
       setAdsComments([adsComments]);
       setSaveButton(true);
@@ -154,7 +154,7 @@ export const Article = ({ setAds }) => {
                             Редактировать
                           </T.ArticleBtnReduct>
                           <T.ArticleBtnRemove
-                            onClick={() => handleDeleteAds(data)}
+                            onClick={handleDeleteAds}
                           >
                             Снять с публикации
                           </T.ArticleBtnRemove>
