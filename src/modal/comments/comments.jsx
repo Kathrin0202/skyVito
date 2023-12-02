@@ -2,7 +2,7 @@ import * as T from "./comments.styled";
 import noAvatar from "../../img/myprofile.png";
 import { useAddCommentMutation } from "../../store/services/auth";
 import { useEffect, useState } from "react";
-import { getTokenFromLocalStorage, updateToken } from "../../api";
+import { getTokenFromLocalStorage } from "../../api";
 import { useAuthSelector } from "../../store/slices/auth";
 import { Link, useParams } from "react-router-dom";
 export const Comments = ({
@@ -13,7 +13,7 @@ export const Comments = ({
   const closeForm = () => {
     setOpenFormComments(false);
   };
-  const [addComment, { isLoading, isError }] = useAddCommentMutation();
+  const [addComment, { isLoading }] = useAddCommentMutation();
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState(null);
   const auth = useAuthSelector();
@@ -31,22 +31,9 @@ export const Comments = ({
         text: newComment,
         id: id,
       });
-    }
-    setNewComment(newComment);
-  };
-
-  useEffect(() => {
-    if (isError.status === 422) {
-      updateToken();
-      if (newComment) {
-        addComment({
-          token: getTokenFromLocalStorage(),
-          text: newComment,
-        });
-      }
       setAdsComments(newComment);
     }
-  }, [isError, newComment, addComment, setAdsComments]);
+  };
 
   return (
     <T.Wrapper>
@@ -79,8 +66,10 @@ export const Comments = ({
                     </T.FormNewArtBlock>
                     <T.FormNewArtBtnPub
                       id="btnPublish"
+                      disabled={!newComment}
                       onClick={(event) => handleAddComment(event)}
                     >
+                      {" "}
                       Опубликовать
                     </T.FormNewArtBtnPub>
                     {error && <T.Error>{error}</T.Error>}

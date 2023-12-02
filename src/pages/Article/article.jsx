@@ -15,51 +15,42 @@ import {
 import { useAuthSelector } from "../../store/slices/auth";
 import { EditAds } from "../../modal/AddAds/editAds";
 import { Comments } from "../../modal/comments/comments";
-import { getTokenFromLocalStorage, updateToken } from "../../api";
+import { getTokenFromLocalStorage } from "../../api";
+
 export const Article = ({ setAds }) => {
-  const adsId = parseInt(useParams().id);
-  const { data, isLoading } = useGetAdsByIdQuery(adsId);
+  const { id } = useParams();
+  const { data, isLoading } = useGetAdsByIdQuery(id);
   const [showPhone, setShowPhone] = useState(false);
+  const auth = useAuthSelector();
+  const [openFormEditAds, setOpenFormEditAds] = useState(false);
+  const [openFormComments, setOpenFormComments] = useState(false);
+  const [deleteAds] = useDeleteAdsMutation(id);
+  const [comments, setAdsComments] = useState([]);
+  const { data: adsComments } = useGetAllCommentsQuery(id);
+  const [saveButton, setSaveButton] = useState(true);
+  const navigate = useNavigate();
+  const [currAds, setCurrAds] = useState(null);
 
   const clickShowPhone = () => {
     setShowPhone(true);
   };
-  const auth = useAuthSelector();
-  const [openFormEditAds, setOpenFormEditAds] = useState(false);
-  const [openFormComments, setOpenFormComments] = useState(false);
-  const [deleteAds, { isError }] = useDeleteAdsMutation();
-  const [deleted, setDeleted] = useState(false);
-  const [comments, setAdsComments] = useState([]);
-  const { data: adsComments } = useGetAllCommentsQuery(adsId);
-  const [saveButton, setSaveButton] = useState(true);
 
-  const handleDeleteAds = () => {
+  const handleDeleteAds = async () => {
     deleteAds({
       token: getTokenFromLocalStorage(),
-      id: adsId,
+      id: id,
     });
-    setDeleted(true);
-    setSaveButton(true);
+    setSaveButton(false);
+    setAds(data.id)
   };
 
   useEffect(() => {
-    setDeleted(true);
-    if (isError.status === 401) {
-      updateToken();
-      deleteAds({
-        token: getTokenFromLocalStorage(),
-        id: adsId,
-      });
-    }
-    setSaveButton(true);
-  }, [isError]);
-
-  useEffect(() => {
     if (adsComments) {
+      setCurrAds(data);
       setAdsComments([adsComments]);
       setSaveButton(true);
     }
-  }, [adsComments]);
+  }, [data, adsComments]);
 
   const [selectedCard, setSelectedCard] = useState(null);
   const [ind, setInd] = useState(null);
@@ -75,7 +66,7 @@ export const Article = ({ setAds }) => {
         <EditAds
           setOpenFormEditAds={setOpenFormEditAds}
           ads={data}
-          setAds={setAds}
+          setAds={currAds}
         />
       )}
       {openFormComments && (
@@ -86,7 +77,7 @@ export const Article = ({ setAds }) => {
         />
       )}
       {auth.isAuth === true ? (
-        <HeaderAuth ads={data} setAds={setAds} />
+        <HeaderAuth ads={data} setAds={currAds} />
       ) : (
         <Header />
       )}
@@ -102,7 +93,7 @@ export const Article = ({ setAds }) => {
                   <T.ArticleLeft>
                     <T.ArticleFillImg>
                       <T.ArticleImg>
-                        {data.images.length !== 0 ? (
+                        {data?.images.length !== 0 ? (
                           !selectedCard ? (
                             <T.ArticleImgImg
                               src={`http://localhost:8090/${data.images[0].url}`}
@@ -162,9 +153,16 @@ export const Article = ({ setAds }) => {
                           >
                             Редактировать
                           </T.ArticleBtnReduct>
-                          <T.ArticleBtnRemove onClick={() => handleDeleteAds()}>
+                          <T.ArticleBtnRemove
+                            onClick={handleDeleteAds}
+                          >
                             Снять с публикации
                           </T.ArticleBtnRemove>
+                          {!saveButton ? (
+                            <T.MainText>Объявление удалено</T.MainText>
+                          ) : (
+                            ""
+                          )}
                         </T.ArticleBtnBlock>
                       ) : (
                         <T.ArticleBtn onClick={clickShowPhone}>

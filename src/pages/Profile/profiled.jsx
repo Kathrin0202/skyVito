@@ -6,7 +6,7 @@ import { NotFound } from "../NotFound/notFound";
 import { MyProfile } from "./myprofile";
 import { SellerProfile } from "./sellerProfile";
 
-export const Profiled = (ads, setAds, isLoading) => {
+export const Profiled = (isLoading) => {
   const useAuth = useAuthSelector();
   const [userProfile, setUserProfile] = useState(null);
   const userID = useParams().id;
@@ -59,16 +59,12 @@ export const Profiled = (ads, setAds, isLoading) => {
         <MyProfile
           userProfile={userProfile}
           setUserProfile={setUserProfile}
-          ads={ads}
-          setAds={setAds}
           isLoading={isLoading}
         />
       )}
       {pageMode === "guest" && userProfile && (
         <SellerProfile
           userProfile={userProfile}
-          ads={ads}
-          setAds={setAds}
           isLoading={isLoading}
         />
       )}

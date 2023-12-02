@@ -5,12 +5,12 @@ import img02 from "../../img/icon_02.png";
 import img03 from "../../img/icon_03.png";
 import { AddAds } from "../../modal/AddAds/addAds";
 import { useState } from "react";
-export const Footer = ({ ads }) => {
+export const Footer = () => {
   const [openFormAddAds, setOpenFormAddAds] = useState(false);
   return (
     <>
       {openFormAddAds && (
-        <AddAds setOpenFormAddAds={setOpenFormAddAds} ads={ads} />
+        <AddAds setOpenFormAddAds={setOpenFormAddAds}/>
       )}
       <S.Footer>
         <S.FooterContainer>

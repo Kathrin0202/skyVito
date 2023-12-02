@@ -6,6 +6,7 @@ import { useGetAllUserAdsQuery } from "../../store/services/auth";
 export const ContentCard = ({ userId }) => {
   const [dataAds, setDataAds] = useState(null);
   const { data } = useGetAllUserAdsQuery(userId);
+  
   useEffect(() => {
     setDataAds(data);
   }, [data]);

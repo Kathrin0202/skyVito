@@ -17,16 +17,14 @@ export const saveUserIdToState = (token) => {
   }
 };
 function App() {
-  saveUserIdToState(getTokenFromLocalStorage());
-  const [ads, setAds] = useState(null);
+  const [ads, setAds] = useState();
   const { data, isLoading } = useGetAllAdsQuery();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
   useEffect(() => {
+    saveUserIdToState(getTokenFromLocalStorage());
     setUser(JSON.parse(localStorage.getItem("user")));
-    if (data) {
-      setAds(data);
-    }
+    setAds(data);
   }, [data]);
 
   return (
@@ -34,7 +32,7 @@ function App() {
       <S.Container>
         <S.StyLeGlobal />
         <UserContext.Provider value={{ user: user, setUser }}>
-          <AppRoutes ads={ads} isLoading={isLoading} setAds={setAds} />
+          <AppRoutes isLoading={isLoading} ads={ads} setAds={setAds} />
         </UserContext.Provider>
       </S.Container>
     </S.Wrapper>
