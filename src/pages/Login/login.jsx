@@ -30,6 +30,7 @@ export const Login = ({ isLoginMode = true }) => {
           setAuth({
             email: email,
             password: password,
+            user: JSON.parse(localStorage.getItem("user")),
           })
         );
         navigate("/");

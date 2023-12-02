@@ -1,9 +1,11 @@
 import * as S from "./style/App.style";
 import { AppRoutes } from "./routes";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { getTokenFromLocalStorage, getUser } from "./api";
 import { store } from "./store/store";
 import { setUserId, useGetAllAdsQuery } from "./store/services/auth";
+
+export const UserContext = createContext("");
 
 export const saveUserIdToState = (token) => {
   if (token) {
@@ -18,17 +20,22 @@ function App() {
   saveUserIdToState(getTokenFromLocalStorage());
   const [ads, setAds] = useState(null);
   const { data, isLoading } = useGetAllAdsQuery();
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+
   useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")));
     if (data) {
-        setAds(data);
+      setAds(data);
     }
-}, [data]);
+  }, [data]);
 
   return (
     <S.Wrapper>
       <S.Container>
         <S.StyLeGlobal />
-        <AppRoutes ads={ads} isLoading={isLoading} setAds={setAds} />
+        <UserContext.Provider value={{ user: user, setUser }}>
+          <AppRoutes ads={ads} isLoading={isLoading} setAds={setAds} />
+        </UserContext.Provider>
       </S.Container>
     </S.Wrapper>
   );
