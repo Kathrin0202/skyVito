@@ -17,7 +17,7 @@ export const Header = () => {
   );
 };
 
-export const HeaderAuth = ({ ads, setAds }) => {
+export const HeaderAuth = (ads, setAds) => {
   const navigate = useNavigate();
   const handleClickLogout = () => {
     removeTokenFromLocalStorage();

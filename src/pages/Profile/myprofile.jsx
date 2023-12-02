@@ -17,8 +17,6 @@ import { EditPassword } from "../../modal/EditPassword/editPassword";
 export const MyProfile = ({
   userProfile,
   setUserProfile,
-  ads,
-  setAds,
   isLoading,
 }) => {
   const [currentProfiled, setCurrentProfiled] = useState(userProfile);
@@ -81,9 +79,9 @@ export const MyProfile = ({
       {openFormChangePassword && (
         <EditPassword setOpenFormChangePassword={setOpenFormChangePassword} />
       )}
-      <HeaderAuth setAds={setAds} ads={ads} />
+      <HeaderAuth/>
       <S.Main>
-        {!isLoading ? (
+        {isLoading ? (
           <T.MainContainer>
             <T.MainCenterBlock>
               <MainMenu />

@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { getTokenFromLocalStorage } from "../../api";
 
 const initialState = {
@@ -21,14 +22,15 @@ const authSlice = createSlice({
   initialState: getTokenFromLocalStorage() ?? initialState,
   reducers: {
     setAuth(state, action) {
-      state.email = action.payload.email;
-      state.surname = action.payload.surname;
-      state.city = action.payload.city;
-      state.name = action.payload.name;
-      state.id = action.payload.id;
-      state.sells_from = action.payload.sells_from;
-      state.phone = action.payload.phone;
-      state.token = action.payload.token;
+      const payload = action.payload ?? initialState;
+      state.email = payload.email;
+      state.surname = payload.surname;
+      state.city = payload.city;
+      state.name = payload.name;
+      state.id = payload.id;
+      state.sells_from = payload.sells_from;
+      state.phone = payload.phone;
+      state.token = payload.token;
       state.isAuth = true;
 
       localStorage.setItem("auth", JSON.stringify(state));
@@ -37,6 +39,15 @@ const authSlice = createSlice({
 });
 export const { setAuth } = authSlice.actions;
 export default authSlice.reducer;
+
+export const useLogout = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  return () => {
+    dispatch(setAuth(null));
+    navigate("/login");
+  };
+};
 
 export const useAuthSelector = () => {
   const { email, id, city, name, surname, sells_from, phone, token, isAuth } =

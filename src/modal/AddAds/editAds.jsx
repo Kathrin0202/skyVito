@@ -10,6 +10,7 @@ import {
 import * as T from "./addAds.styled";
 
 export const EditAds = ({ setOpenFormEditAds }) => {
+  
   const closeForm = () => {
     setOpenFormEditAds(false);
   };

@@ -7,7 +7,7 @@ import noAvatar from "../../img/myprofile.png";
 import { useAuthSelector } from "../../store/slices/auth";
 import * as S from "../../style/App.style";
 import * as T from "./sellerProfile.style";
-export const SellerProfile = ({ userProfile, ads, setAds, isLoading }) => {
+export const SellerProfile = ({ userProfile, isLoading }) => {
   const [showPhone, setShowPhone] = useState(false);
   const clickShowPhone = () => {
     setShowPhone(true);
@@ -16,12 +16,12 @@ export const SellerProfile = ({ userProfile, ads, setAds, isLoading }) => {
   return (
     <>
       {auth.isAuth === true ? (
-        <HeaderAuth ads={ads} setAds={setAds} />
+        <HeaderAuth/>
       ) : (
         <Header />
       )}
       <S.Main>
-        {!isLoading ? (
+        {isLoading ? (
           <T.MainContainer>
             <T.MainCenterBlock>
               <MainMenu />

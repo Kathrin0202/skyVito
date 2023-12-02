@@ -1,14 +1,29 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Footer } from "../../components/Footer/footer";
-import { Header } from "../../components/Header/header";
+import { Header, HeaderAuth } from "../../components/Header/header";
 import img from "../../img/logo.png";
 import imgMob from "../../img/logo-mob.png";
 import * as S from "./main.style";
 import noPhoto from "../../img/no-photo.avif";
+import { saveUserIdToState } from "../../App";
+import { getTokenFromLocalStorage } from "../../api";
+import { useGetAllAdsQuery } from "../../store/services/auth";
+import { useAuthSelector } from "../../store/slices/auth";
 
-export const MainPage = ({ ads, isLoading, setAds }) => {
+export const MainPage = () => {
   const [searchType, setSearchType] = useState("");
+  const [ads, setAds] = useState();
+  const { data, isLoading } = useGetAllAdsQuery();
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const auth = useAuthSelector();
+
+  useEffect(() => {
+    saveUserIdToState(getTokenFromLocalStorage());
+    setUser(JSON.parse(localStorage.getItem("user")));
+    setAds(data);
+  }, [data]);
+
   const filteredAds = () => {
     let filterAds = ads;
     if (searchType?.length > 0) {
@@ -18,15 +33,16 @@ export const MainPage = ({ ads, isLoading, setAds }) => {
     }
     return filterAds;
   };
+
   const filterAd = filteredAds();
-  useEffect(() => {
-    if (ads) {
-      setAds(ads);
-    }
-  }, [ads, setAds]);
+
   return (
     <>
-      <Header />
+      {auth.isAuth === true ? (
+        <HeaderAuth ads={ads} setAds={setAds} />
+      ) : (
+        <Header />
+      )}
       <S.MainSearch>
         <S.SearchLogoLink href="#" target="_blank">
           <Link to="/">

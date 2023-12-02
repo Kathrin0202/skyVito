@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getTokenFromLocalStorage, host } from "../../api";
 
-
 export const setUserId = (userId) => {
   return {
     type: "USER_TAG",
@@ -36,14 +35,14 @@ export const userApi = createApi({
       providesTags: "USER_TAG",
     }),
     getAddAds: builder.mutation({
-      query: (data) => ({
+      query: ({ token, title, description, price }) => ({
         url: "/adstext",
         method: "POST",
         headers: {
           "content-type": "application/json",
-          Authorization: `${data.token.token_type} ${data.token.access_token}`,
+          Authorization: `${token.token_type} ${token.access_token}`,
         },
-        body: JSON.stringify(data.ads),
+        body: JSON.stringify({ title, description, price }),
       }),
       invalidatesTags: "USER_TAG",
     }),
@@ -75,22 +74,19 @@ export const userApi = createApi({
       invalidatesTags: "USER_TAG",
     }),
     deleteAds: builder.mutation({
-      query: ({ id, token }) => {
-        return {
+      query: ({ id, token }) => ({
           url: `/ads/${id}`,
           method: "DELETE",
           headers: {
             "content-type": "application/json",
             Authorization: `${token.token_type} ${token.access_token}`,
-          },
-        };
-      },
+        }
+      }),
       invalidatesTags: "USER_TAG",
     }),
     deleteAdsImages: builder.mutation({
       query: ({ image, token, id }) => {
         const url = image?.url;
-        console.log(url);
         return {
           url: `/ads/${id}/image?file_url=${url}`,
           method: "DELETE",

@@ -15,16 +15,14 @@ export const AppRoutes = ({ ads, isLoading, setAds }) => {
         path="/"
         element={<MainPage ads={ads} isLoading={isLoading} setAds={setAds} />}
       />
-      <Route path="/ads/:id" element={<Article />} />
+      <Route path="/ads/:id" element={<Article ads={ads} setAds={setAds} />} />
       <Route
         path="/profile/:id"
-        element={<Profiled ads={ads} setAds={setAds} isLoading={isLoading}/>}
+        element={<Profiled ads={ads} setAds={setAds} isLoading={isLoading} />}
       />
       <Route
         element={
-          <ProtectedRoute
-            isAllowed={Boolean(localStorage.getItem("token"))}
-          />
+          <ProtectedRoute isAllowed={Boolean(localStorage.getItem("token"))} />
         }
       >
         <Route path="/ads/me" element={<Article ads={ads} setAds={setAds} />} />
