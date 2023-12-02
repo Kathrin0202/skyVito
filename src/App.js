@@ -16,14 +16,15 @@ export const saveUserIdToState = (token) => {
       .catch((error) => console.error(error));
   }
 };
+
 function App() {
   const [ads, setAds] = useState();
   const { data, isLoading } = useGetAllAdsQuery();
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")));
 
   useEffect(() => {
-    saveUserIdToState(getTokenFromLocalStorage());
-    setUser(JSON.parse(localStorage.getItem("user")));
+    //saveUserIdToState(getTokenFromLocalStorage());
+    setUser(JSON.parse(localStorage.getItem("auth")));
     setAds(data);
   }, [data]);
 

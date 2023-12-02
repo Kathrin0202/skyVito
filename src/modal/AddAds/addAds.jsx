@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getTokenFromLocalStorage } from "../../api";
+import { useEffect, useState } from "react";
+import { getTokenFromLocalStorage, updateToken } from "../../api";
 import {
   useDeleteAdsImagesMutation,
   useGetAddAdsMutation,
@@ -8,7 +7,7 @@ import {
 } from "../../store/services/auth";
 import * as T from "./addAds.styled";
 export const AddAds = ({ setOpenFormAddAds, setAds }) => {
-  const [postAdsText] = useGetAddAdsMutation();
+  const [postAdsText, { isError }] = useGetAddAdsMutation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -17,8 +16,6 @@ export const AddAds = ({ setOpenFormAddAds, setAds }) => {
   const [postAdsImg] = usePostAdsImageMutation();
   const [deleteImages] = useDeleteAdsImagesMutation();
   const [saveButtonActive, setSaveButtonActive] = useState(true);
-  const navigate = useNavigate();
-  const [inputAndAvaFilled, setInputAndAvaFilled] = useState();
   const [error, setError] = useState(null);
 
   const closeForm = () => {
@@ -40,16 +37,24 @@ export const AddAds = ({ setOpenFormAddAds, setAds }) => {
     setDescription(description);
     setPrice(price);
     setSaveButtonActive(true);
-    setAds(postAdsText);
   };
 
   useEffect(() => {
+    if (isError.status === 422) {
+      updateToken();
+      postAdsText({
+        title: title,
+        description: description,
+        price: price,
+        id: 0,
+        token: getTokenFromLocalStorage(),
+      });
+    }
     setTitle(title);
     setDescription(description);
     setPrice(price);
     setSaveButtonActive(true);
-    setAds(postAdsText);
-  }, [title, description, price]);
+  }, []);
 
   const handleAdsPicture = async (file) => {
     const formData = new FormData();
@@ -75,29 +80,29 @@ export const AddAds = ({ setOpenFormAddAds, setAds }) => {
     setImages(images);
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (saveButtonActive) {
       setSaveButtonActive(false);
     } else {
       setSaveButtonActive(true);
     }
-  }, [inputAndAvaFilled]);
+  }, [inputAndAvaFilled]);*/
 
   const handleAdTitleChange = (event) => {
     setTitle(event.target.value);
-    setInputAndAvaFilled(event.target.value);
+    //setInputAndAvaFilled(event.target.value);
     setSaveButtonActive(true);
   };
 
   const handleAdDescriptionChange = (event) => {
     setDescription(event.target.value);
-    setInputAndAvaFilled(event.target.value);
+    //setInputAndAvaFilled(event.target.value);
     setSaveButtonActive(true);
   };
 
   const handleAdPriceChange = (event) => {
     setPrice(event.target.value);
-    setInputAndAvaFilled(event.target.value);
+    //setInputAndAvaFilled(event.target.value);
     setSaveButtonActive(true);
   };
 
@@ -216,7 +221,7 @@ export const AddAds = ({ setOpenFormAddAds, setAds }) => {
                   type="text"
                   name="price"
                   id="formName"
-                  onChange={handleAdPriceChange}
+                  onChange={(event) => handleAdPriceChange(event)}
                 />
                 <T.FormNewArtInputPriceCover></T.FormNewArtInputPriceCover>
               </T.FormNewArtBlockPrice>
