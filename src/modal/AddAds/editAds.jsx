@@ -9,8 +9,8 @@ import {
 } from "../../store/services/auth";
 import * as T from "./addAds.styled";
 
-export const EditAds = ({ setOpenFormEditAds }) => {
-  
+export const EditAds = ({ setOpenFormEditAds}) => {
+
   const closeForm = () => {
     setOpenFormEditAds(false);
   };

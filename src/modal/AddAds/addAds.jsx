@@ -7,7 +7,7 @@ import {
   usePostAdsImageMutation,
 } from "../../store/services/auth";
 import * as T from "./addAds.styled";
-export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
+export const AddAds = ({ setOpenFormAddAds, setAds }) => {
   const [postAdsText] = useGetAddAdsMutation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -25,7 +25,7 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
     setOpenFormAddAds(false);
   };
 
-  const handleClickPublic = async () => {
+  const handleClickPublic = () => {
     if (!title && !description && !price) {
       setError("Заполните все поля");
     }
@@ -39,9 +39,17 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
     setTitle(title);
     setDescription(description);
     setPrice(price);
-    setSaveButtonActive(false);
-    navigate("/");
+    setSaveButtonActive(true);
+    setAds(postAdsText);
   };
+
+  useEffect(() => {
+    setTitle(title);
+    setDescription(description);
+    setPrice(price);
+    setSaveButtonActive(true);
+    setAds(postAdsText);
+  }, [title, description, price]);
 
   const handleAdsPicture = async (file) => {
     const formData = new FormData();
@@ -68,8 +76,7 @@ export const AddAds = ({ setOpenFormAddAds, setAds, ads }) => {
   };
 
   useEffect(() => {
-    let allAreEmpty = true;
-    if (allAreEmpty) {
+    if (saveButtonActive) {
       setSaveButtonActive(false);
     } else {
       setSaveButtonActive(true);

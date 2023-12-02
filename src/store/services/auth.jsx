@@ -74,14 +74,16 @@ export const userApi = createApi({
       invalidatesTags: "USER_TAG",
     }),
     deleteAds: builder.mutation({
-      query: ({ id, token }) => ({
+      query: ({ id, token }) => {
+        return {
           url: `/ads/${id}`,
           method: "DELETE",
           headers: {
             "content-type": "application/json",
             Authorization: `${token.token_type} ${token.access_token}`,
+          },
         }
-      }),
+      },
       invalidatesTags: "USER_TAG",
     }),
     deleteAdsImages: builder.mutation({

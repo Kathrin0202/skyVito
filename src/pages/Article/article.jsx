@@ -15,19 +15,18 @@ import {
 import { useAuthSelector } from "../../store/slices/auth";
 import { EditAds } from "../../modal/AddAds/editAds";
 import { Comments } from "../../modal/comments/comments";
-import { getTokenFromLocalStorage, updateToken } from "../../api";
+import { getTokenFromLocalStorage } from "../../api";
 
-export const Article = () => {
-  const adsId = parseInt(useParams().id);
-  const { data, isLoading } = useGetAdsByIdQuery(adsId);
+export const Article = ({ setAds }) => {
+  const { id } = useParams();
+  const { data, isLoading } = useGetAdsByIdQuery(id);
   const [showPhone, setShowPhone] = useState(false);
   const auth = useAuthSelector();
   const [openFormEditAds, setOpenFormEditAds] = useState(false);
   const [openFormComments, setOpenFormComments] = useState(false);
-  const [deleted, setDeleted] = useState(adsId);
-  const [deleteAds, { isError }] = useDeleteAdsMutation();
+  const [deleteAds] = useDeleteAdsMutation(id);
   const [comments, setAdsComments] = useState([]);
-  const { data: adsComments } = useGetAllCommentsQuery(adsId);
+  const { data: adsComments } = useGetAllCommentsQuery(id);
   const [saveButton, setSaveButton] = useState(true);
   const navigate = useNavigate();
   const [currAds, setCurrAds] = useState(null);
@@ -36,13 +35,13 @@ export const Article = () => {
     setShowPhone(true);
   };
 
-  const handleDeleteAds = (data) => {
+  const handleDeleteAds = async (data) => {
     deleteAds({
       token: getTokenFromLocalStorage(),
       id: data.id,
     });
-    navigate("/", { replace: true });
-    setSaveButton(true);
+    setSaveButton(false);
+    setAds(data.id)
   };
 
   useEffect(() => {
@@ -52,12 +51,6 @@ export const Article = () => {
       setSaveButton(true);
     }
   }, [data, adsComments]);
-
-  useEffect(() => {
-    if (data) {
-      setDeleted(data);
-    }
-  }, [deleted]);
 
   const [selectedCard, setSelectedCard] = useState(null);
   const [ind, setInd] = useState(null);
@@ -165,6 +158,11 @@ export const Article = () => {
                           >
                             Снять с публикации
                           </T.ArticleBtnRemove>
+                          {!saveButton ? (
+                            <T.MainText>Объявление удалено</T.MainText>
+                          ) : (
+                            ""
+                          )}
                         </T.ArticleBtnBlock>
                       ) : (
                         <T.ArticleBtn onClick={clickShowPhone}>
