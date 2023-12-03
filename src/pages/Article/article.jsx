@@ -17,7 +17,7 @@ import { EditAds } from "../../modal/AddAds/editAds";
 import { Comments } from "../../modal/comments/comments";
 import { getTokenFromLocalStorage } from "../../api";
 
-export const Article = ({ setAds }) => {
+export const Article = ({ setAds, ads }) => {
   const { id } = useParams();
   const { data, isLoading } = useGetAdsByIdQuery(id);
   const [showPhone, setShowPhone] = useState(false);
@@ -28,7 +28,6 @@ export const Article = ({ setAds }) => {
   const [comments, setAdsComments] = useState([]);
   const { data: adsComments } = useGetAllCommentsQuery(id);
   const [saveButton, setSaveButton] = useState(true);
-  const navigate = useNavigate();
   const [currAds, setCurrAds] = useState(null);
 
   const clickShowPhone = () => {
@@ -55,11 +54,10 @@ export const Article = ({ setAds }) => {
 
   useEffect(() => {
     if (adsComments) {
-      setCurrAds(data);
       setAdsComments([adsComments]);
       setSaveButton(true);
     }
-  }, [data, adsComments]);
+  }, [adsComments]);
 
   const [selectedCard, setSelectedCard] = useState(null);
   const [ind, setInd] = useState(null);
@@ -74,8 +72,8 @@ export const Article = ({ setAds }) => {
       {openFormEditAds && (
         <EditAds
           setOpenFormEditAds={setOpenFormEditAds}
-          ads={data}
-          setAds={currAds}
+          currAds={data}
+          setCurrAds={setCurrAds}
         />
       )}
       {openFormComments && (
