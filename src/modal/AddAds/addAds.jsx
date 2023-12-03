@@ -1,21 +1,13 @@
 import { useEffect, useState } from "react";
 import { getTokenFromLocalStorage, updateToken } from "../../api";
-import {
-  useDeleteAdsImagesMutation,
-  useGetAddAdsMutation,
-  usePostAdsImageMutation,
-} from "../../store/services/auth";
+import { useGetAddAdsMutation } from "../../store/services/auth";
 import * as T from "./addAds.styled";
-export const AddAds = ({ setOpenFormAddAds}) => {
+export const AddAds = ({ setOpenFormAddAds }) => {
   const [postAdsText, { isError }] = useGetAddAdsMutation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const addImg = document.getElementById("upload-photo");
-  const [images, setImages] = useState([addImg]);
-  const [postAdsImg] = usePostAdsImageMutation();
-  const [deleteImages] = useDeleteAdsImagesMutation();
-  const [saveButtonActive, setSaveButtonActive] = useState(true);
+  const [saveButtonActive, setSaveButtonActive] = useState(false);
   const [error, setError] = useState(null);
 
   const closeForm = () => {
@@ -43,7 +35,11 @@ export const AddAds = ({ setOpenFormAddAds}) => {
     }
     postAdsText({
       token: getTokenFromLocalStorage(),
-      ads: { title: title, description: description, price: price },
+      ads: {
+        title: title,
+        description: description,
+        price: price,
+      },
     });
   };
 
@@ -56,31 +52,7 @@ export const AddAds = ({ setOpenFormAddAds}) => {
       });
     }
     setSaveButtonActive(true);
-  }, [isError]);
-
-  const handleAdsPicture = async (file) => {
-    const formData = new FormData();
-    if (file) {
-      formData.append("file", file);
-      postAdsImg({
-        token: getTokenFromLocalStorage(),
-        image: formData,
-      });
-      setSaveButtonActive(true);
-      setImages(images);
-    } else {
-      console.log("Файл не найден");
-    }
-  };
-
-  const handleDeleteImage = async (image) => {
-    deleteImages({
-      token: getTokenFromLocalStorage(),
-      image: image,
-    });
-    setSaveButtonActive(true);
-    setImages(images);
-  };
+  }, [isError]); // eslint-disable-line
 
   return (
     <T.Wrapper>
@@ -113,84 +85,6 @@ export const AddAds = ({ setOpenFormAddAds}) => {
                   onChange={handleAdDescriptionChange}
                 ></T.FormNewArtArea>
               </T.FormNewArtBlock>
-              <T.FormNewArtBlock>
-                <T.FormNewArtP>
-                  Фотографии товара
-                  <T.FormNewArtPSpan>не более 5 фотографий</T.FormNewArtPSpan>
-                </T.FormNewArtP>
-                <T.FormNewArtBarImg>
-                  <T.FormNewArtImg>
-                    <T.FormNewArtImgCover
-                      type="file"
-                      id="upload-photo"
-                      accept="image/*"
-                      onChange={(event) => {
-                        const file = event.target.files?.[0];
-                        if (file) {
-                          setImages(file);
-                          handleAdsPicture(file);
-                        }
-                      }}
-                    ></T.FormNewArtImgCover>
-                  </T.FormNewArtImg>
-                  <T.FormNewArtImg>
-                    <T.FormNewArtImgCover
-                      type="file"
-                      id="upload-photo"
-                      accept="image/*"
-                      onChange={(event) => {
-                        const file = event.target.files?.[1];
-                        if (file) {
-                          setImages(file);
-                          handleAdsPicture(file);
-                        }
-                      }}
-                    ></T.FormNewArtImgCover>
-                  </T.FormNewArtImg>
-                  <T.FormNewArtImg>
-                    <T.FormNewArtImgCover
-                      type="file"
-                      id="upload-photo"
-                      accept="image/*"
-                      onChange={(event) => {
-                        const file = event.target.files?.[2];
-                        if (file) {
-                          setImages(file);
-                          handleAdsPicture(file);
-                        }
-                      }}
-                    ></T.FormNewArtImgCover>
-                  </T.FormNewArtImg>
-                  <T.FormNewArtImg>
-                    <T.FormNewArtImgCover
-                      type="file"
-                      id="upload-photo"
-                      accept="image/*"
-                      onChange={(event) => {
-                        const file = event.target.files?.[3];
-                        if (file) {
-                          setImages(file);
-                          handleAdsPicture(file);
-                        }
-                      }}
-                    ></T.FormNewArtImgCover>
-                  </T.FormNewArtImg>
-                  <T.FormNewArtImg>
-                    <T.FormNewArtImgCover
-                      type="file"
-                      id="upload-photo"
-                      accept="image/*"
-                      onChange={(event) => {
-                        const file = event.target.files?.[4];
-                        if (file) {
-                          setImages(file);
-                          handleAdsPicture(file);
-                        }
-                      }}
-                    ></T.FormNewArtImgCover>
-                  </T.FormNewArtImg>
-                </T.FormNewArtBarImg>
-              </T.FormNewArtBlock>
               <T.FormNewArtBlockPrice>
                 <T.FormNewArtLabel htmlFor="price">Цена</T.FormNewArtLabel>
                 <T.FormNewArtInputPrice
@@ -204,6 +98,7 @@ export const AddAds = ({ setOpenFormAddAds}) => {
               {error && <T.Error>{error}</T.Error>}
               <T.FormNewArtBtnPub
                 id="btnPublish"
+                disabled={!saveButtonActive}
                 onClick={(event) => handleClickPublic(event)}
               >
                 Опубликовать

@@ -1,5 +1,5 @@
 import { Footer } from "../../components/Footer/footer";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { HeaderAuth, Header } from "../../components/Header/header";
 import { MainMenu } from "../../components/Menu/menu";
 import * as S from "../../style/App.style";
@@ -50,7 +50,7 @@ export const Article = () => {
       });
       setSaveButton(false);
     }
-  }, []);
+  }, [isError]); // eslint-disable-line
 
   useEffect(() => {
     if (adsComments) {
@@ -106,6 +106,7 @@ export const Article = () => {
                             />
                           ) : (
                             <T.ArticleImgImg
+                              id={ind}
                               src={`http://localhost:8090/${selectedCard.url}`}
                             />
                           )
@@ -148,7 +149,7 @@ export const Article = () => {
                         <T.ArticleLink
                           onClick={() => setOpenFormComments(true)}
                         >
-                          {comments ? comments.length : "..."} отзыв
+                          {adsComments ? adsComments.length : "..."} отзыв
                         </T.ArticleLink>
                       </T.ArticleInfo>
                       <T.ArticlePrice>{data.price}.₽</T.ArticlePrice>

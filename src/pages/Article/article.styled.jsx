@@ -146,8 +146,8 @@ export const ArticleImgImg = styled.img`
   width: 100%;
   height: 100%;
   display: block;
-  -o-object-fit: fill;
-  object-fit: fill;
+  -o-object-fit: cover;
+  object-fit: cover;
 `;
 
 export const ArticleImgBar = styled.div`

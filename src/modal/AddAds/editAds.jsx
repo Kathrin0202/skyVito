@@ -46,7 +46,7 @@ export const EditAds = ({ setOpenFormEditAds, setCurrAds, currAds }) => {
     setTitle(ads.title);
     setDescription(ads.description);
     setPrice(ads.price);
-  }, [data]);
+  }, [data]); // eslint-disable-line
 
   const handleSaveChanges = async (event) => {
     event.preventDefault();
@@ -69,7 +69,7 @@ export const EditAds = ({ setOpenFormEditAds, setCurrAds, currAds }) => {
       });
     }
     setSaveButtonActive(true);
-  }, [isError]);
+  }, [isError]); // eslint-disable-line
 
   const handleImgUpload = async (file) => {
     const formData = new FormData();
@@ -245,6 +245,7 @@ export const EditAds = ({ setOpenFormEditAds, setCurrAds, currAds }) => {
 
               <T.FormNewArtBtnPub
                 id="btnPublish"
+                disabled={!saveButtonActive}
                 onClick={(event) => handleSaveChanges(event)}
               >
                 Сохранить

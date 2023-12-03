@@ -112,7 +112,7 @@ export const userApi = createApi({
     }),
     getAllComments: builder.query({
       query: (id) => `/ads/${id}/comments`,
-      invalidatesTags: [DATA_TAG],
+      invalidatesTags: ["CMT"],
     }),
     addComment: builder.mutation({
       query: ({ token, text, id }) => ({
@@ -124,7 +124,7 @@ export const userApi = createApi({
         },
         body: JSON.stringify({ text }),
       }),
-      invalidatesTags: [DATA_TAG],
+      invalidatesTags: [{ type: "CMT", id: "LIST" }],
     }),
   }),
 });

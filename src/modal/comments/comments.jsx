@@ -2,7 +2,7 @@ import * as T from "./comments.styled";
 import noAvatar from "../../img/myprofile.png";
 import { useAddCommentMutation } from "../../store/services/auth";
 import { useEffect, useState } from "react";
-import { getTokenFromLocalStorage, updateToken } from "../../api";
+import { getTokenFromLocalStorage} from "../../api";
 import { useAuthSelector } from "../../store/slices/auth";
 import { Link, useParams } from "react-router-dom";
 
@@ -10,35 +10,32 @@ export const Comments = ({ setOpenFormComments, comments, setAdsComments }) => {
   const closeForm = () => {
     setOpenFormComments(false);
   };
-  const [addComment, { isLoading, isError }] = useAddCommentMutation();
+  const { id } = useParams();
+  const [addComment, { data, isLoading}] = useAddCommentMutation(id);
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState(null);
   const auth = useAuthSelector();
-  const { id } = useParams();
+  const [saveButton, setSaveButton] = useState(true);
 
   const handleAddComment = async (event) => {
     event.preventDefault();
     if (!newComment) {
       setError("Пожалуйста, введите отзыв");
     }
-    addComment({
+    await addComment({
       token: getTokenFromLocalStorage(),
       text: newComment,
       id: id,
     });
-    setAdsComments([newComment, ...comments]);
+    setNewComment("");
+    setSaveButton(true);
   };
 
   useEffect(() => {
-    if (isError.status === 401) {
-      updateToken();
-      addComment({
-        token: getTokenFromLocalStorage(),
-        text: newComment,
-        id: id,
-      });
+    if (newComment !== "") {
+      setAdsComments([data, ...comments])
     }
-  }, [newComment]);
+  }, [data]); // eslint-disable-line
 
   return (
     <T.Wrapper>
@@ -66,6 +63,7 @@ export const Comments = ({ setOpenFormComments, comments, setAdsComments }) => {
                         cols="auto"
                         rows="5"
                         placeholder="Введите отзыв"
+                        value={newComment}
                         onChange={(event) => setNewComment(event.target.value)}
                       ></T.FormNewArtArea>
                     </T.FormNewArtBlock>
@@ -73,9 +71,13 @@ export const Comments = ({ setOpenFormComments, comments, setAdsComments }) => {
                       id="btnPublish"
                       onClick={(event) => handleAddComment(event)}
                     >
-                      {" "}
                       Опубликовать
                     </T.FormNewArtBtnPub>
+                    {!saveButton ? (
+                      <T.FormNewArt>Комментарий добавлен</T.FormNewArt>
+                    ) : (
+                      ""
+                    )}
                     {error && <T.Error>{error}</T.Error>}
                   </T.ModalFormNewArt>
                 )}
