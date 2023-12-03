@@ -41,19 +41,23 @@ export const userApi = createApi({
       providesTags: [DATA_TAG],
     }),
     getAddAds: builder.mutation({
-      query: ({ token, title, description, price }) => ({
+      query: ({ token, ads }) => ({
         url: "/adstext",
         method: "POST",
         headers: {
           "content-type": "application/json",
           Authorization: `${token.token_type} ${token.access_token}`,
         },
-        body: JSON.stringify({ title, description, price }),
+        body: JSON.stringify({
+          title: ads.title,
+          description: ads.description,
+          price: ads.price,
+        }),
       }),
       invalidatesTags: [DATA_TAG],
     }),
     getEditAds: builder.mutation({
-      query: ({ id, token, title, description, price }) => ({
+      query: ({ id, token, ads }) => ({
         url: `/ads/${id}`,
         method: "PATCH",
         headers: {
@@ -61,9 +65,9 @@ export const userApi = createApi({
           Authorization: `${token.token_type} ${token.access_token}`,
         },
         body: JSON.stringify({
-          title,
-          description,
-          price,
+          title: ads.title,
+          description: ads.description,
+          price: ads.price,
         }),
       }),
       invalidatesTags: [DATA_TAG],

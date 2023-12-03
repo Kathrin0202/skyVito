@@ -9,10 +9,11 @@ import {
 } from "../../store/services/auth";
 import * as T from "./addAds.styled";
 
-export const EditAds = ({ setOpenFormEditAds }) => {
+export const EditAds = ({ setOpenFormEditAds, setCurrAds, currAds }) => {
   const closeForm = () => {
     setOpenFormEditAds(false);
   };
+
   const { id } = useParams();
   const { data } = useGetAdsByIdQuery(id);
   const [editAdsRequest, { isError }] = useGetEditAdsMutation(id);
@@ -24,20 +25,51 @@ export const EditAds = ({ setOpenFormEditAds }) => {
   const [price, setPrice] = useState("");
   const [saveButtonActive, setSaveButtonActive] = useState(true);
 
-  const handleSaveChanges = async (event) => {
-    editAdsRequest({
-      title: title,
-      description: description,
-      price: price,
-      id: id,
-      token: getTokenFromLocalStorage(),
-    });
-    setTitle(title);
-    setDescription(description);
-    setPrice(price);
-    setSaveButtonActive(false);
-  };
   const ads = useMemo(() => data || [], [data]);
+
+  const handleAdTitleChange = (event) => {
+    setTitle(event.target.value);
+    setSaveButtonActive(true);
+  };
+
+  const handleAdDescriptionChange = (event) => {
+    setDescription(event.target.value);
+    setSaveButtonActive(true);
+  };
+
+  const handleAdPriceChange = (event) => {
+    setPrice(event.target.value);
+    setSaveButtonActive(true);
+  };
+
+  useEffect(() => {
+    setTitle(ads.title);
+    setDescription(ads.description);
+    setPrice(ads.price);
+  }, [data]);
+
+  const handleSaveChanges = async (event) => {
+    event.preventDefault();
+    editAdsRequest({
+      token: getTokenFromLocalStorage(),
+      id: id,
+      ads: { title: title, description: description, price: price },
+    });
+    setSaveButtonActive(false);
+    setOpenFormEditAds(false);
+  };
+
+  useEffect(() => {
+    if (isError.status === 401) {
+      updateToken();
+      editAdsRequest({
+        token: getTokenFromLocalStorage(),
+        id: id,
+        ads: { title: title, description: description, price: price },
+      });
+    }
+    setSaveButtonActive(true);
+  }, [isError]);
 
   const handleImgUpload = async (file) => {
     const formData = new FormData();
@@ -70,37 +102,6 @@ export const EditAds = ({ setOpenFormEditAds }) => {
       setImages(data.images);
     }
   }, [data]);
-
-  useEffect(() => {
-    if (isError.status === 401) {
-      updateToken();
-      editAdsRequest({
-        title: title,
-        description: description,
-        price: price,
-        id: id,
-        token: getTokenFromLocalStorage(),
-      });
-    }
-    setTitle(ads.title);
-    setDescription(ads.description);
-    setPrice(ads.price);
-  }, []);
-
-  const handleAdTitleChange = (event) => {
-    setTitle(event.target.value);
-    setSaveButtonActive(true);
-  };
-
-  const handleAdDescriptionChange = (event) => {
-    setDescription(event.target.value);
-    setSaveButtonActive(true);
-  };
-
-  const handleAdPriceChange = (event) => {
-    setPrice(event.target.value);
-    setSaveButtonActive(true);
-  };
 
   return (
     <T.Wrapper>
@@ -242,7 +243,10 @@ export const EditAds = ({ setOpenFormEditAds }) => {
                 <T.FormNewArtInputPriceCover></T.FormNewArtInputPriceCover>
               </T.FormNewArtBlockPrice>
 
-              <T.FormNewArtBtnPub id="btnPublish" onClick={handleSaveChanges}>
+              <T.FormNewArtBtnPub
+                id="btnPublish"
+                onClick={(event) => handleSaveChanges(event)}
+              >
                 Сохранить
               </T.FormNewArtBtnPub>
             </T.ModalFormNewArt>

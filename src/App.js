@@ -23,7 +23,7 @@ function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("auth")));
 
   useEffect(() => {
-    //saveUserIdToState(getTokenFromLocalStorage());
+    saveUserIdToState(getTokenFromLocalStorage());
     setUser(JSON.parse(localStorage.getItem("auth")));
     setAds(data);
   }, [data]);

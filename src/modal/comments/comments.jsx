@@ -4,8 +4,8 @@ import { useAddCommentMutation } from "../../store/services/auth";
 import { useEffect, useState } from "react";
 import { getTokenFromLocalStorage, updateToken } from "../../api";
 import { useAuthSelector } from "../../store/slices/auth";
-import { isRouteErrorResponse, Link, useParams } from "react-router-dom";
-import userEvent from "@testing-library/user-event";
+import { Link, useParams } from "react-router-dom";
+
 export const Comments = ({
   setOpenFormComments,
   comments = [],
@@ -20,13 +20,14 @@ export const Comments = ({
   const auth = useAuthSelector();
   const id = useParams().id;
 
-  const handleAddComment = () => {
+  const handleAddComment = async (event) => {
+    event.preventDefault();
     if (!newComment) {
       setError("Пожалуйста, введите отзыв");
       return;
     }
     if (newComment) {
-      addComment({
+      await addComment({
         token: getTokenFromLocalStorage(),
         text: newComment,
         id: id,
@@ -34,7 +35,6 @@ export const Comments = ({
       setNewComment("");
     }
   };
-
   useEffect(() => {
     if (isError.status === 401) {
       updateToken();
@@ -45,7 +45,7 @@ export const Comments = ({
       });
       setNewComment("");
     }
-  }, []);
+  }, [isError]);
 
   return (
     <T.Wrapper>
@@ -79,7 +79,7 @@ export const Comments = ({
                     <T.FormNewArtBtnPub
                       id="btnPublish"
                       disabled={!newComment}
-                      onClick={() => handleAddComment()}
+                      onClick={handleAddComment}
                     >
                       {" "}
                       Опубликовать
