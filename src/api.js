@@ -64,6 +64,7 @@ export async function loginUser(email, password) {
 export async function registerUser(
   email,
   password,
+  repeatPassword,
   name,
   role,
   surname,
