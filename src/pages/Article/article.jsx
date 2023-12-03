@@ -17,7 +17,7 @@ import { EditAds } from "../../modal/AddAds/editAds";
 import { Comments } from "../../modal/comments/comments";
 import { getTokenFromLocalStorage } from "../../api";
 
-export const Article = ({ setAds, ads }) => {
+export const Article = () => {
   const { id } = useParams();
   const { data, isLoading } = useGetAdsByIdQuery(id);
   const [showPhone, setShowPhone] = useState(false);
@@ -54,8 +54,7 @@ export const Article = ({ setAds, ads }) => {
 
   useEffect(() => {
     if (adsComments) {
-      setAdsComments([adsComments]);
-      setSaveButton(true);
+      setAdsComments(adsComments);
     }
   }, [adsComments]);
 
@@ -79,7 +78,7 @@ export const Article = ({ setAds, ads }) => {
       {openFormComments && (
         <Comments
           setOpenFormComments={setOpenFormComments}
-          comments={adsComments}
+          comments={comments}
           setAdsComments={setAdsComments}
         />
       )}
@@ -149,7 +148,7 @@ export const Article = ({ setAds, ads }) => {
                         <T.ArticleLink
                           onClick={() => setOpenFormComments(true)}
                         >
-                          {adsComments ? adsComments.length : "..."} отзыв
+                          {comments ? comments.length : "..."} отзыв
                         </T.ArticleLink>
                       </T.ArticleInfo>
                       <T.ArticlePrice>{data.price}.₽</T.ArticlePrice>

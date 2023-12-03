@@ -6,11 +6,7 @@ import { getTokenFromLocalStorage, updateToken } from "../../api";
 import { useAuthSelector } from "../../store/slices/auth";
 import { Link, useParams } from "react-router-dom";
 
-export const Comments = ({
-  setOpenFormComments,
-  comments = [],
-  setAdsComments,
-}) => {
+export const Comments = ({ setOpenFormComments, comments, setAdsComments }) => {
   const closeForm = () => {
     setOpenFormComments(false);
   };
@@ -18,23 +14,21 @@ export const Comments = ({
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState(null);
   const auth = useAuthSelector();
-  const id = useParams().id;
+  const { id } = useParams();
 
   const handleAddComment = async (event) => {
     event.preventDefault();
     if (!newComment) {
       setError("Пожалуйста, введите отзыв");
-      return;
     }
-    if (newComment) {
-      await addComment({
-        token: getTokenFromLocalStorage(),
-        text: newComment,
-        id: id,
-      });
-      setNewComment("");
-    }
+    addComment({
+      token: getTokenFromLocalStorage(),
+      text: newComment,
+      id: id,
+    });
+    setAdsComments([newComment, ...comments]);
   };
+
   useEffect(() => {
     if (isError.status === 401) {
       updateToken();
@@ -43,9 +37,8 @@ export const Comments = ({
         text: newComment,
         id: id,
       });
-      setNewComment("");
     }
-  }, [isError]);
+  }, [newComment]);
 
   return (
     <T.Wrapper>
@@ -78,8 +71,7 @@ export const Comments = ({
                     </T.FormNewArtBlock>
                     <T.FormNewArtBtnPub
                       id="btnPublish"
-                      disabled={!newComment}
-                      onClick={handleAddComment}
+                      onClick={(event) => handleAddComment(event)}
                     >
                       {" "}
                       Опубликовать
@@ -96,7 +88,7 @@ export const Comments = ({
                             <T.ReviewImg>
                               {item.author?.avatar ? (
                                 <T.ReviewImgImg
-                                  src={`http://localhost:8090/${item.author.avatar}`}
+                                  src={`http://localhost:8090/${item.author?.avatar}`}
                                   alt=""
                                 />
                               ) : (
@@ -117,7 +109,7 @@ export const Comments = ({
                               </T.ReviewNameSpan>
                             </T.ReviewName>
                             <T.ReviewTitle>Комментарий</T.ReviewTitle>
-                            <T.ReviewText>{item.text}</T.ReviewText>
+                            <T.ReviewText>{item?.text}</T.ReviewText>
                           </T.ReviewRight>
                         </T.ReviewItem>
                       ))}
