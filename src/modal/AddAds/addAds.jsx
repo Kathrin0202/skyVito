@@ -6,7 +6,7 @@ import {
   usePostAdsImageMutation,
 } from "../../store/services/auth";
 import * as T from "./addAds.styled";
-export const AddAds = ({ setOpenFormAddAds, setAds }) => {
+export const AddAds = ({ setOpenFormAddAds}) => {
   const [postAdsText, { isError }] = useGetAddAdsMutation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
