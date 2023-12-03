@@ -102,7 +102,14 @@ export const Registration = ({ isLoginMode = false }) => {
   const [city, setCity] = useState("");
   const [register, setRegister] = useState(false);
   const [repeatPassword, setRepeatPassword] = useState("");
-  const handleRegister = async (email, password, name, city) => {
+  const handleRegister = async (
+    email,
+    password,
+    repeatPassword,
+    name,
+    city,
+    lastName
+  ) => {
     if (!email) {
       setError("Не заполнена почта");
       return;
@@ -118,7 +125,14 @@ export const Registration = ({ isLoginMode = false }) => {
     }
     setRegister(true);
     try {
-      await registerUser(email, password, name, city).then((dat) => {
+      await registerUser(
+        email,
+        password,
+        repeatPassword,
+        name,
+        city,
+        lastName
+      ).then((dat) => {
         dispatch(
           setAuth({
             email: dat.email,
@@ -143,7 +157,7 @@ export const Registration = ({ isLoginMode = false }) => {
 
   useEffect(() => {
     setError(null);
-  }, [isLoginMode, email, password, repeatPassword, name, lastName, city]);
+  }, [isLoginMode, email, password, repeatPassword, name, city, lastName]);
   return (
     <S.ContainerEnter>
       <S.ModalBlockRegister>
