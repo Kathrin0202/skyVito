@@ -2,9 +2,10 @@ import * as T from "./comments.styled";
 import noAvatar from "../../img/myprofile.png";
 import { useAddCommentMutation } from "../../store/services/auth";
 import { useEffect, useState } from "react";
-import { getTokenFromLocalStorage } from "../../api";
+import { getTokenFromLocalStorage, updateToken } from "../../api";
 import { useAuthSelector } from "../../store/slices/auth";
-import { Link, useParams } from "react-router-dom";
+import { isRouteErrorResponse, Link, useParams } from "react-router-dom";
+import userEvent from "@testing-library/user-event";
 export const Comments = ({
   setOpenFormComments,
   comments = [],
@@ -13,27 +14,38 @@ export const Comments = ({
   const closeForm = () => {
     setOpenFormComments(false);
   };
-  const [addComment, { isLoading }] = useAddCommentMutation();
+  const [addComment, { isLoading, isError }] = useAddCommentMutation();
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState(null);
   const auth = useAuthSelector();
   const id = useParams().id;
 
-  const handleAddComment = async (event) => {
-    event.preventDefault();
+  const handleAddComment = () => {
     if (!newComment) {
       setError("Пожалуйста, введите отзыв");
       return;
     }
     if (newComment) {
-      await addComment({
+      addComment({
         token: getTokenFromLocalStorage(),
         text: newComment,
         id: id,
       });
-      setAdsComments(newComment);
+      setNewComment("");
     }
   };
+
+  useEffect(() => {
+    if (isError.status === 401) {
+      updateToken();
+      addComment({
+        token: getTokenFromLocalStorage(),
+        text: newComment,
+        id: id,
+      });
+      setNewComment("");
+    }
+  }, []);
 
   return (
     <T.Wrapper>
@@ -67,7 +79,7 @@ export const Comments = ({
                     <T.FormNewArtBtnPub
                       id="btnPublish"
                       disabled={!newComment}
-                      onClick={(event) => handleAddComment(event)}
+                      onClick={() => handleAddComment()}
                     >
                       {" "}
                       Опубликовать
